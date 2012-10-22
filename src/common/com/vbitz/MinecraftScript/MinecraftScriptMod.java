@@ -11,14 +11,22 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ScriptableObject;
 
+import com.vbitz.MinecraftScript.commands.JSCommand;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Block;
+import net.minecraft.src.CommandHandler;
 import net.minecraft.src.CreativeTabs;
+import net.minecraft.src.ICommand;
+import net.minecraft.src.ICommandSender;
 import net.minecraft.src.Material;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.ForgeSubscribe;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.ServerStarting;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.PostInit;
@@ -26,6 +34,7 @@ import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -87,6 +96,12 @@ public class MinecraftScriptMod {
 	@PostInit
 	public void postInit(FMLPostInitializationEvent e) {
 		
+	}
+	
+	@ServerStarting
+	public void serverStarting(FMLServerStartingEvent e) {
+		CommandHandler commandManager = (CommandHandler)e.getServer().getCommandManager();
+		commandManager.registerCommand(new JSCommand());
 	}
 
 	public static MinecraftScriptMod getInstance() {

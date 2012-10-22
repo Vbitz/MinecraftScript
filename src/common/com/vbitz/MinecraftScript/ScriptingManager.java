@@ -51,4 +51,12 @@ public class ScriptingManager {
 		}
 		exitContext();
 	}
+
+	public static Object runString(String string) {
+		Object ret = null;
+		enterContext();
+		ret = mcJavascriptContext.compileString(string, "command", 0, null).exec(mcJavascriptContext, mcJavascriptScope);
+		exitContext();
+		return ret;
+	}
 }
