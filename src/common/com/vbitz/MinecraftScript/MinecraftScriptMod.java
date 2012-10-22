@@ -41,9 +41,7 @@ public class MinecraftScriptMod {
 
 	private static MinecraftScriptMod _singilton = null;
 	
-	private File scriptsDirectory = null;
-	private Context mcJavascriptContext = null;
-	private ScriptableObject mcJavascriptScope = null;
+	private static File scriptsDirectory = null;
 	
 	private static Logger mcLogger = Logger.getLogger("MinecraftScriptMod");
 	
@@ -69,8 +67,8 @@ public class MinecraftScriptMod {
 		
 		createScriptedObjects();
 		
-		loadScriptEngine();
-		loadStartupScripts();
+		ScriptingManager.loadScriptEngine();
+		ScriptingManager.loadAllScripts(scriptsDirectory);
 	}
 	
 	private void createScriptedObjects() {
@@ -80,31 +78,6 @@ public class MinecraftScriptMod {
 			GameRegistry.registerBlock(blocks[i]);
 			LanguageRegistry.addName(blocks[i], "Scripted Block " + i);
 		}
-	}
-
-	private void loadScriptEngine() {
-		mcJavascriptContext = Context.enter();
-		mcJavascriptScope = this.mcJavascriptContext.initStandardObjects();
-		mcJavascriptScope.put("api", mcJavascriptScope, new MinecraftScriptAPI());
-		this.mcLogger.info("Loaded Script Engine");
-		Context.exit();
-	}
-
-	private void loadStartupScripts() {
-		ContextFactory.getGlobal().enterContext(mcJavascriptContext);
-		Logger.getLogger("MinecraftScriptMod").info("Loading Startup Scripts");
-		for (File f : this.scriptsDirectory.listFiles()) {
-			try {
-				this.mcLogger.info("Loading " + f.toString());
-				FileReader fr = new FileReader(f);
-				mcJavascriptContext.evaluateReader(mcJavascriptScope, fr, f.getName(), 0, null);
-			} catch (FileNotFoundException e) {
-				this.mcLogger.severe("Could not find " + f.getName());
-			} catch (IOException e) {
-				this.mcLogger.severe(e.toString());
-			}
-		}
-		Context.exit();
 	}
 	
 	public ScriptedBlock getScriptedBlock(int id) {

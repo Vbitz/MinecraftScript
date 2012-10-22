@@ -2,6 +2,7 @@ package com.vbitz.MinecraftScript;
 
 import java.util.HashMap;
 
+import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 
 import net.minecraft.src.Block;
@@ -14,6 +15,8 @@ public class ScriptedBlock extends Block {
 
 	private static HashMap<String, CreativeTabs> tabs = new HashMap<String, CreativeTabs>();
 	public static HashMap<String, Integer> texs = new HashMap<String, Integer>();
+	
+	private Function rightClickFunction = null;
 	
 	private static void addTextures(String[] strs) {
 		for (int i = 0; i < strs.length; i++) {
@@ -60,7 +63,19 @@ public class ScriptedBlock extends Block {
 	}
 	
 	public void setRightClickFunction(Function func) {
-		MinecraftScriptMod.getLogger().info(func.toString());
+		rightClickFunction = func;
+	}
+	
+	@Override
+	public boolean onBlockActivated(World par1World, int worldX, int worldY,
+			int worldZ, EntityPlayer par5EntityPlayer, int par6, float par7,
+			float par8, float par9) {
+		if (rightClickFunction != null) {
+			ScriptingManager.enterContext();
+			ScriptingManager.runFunction(rightClickFunction, worldX, worldY, worldZ);
+			ScriptingManager.exitContext();
+		}
+		return true;
 	}
 
 }
