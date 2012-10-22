@@ -4,11 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.logging.Logger;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.ScriptableObject;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Block;
@@ -41,9 +42,10 @@ public class MinecraftScriptMod {
 	private static MinecraftScriptMod _singilton = null;
 	
 	private File scriptsDirectory = null;
-	private ScriptEngine mcJavascriptEngine = null;
+	private Context mcJavascriptContext = null;
+	private ScriptableObject mcJavascriptScope = null;
 	
-	private Logger mcLogger = Logger.getLogger("MinecraftScriptMod");
+	private static Logger mcLogger = Logger.getLogger("MinecraftScriptMod");
 	
 	private static ScriptedBlock blocks[];
 	
@@ -81,25 +83,28 @@ public class MinecraftScriptMod {
 	}
 
 	private void loadScriptEngine() {
-		ScriptEngineManager manager = new ScriptEngineManager();
-		mcJavascriptEngine = manager.getEngineByName("JavaScript");
-		mcJavascriptEngine.put("api", new MinecraftScriptAPI());
+		mcJavascriptContext = Context.enter();
+		mcJavascriptScope = this.mcJavascriptContext.initStandardObjects();
+		mcJavascriptScope.put("api", mcJavascriptScope, new MinecraftScriptAPI());
 		this.mcLogger.info("Loaded Script Engine");
+		Context.exit();
 	}
 
 	private void loadStartupScripts() {
+		ContextFactory.getGlobal().enterContext(mcJavascriptContext);
 		Logger.getLogger("MinecraftScriptMod").info("Loading Startup Scripts");
 		for (File f : this.scriptsDirectory.listFiles()) {
 			try {
 				this.mcLogger.info("Loading " + f.toString());
 				FileReader fr = new FileReader(f);
-				this.mcJavascriptEngine.eval(fr);
+				mcJavascriptContext.evaluateReader(mcJavascriptScope, fr, f.getName(), 0, null);
 			} catch (FileNotFoundException e) {
 				this.mcLogger.severe("Could not find " + f.getName());
-			} catch (ScriptException e) {
-				this.mcLogger.severe("Error in " + f.getName() + " : " + e.toString());
+			} catch (IOException e) {
+				this.mcLogger.severe(e.toString());
 			}
 		}
+		Context.exit();
 	}
 	
 	public ScriptedBlock getScriptedBlock(int id) {
@@ -116,5 +121,9 @@ public class MinecraftScriptMod {
 			_singilton = new MinecraftScriptMod();
 		}
 		return _singilton;
+	}
+	
+	public static Logger getLogger() {
+		return mcLogger;
 	}
 }

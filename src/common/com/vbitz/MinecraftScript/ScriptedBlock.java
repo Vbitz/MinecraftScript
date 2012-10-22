@@ -2,9 +2,13 @@ package com.vbitz.MinecraftScript;
 
 import java.util.HashMap;
 
+import org.mozilla.javascript.Function;
+
 import net.minecraft.src.Block;
 import net.minecraft.src.CreativeTabs;
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Material;
+import net.minecraft.src.World;
 
 public class ScriptedBlock extends Block {
 
@@ -53,6 +57,10 @@ public class ScriptedBlock extends Block {
 			return true;
 		}
 		return false;
+	}
+	
+	public void setRightClickFunction(Function func) {
+		MinecraftScriptMod.getLogger().info(func.toString());
 	}
 
 }
