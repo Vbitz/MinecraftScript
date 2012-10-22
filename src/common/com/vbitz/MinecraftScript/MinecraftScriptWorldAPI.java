@@ -18,7 +18,7 @@ public class MinecraftScriptWorldAPI {
 		}
 	}
 	
-	public void setBlock(String blockType, int x, int y, int z) {
-		this._world.setBlockWithNotify(x, y, z, MinecraftItemStore.getBlockByName(blockType));
+	public void setBlock(int blockType, int x, int y, int z) {
+		this._world.setBlockWithNotify(x, y, z, blockType);
 	}
 }

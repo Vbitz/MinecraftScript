@@ -16,4 +16,8 @@ public class MinecraftScriptAPI {
 	public void sendChat(String chat) {
 		Minecraft.getMinecraft().thePlayer.sendChatToPlayer(chat);
 	}
+	
+	public int getItemId(String name) {
+		return MinecraftItemStore.getBlockByName(name);
+	}
 }
