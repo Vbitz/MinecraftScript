@@ -37,11 +37,15 @@ public class MinecraftScriptMod {
 	
 	@SidedProxy(clientSide="com.vbitz.MinecraftScript.ClientProxy", serverSide="com.vbitz.MinecraftScript.CommonProxy")
 	public static CommonProxy proxy;
+
+	private static MinecraftScriptMod _singilton = null;
 	
 	private File scriptsDirectory = null;
 	private ScriptEngine mcJavascriptEngine = null;
 	
 	private Logger mcLogger = Logger.getLogger("MinecraftScriptMod");
+	
+	private static ScriptedBlock blocks[];
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e) {
@@ -61,14 +65,25 @@ public class MinecraftScriptMod {
 			}
 		}
 		
+		createScriptedObjects();
+		
 		loadScriptEngine();
 		loadStartupScripts();
-		
 	}
 	
+	private void createScriptedObjects() {
+		blocks = new ScriptedBlock[128]; // this will get bigger in the future
+		for (int i = 0; i < blocks.length; i++) {
+			blocks[i] = new ScriptedBlock(512 + i);
+			GameRegistry.registerBlock(blocks[i]);
+			LanguageRegistry.addName(blocks[i], "Scripted Block " + i);
+		}
+	}
+
 	private void loadScriptEngine() {
 		ScriptEngineManager manager = new ScriptEngineManager();
 		mcJavascriptEngine = manager.getEngineByName("JavaScript");
+		mcJavascriptEngine.put("api", new MinecraftScriptAPI());
 		this.mcLogger.info("Loaded Script Engine");
 	}
 
@@ -76,7 +91,7 @@ public class MinecraftScriptMod {
 		Logger.getLogger("MinecraftScriptMod").info("Loading Startup Scripts");
 		for (File f : this.scriptsDirectory.listFiles()) {
 			try {
-				this.mcLogger.severe("Loading " + f.toString());
+				this.mcLogger.info("Loading " + f.toString());
 				FileReader fr = new FileReader(f);
 				this.mcJavascriptEngine.eval(fr);
 			} catch (FileNotFoundException e) {
@@ -86,9 +101,20 @@ public class MinecraftScriptMod {
 			}
 		}
 	}
+	
+	public ScriptedBlock getScriptedBlock(int id) {
+		return blocks[id];
+	}
 
 	@PostInit
 	public void postInit(FMLPostInitializationEvent e) {
 		
+	}
+
+	public static MinecraftScriptMod getInstance() {
+		if (_singilton == null) {
+			_singilton = new MinecraftScriptMod();
+		}
+		return _singilton;
 	}
 }
