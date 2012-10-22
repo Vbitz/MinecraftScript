@@ -72,7 +72,7 @@ public class ScriptedBlock extends Block {
 			float par8, float par9) {
 		if (rightClickFunction != null) {
 			ScriptingManager.enterContext();
-			ScriptingManager.runFunction(rightClickFunction, worldX, worldY, worldZ);
+			ScriptingManager.runFunction(rightClickFunction, new MinecraftScriptWorldAPI(par1World, par5EntityPlayer), worldX, worldY, worldZ);
 			ScriptingManager.exitContext();
 		}
 		return true;

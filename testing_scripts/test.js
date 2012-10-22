@@ -1,7 +1,11 @@
 var blk = api.getScriptedBlock(1);
 blk.setBlockBrightness(0.8);
 blk.setBlockCreativeTab("blocks");
-blk.setBlockTexture("tntTop");
-blk.setRightClickFunction(function (x, y, z) {
-	java.lang.System.out.println(x + " : " + y + " : " + z);
+blk.setBlockTexture("tntSide");
+blk.setRightClickFunction(function (world, x, y, z) {
+	for (var x1 = x - 4; x1 < x + 4; x1++) {
+		for (var x2 = z - 4; x2 < z + 4; x2++) {
+			world.setBlock("grassBlock", x1, y - 1, x2);
+		}
+	}
 });
