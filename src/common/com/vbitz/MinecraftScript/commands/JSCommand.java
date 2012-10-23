@@ -3,6 +3,7 @@ package com.vbitz.MinecraftScript.commands;
 import java.util.List;
 
 import org.mozilla.javascript.EcmaError;
+import org.mozilla.javascript.EvaluatorException;
 
 import com.vbitz.MinecraftScript.MinecraftScriptMod;
 import com.vbitz.MinecraftScript.ScriptingManager;
@@ -35,7 +36,6 @@ public class JSCommand implements ICommand {
 
 	@Override
 	public void processCommand(ICommandSender cmdSender, String[] args) {
-		MinecraftScriptMod.getLogger().info(String.valueOf(args.length));
 		if (args.length == 0) {
 			throw new WrongUsageException(this.getCommandUsage(cmdSender));
 		}
@@ -44,6 +44,10 @@ public class JSCommand implements ICommand {
 			cmdSender.sendChatToPlayer(ScriptingManager.runString(args[0].concat(" ")).toString());
 		} catch (EcmaError e) {
 			cmdSender.sendChatToPlayer("Error: " + e.toString());
+			ScriptingManager.exitContext();
+		} catch (EvaluatorException e) {
+			cmdSender.sendChatToPlayer("Error: " + e.toString());
+			ScriptingManager.exitContext();
 		}
 	}
 
