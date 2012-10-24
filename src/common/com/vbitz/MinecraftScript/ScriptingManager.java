@@ -15,6 +15,8 @@ public class ScriptingManager {
 	private static Context mcJavascriptContext = null;
 	private static ScriptableObject mcJavascriptScope = null;
 	
+	private static File _scriptsDirectory = null;
+	
 	public static Object runFunction(Function func, Object... args) {
 		return func.call(mcJavascriptContext, mcJavascriptScope, mcJavascriptScope, args);
 	}
@@ -36,6 +38,8 @@ public class ScriptingManager {
 	}
 
 	public static void loadAllScripts(File scriptsDirectory) {
+		_scriptsDirectory = scriptsDirectory;
+		
 		enterContext();
 		Logger.getLogger("MinecraftScriptMod").info("Loading Startup Scripts");
 		for (File f : scriptsDirectory.listFiles()) {
@@ -58,5 +62,13 @@ public class ScriptingManager {
 		ret = mcJavascriptContext.compileString(string, "command", 0, null).exec(mcJavascriptContext, mcJavascriptScope);
 		exitContext();
 		return ret;
+	}
+	
+	public static void doFile(String filename) throws IOException {
+		enterContext();
+		File fullPath = new File(_scriptsDirectory, filename);
+		FileReader fr = new FileReader(fullPath);
+		mcJavascriptContext.evaluateReader(mcJavascriptScope, fr, fullPath.getName(), 0, null);
+		exitContext();
 	}
 }

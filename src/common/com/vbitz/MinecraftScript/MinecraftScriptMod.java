@@ -12,6 +12,7 @@ import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ScriptableObject;
 
 import com.vbitz.MinecraftScript.commands.JSCommand;
+import com.vbitz.MinecraftScript.commands.JSDofileCommand;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Block;
@@ -102,6 +103,7 @@ public class MinecraftScriptMod {
 	public void serverStarting(FMLServerStartingEvent e) {
 		CommandHandler commandManager = (CommandHandler)e.getServer().getCommandManager();
 		commandManager.registerCommand(new JSCommand());
+		commandManager.registerCommand(new JSDofileCommand());
 	}
 
 	public static MinecraftScriptMod getInstance() {

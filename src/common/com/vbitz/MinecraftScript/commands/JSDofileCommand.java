@@ -1,31 +1,19 @@
 package com.vbitz.MinecraftScript.commands;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.EvaluatorException;
 
-import com.vbitz.MinecraftScript.MinecraftScriptMod;
 import com.vbitz.MinecraftScript.ScriptingManager;
 
 import net.minecraft.src.ICommand;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.WrongUsageException;
 
-public class JSCommand implements ICommand {
+public class JSDofileCommand implements ICommand {
 
-	private static String concat(String[] arr, String concatStr) {
-		String ret = "";
-		for (int i = 0; i < arr.length; i++) {
-			if (i != arr.length - 1) {
-				ret += arr[i] + concatStr;
-			}
-		}
-		ret += arr[arr.length - 1];
-		return ret;
-	}
-	
 	@Override
 	public int compareTo(Object o) {
 		return this.getCommandName().compareTo(((ICommand)o).getCommandName());
@@ -33,12 +21,12 @@ public class JSCommand implements ICommand {
 
 	@Override
 	public String getCommandName() {
-		return "js";
+		return "jsdofile";
 	}
 
 	@Override
 	public String getCommandUsage(ICommandSender var1) {
-		return "/" + this.getCommandName() + " js-string";
+		return "/" + this.getCommandName() + " filename";
 	}
 
 	@Override
@@ -53,11 +41,14 @@ public class JSCommand implements ICommand {
 		}
 		
 		try {
-			cmdSender.sendChatToPlayer(ScriptingManager.runString(concat(args, " ")).toString());
+			ScriptingManager.doFile(args[0]);
 		} catch (EcmaError e) {
 			cmdSender.sendChatToPlayer("Error: " + e.toString());
 			ScriptingManager.exitContext();
 		} catch (EvaluatorException e) {
+			cmdSender.sendChatToPlayer("Error: " + e.toString());
+			ScriptingManager.exitContext();
+		} catch (IOException e) {
 			cmdSender.sendChatToPlayer("Error: " + e.toString());
 			ScriptingManager.exitContext();
 		}
