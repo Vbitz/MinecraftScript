@@ -14,7 +14,7 @@ public class MinecraftScriptWorldAPI {
 	
 	public void explode(int amo, int x, int y, int z) {
 		if (!this._world.isRemote) {
-			this._world.createExplosion(this._player, x, y, z, amo);
+			this._world.createExplosion(this._player, x, y, z, amo, false);
 		}
 	}
 	
