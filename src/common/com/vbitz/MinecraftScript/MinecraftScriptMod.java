@@ -14,6 +14,7 @@ import org.mozilla.javascript.ScriptableObject;
 import com.vbitz.MinecraftScript.commands.JSCommand;
 import com.vbitz.MinecraftScript.commands.JSDobookCommand;
 import com.vbitz.MinecraftScript.commands.JSDofileCommand;
+import com.vbitz.MinecraftScript.commands.TestMapData;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Block;
@@ -106,6 +107,7 @@ public class MinecraftScriptMod {
 		commandManager.registerCommand(new JSCommand());
 		commandManager.registerCommand(new JSDofileCommand());
 		commandManager.registerCommand(new JSDobookCommand());
+		commandManager.registerCommand(new TestMapData());
 	}
 
 	public static MinecraftScriptMod getInstance() {
