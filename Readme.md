@@ -13,5 +13,7 @@ To-do
 - Finish Block and Item Texture ID's
 - Add rest of creative tabs
 - Add API shorthand
+- Add Player API
 - Hide blocks and items not in use from Not Enough Items
 - Add more Scripted Block callbacks
+- Add Map Graphics API
