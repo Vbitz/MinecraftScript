@@ -2,6 +2,7 @@ package com.vbitz.MinecraftScript;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.PlayerNotFoundException;
 import net.minecraft.src.PlayerSelector;
@@ -32,6 +33,15 @@ public class MinecraftScriptAPI {
 			return null;
 		} else {
 			return new MinecraftScriptPlayerAPI(ply);
+		}
+	}
+	
+	public MinecraftScriptWorldAPI getWorld() {
+		EntityPlayer ply = ScriptingManager.getScriptRunner();
+		if (ply == null) {
+			return null;
+		} else {
+			return new MinecraftScriptWorldAPI(ply.worldObj, ply);
 		}
 	}
 }

@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import net.minecraft.src.EntityPlayer;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Function;
@@ -16,6 +18,8 @@ public class ScriptingManager {
 	private static ScriptableObject mcJavascriptScope = null;
 	
 	private static File _scriptsDirectory = null;
+	
+	private static EntityPlayer _scriptRunner = null;
 	
 	public static Object runFunction(Function func, Object... args) {
 		return func.call(mcJavascriptContext, mcJavascriptScope, mcJavascriptScope, args);
@@ -56,10 +60,15 @@ public class ScriptingManager {
 		exitContext();
 	}
 
-	public static Object runString(String string) {
+	public static Object runString(String string, EntityPlayer ply) {
 		Object ret = null;
 		enterContext();
+		_scriptRunner = ply;
+		Object wrappedPlayer = Context.javaToJS(new MinecraftScriptPlayerAPI(_scriptRunner), mcJavascriptScope);
+		ScriptableObject.putProperty(mcJavascriptScope, "me", wrappedPlayer);
 		ret = mcJavascriptContext.compileString(string, "command", 0, null).exec(mcJavascriptContext, mcJavascriptScope);
+		ScriptableObject.putProperty(mcJavascriptScope, "me", null);
+		_scriptRunner = null;
 		exitContext();
 		return ret;
 	}
@@ -70,5 +79,9 @@ public class ScriptingManager {
 		FileReader fr = new FileReader(fullPath);
 		mcJavascriptContext.evaluateReader(mcJavascriptScope, fr, fullPath.getName(), 0, null);
 		exitContext();
+	}
+	
+	public static EntityPlayer getScriptRunner() {
+		return _scriptRunner;
 	}
 }

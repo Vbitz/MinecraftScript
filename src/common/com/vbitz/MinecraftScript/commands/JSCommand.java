@@ -9,6 +9,7 @@ import org.mozilla.javascript.EvaluatorException;
 import com.vbitz.MinecraftScript.MinecraftScriptMod;
 import com.vbitz.MinecraftScript.ScriptingManager;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.ICommand;
 import net.minecraft.src.ICommandSender;
@@ -44,7 +45,7 @@ public class JSCommand extends CommandBase {
 		}
 		
 		try {
-			cmdSender.sendChatToPlayer(ScriptingManager.runString(concat(args, " ")).toString());
+			cmdSender.sendChatToPlayer(ScriptingManager.runString(concat(args, " "), MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(cmdSender.getCommandSenderName())).toString());
 		} catch (EcmaError e) {
 			cmdSender.sendChatToPlayer("Error: " + e.toString());
 			ScriptingManager.exitContext();

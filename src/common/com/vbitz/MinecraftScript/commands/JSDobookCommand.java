@@ -78,7 +78,7 @@ public class JSDobookCommand extends CommandBase {
         }
 		
 		try {
-			ScriptingManager.runString(script);
+			ScriptingManager.runString(script, MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(cmdSender.getCommandSenderName()));
 		} catch (EcmaError e) {
 			cmdSender.sendChatToPlayer("Error: " + e.toString());
 			ScriptingManager.exitContext();
