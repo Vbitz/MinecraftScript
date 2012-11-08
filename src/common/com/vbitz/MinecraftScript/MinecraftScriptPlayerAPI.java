@@ -90,4 +90,8 @@ public class MinecraftScriptPlayerAPI {
 			_player.extinguish();
 		}
 	}
+	
+	public MinecraftScriptItemStackAPI getCurrentItem() {
+		return new MinecraftScriptItemStackAPI(_player.inventory.getCurrentItem());
+	}
 }
