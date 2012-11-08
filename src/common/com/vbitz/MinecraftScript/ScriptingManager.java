@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import net.minecraft.src.EntityPlayer;
 
+import org.mozilla.javascript.ClassShutter;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Function;
@@ -35,6 +36,7 @@ public class ScriptingManager {
 	
 	public static void loadScriptEngine() {
 		mcJavascriptContext = Context.enter();
+		mcJavascriptContext.setClassShutter(new MinecraftScriptClassShutter());
 		mcJavascriptScope = mcJavascriptContext.initStandardObjects();
 		mcJavascriptScope.put("api", mcJavascriptScope, new MinecraftScriptAPI());
 		MinecraftScriptMod.getLogger().info("Loaded Script Engine");
