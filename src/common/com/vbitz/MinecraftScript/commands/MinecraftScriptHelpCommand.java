@@ -91,17 +91,17 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 	@Override
 	public void processCommand(ICommandSender var1, String[] var2) {
 		if (var2.length == 0) {
-			var1.sendChatToPlayer("¤cMinecraftScript Help Topics");
+			var1.sendChatToPlayer("\u00A7cMinecraftScript Help Topics");
 			for (HelpDoc doc : _helpDocs) {
 				if (doc.api.equals("topics")) {
-					var1.sendChatToPlayer("¤f" + doc.name + " : ¤7" + doc.description);
+					var1.sendChatToPlayer("\u00A7f" + doc.name + " : \u00A77" + doc.description);
 				}
 			}
 		} else {
-			var1.sendChatToPlayer("¤cMinecraftScript Help Topics for " + var2[0]);
+			var1.sendChatToPlayer("\u00A7cMinecraftScript Help Topics for " + var2[0]);
 			for (HelpDoc doc : _helpDocs) {
 				if (doc.api.equals(var2[0])) {
-					var1.sendChatToPlayer(" - ¤e" + doc.api + "¤f : "  + doc.name + " (" + doc.args + ") : ¤7" + doc.description);
+					var1.sendChatToPlayer(" - \u00A7e" + doc.api + "\u00A7f : "  + doc.name + " (" + doc.args + ") : \u00A77" + doc.description);
 				}
 			}
 		}
