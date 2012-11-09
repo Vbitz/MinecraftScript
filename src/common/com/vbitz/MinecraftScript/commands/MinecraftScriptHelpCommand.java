@@ -33,8 +33,10 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 		addHelp("topics", "api", "", "General API functions. These can be called before Minecraft has started");
 		addHelp("topics", "playerapi", "", "Methods working on the set player");
 		addHelp("topics", "worldapi", "", "Methods for modifying the world");
+		addHelp("topics", "itemstackapi", "", "Methods for working with a stack of items");
 		addHelp("topics", "effectnames1", "", "A list of effect names");
 		addHelp("topics", "effectnames2", "", "A list of the effect names not covered in the first list");
+		addHelp("topics", "enchantsArmor", "", "A list of Armor Enchantments (The Descriptions are taken from MCP)");
 		
 		addHelp("api", "getScriptedBlock", "int id", "Returns a Scripted block with the ID id");
 		addHelp("api", "log", "Object obj", "Prints obj to Console");
@@ -42,6 +44,7 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 		addHelp("api", "getItemId", "string itemName", "Returns the ID of the item");
 		addHelp("api", "getPlayer", "string nickname", "Returns a PlayerAPI for nickname");
 		addHelp("api", "getWorld", "", "Returns the Current World");
+		addHelp("api", "registerCommand", "string name, function(args) cmd", "Running /c name args will run cmd with args");
 		
 		addHelp("playerapi", "getHealth", "", "Returns the health of the player");
 		addHelp("playerapi", "give", "int itemID, int count", "Gives count of Item ID id to the player");
@@ -56,6 +59,13 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 		addHelp("worldapi", "explode", "int amo, int x, int y, int z", "Explodes the point at x, y, z with a force of amo");
 		addHelp("worldapi", "setBlock", "int blockType, int x, int y, int z", "Set's the point at x, y, z to blockType");
 		addHelp("worldapi", "time", "long value", "Set's the time in all worlds to value");
+		
+		addHelp("itemstackapi", "getCount", "", "Get's the number of items in a stack");
+		addHelp("itemstackapi", "addCount", "int count", "Adds count to the stack");
+		addHelp("itemstackapi", "setCount", "int count", "Set's the stack size to count");
+		addHelp("itemstackapi", "getDamage", "", "Returns the damage\\metadata on the stack");
+		addHelp("itemstackapi", "setDamage", "int dmg", "Set's the damage\\metadata on the stack");
+		addHelp("itemstackapi", "enchant", "string enchantName, int level", "Add's a enchantment to the item");
 		
 		addHelp("effectnames1", "moveSpeed", "", "Increase the player's move speed");
 		addHelp("effectnames1", "moveSlowdown", "", "Decreases the player's move speed");
@@ -76,6 +86,15 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 		addHelp("effectnames2", "hunger", "", "The player's hunger bar will drain much faster");
 		addHelp("effectnames2", "weakness", "", "Decreases the amount of damage done by the player");
 		addHelp("effectnames2", "poison", "", "The player will take damage over time, this will not kill them");
+		
+		addHelp("enchants1", "protection", "Armor Enchant", "Converts environmental damage to armour damage");
+		addHelp("enchants1", "fireProtection", "Armor Enchant", "Protection against fire");
+		addHelp("enchants1", "featherFalling", "Boots Enchant", "Less fall damage");
+		addHelp("enchants1", "blastProtection", "Armor Enchant", "Protection against explosions");
+		addHelp("enchants1", "projectileProtection", "Armor Enchant", "Protection against projectile entities (e.g. arrows)");
+		addHelp("enchants1", "respiration", "Helm Enchant", "Decreases the rate of air loss underwater; increases time between damage while suffocating");
+		addHelp("enchants1", "aquaAffinity", "Helm Enchant", "Increases underwater mining rate");
+		
 	}
 	
 	@Override

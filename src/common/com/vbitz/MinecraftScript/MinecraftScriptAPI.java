@@ -1,5 +1,7 @@
 package com.vbitz.MinecraftScript;
 
+import org.mozilla.javascript.Function;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
@@ -43,5 +45,9 @@ public class MinecraftScriptAPI {
 		} else {
 			return new MinecraftScriptWorldAPI(ply.worldObj, ply);
 		}
+	}
+	
+	public void registerCommand(String name, Function command) {
+		MinecraftScriptCommandManager.addCommand(name, command);
 	}
 }

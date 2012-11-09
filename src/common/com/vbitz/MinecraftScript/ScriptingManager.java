@@ -12,6 +12,7 @@ import org.mozilla.javascript.ClassShutter;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Function;
+import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.ScriptableObject;
 
 public class ScriptingManager {
@@ -39,6 +40,13 @@ public class ScriptingManager {
 		mcJavascriptContext.setClassShutter(new MinecraftScriptClassShutter());
 		mcJavascriptScope = mcJavascriptContext.initStandardObjects();
 		mcJavascriptScope.put("api", mcJavascriptScope, new MinecraftScriptAPI());
+		try {
+			mcJavascriptScope.put("me", mcJavascriptScope, new FunctionObject("me", new ScriptingManager().getClass().getMethod("getScriptRunnerJS", new Class<?>[] {}), mcJavascriptScope));
+		} catch (SecurityException e) {
+			MinecraftScriptMod.getLogger().severe("Could not load me()");
+		} catch (NoSuchMethodException e) {
+			MinecraftScriptMod.getLogger().severe("Could not load me()");
+		}
 		MinecraftScriptMod.getLogger().info("Loaded Script Engine");
 		Context.exit();
 	}
@@ -66,10 +74,7 @@ public class ScriptingManager {
 		Object ret = null;
 		enterContext();
 		_scriptRunner = ply;
-		Object wrappedPlayer = Context.javaToJS(new MinecraftScriptPlayerAPI(_scriptRunner), mcJavascriptScope);
-		ScriptableObject.putProperty(mcJavascriptScope, "me", wrappedPlayer);
 		ret = mcJavascriptContext.compileString(string, "command", 0, null).exec(mcJavascriptContext, mcJavascriptScope);
-		ScriptableObject.putProperty(mcJavascriptScope, "me", null);
 		_scriptRunner = null;
 		exitContext();
 		return ret;
@@ -83,7 +88,15 @@ public class ScriptingManager {
 		exitContext();
 	}
 	
+	public static MinecraftScriptPlayerAPI getScriptRunnerJS() {
+		return new MinecraftScriptPlayerAPI(getScriptRunner());
+	}
+	
 	public static EntityPlayer getScriptRunner() {
 		return _scriptRunner;
+	}
+	
+	public static void setScriptRunner(EntityPlayer ply) {
+		_scriptRunner = ply;
 	}
 }
