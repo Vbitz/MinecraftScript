@@ -15,6 +15,7 @@ import com.vbitz.MinecraftScript.commands.JSCommand;
 import com.vbitz.MinecraftScript.commands.JSCommandCommand;
 import com.vbitz.MinecraftScript.commands.JSDobookCommand;
 import com.vbitz.MinecraftScript.commands.JSDofileCommand;
+import com.vbitz.MinecraftScript.commands.JSStickCommand;
 import com.vbitz.MinecraftScript.commands.MinecraftScriptHelpCommand;
 import com.vbitz.MinecraftScript.commands.TestMapData;
 
@@ -110,6 +111,7 @@ public class MinecraftScriptMod {
 		commandManager.registerCommand(new JSDofileCommand());
 		commandManager.registerCommand(new JSDobookCommand());
 		commandManager.registerCommand(new JSCommandCommand());
+		commandManager.registerCommand(new JSStickCommand());
 		commandManager.registerCommand(new MinecraftScriptHelpCommand());
 		commandManager.registerCommand(new TestMapData());
 	}

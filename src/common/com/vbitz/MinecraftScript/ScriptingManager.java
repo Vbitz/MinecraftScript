@@ -28,6 +28,9 @@ public class ScriptingManager {
 	}
 	
 	public static void enterContext() {
+		if (Context.getCurrentContext() != null) {
+			Context.exit();
+		}
 		ContextFactory.getGlobal().enterContext(mcJavascriptContext);
 	}
 	
