@@ -48,6 +48,7 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 		
 		addHelp("playerapi", "getHealth", "", "Returns the health of the player");
 		addHelp("playerapi", "give", "int itemID, int count", "Gives count of Item ID id to the player");
+		addHelp("playerapi", "getLoc", "", "Returns the player's location as a vector");
 		addHelp("playerapi", "getLocX", "", "Returns the X part of the player's current location");
 		addHelp("playerapi", "getLocY", "", "Returns the Y part of the player's current location");
 		addHelp("playerapi", "getLocZ", "", "Returns the Z part of the player's current location");
@@ -58,6 +59,7 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 		
 		addHelp("worldapi", "explode", "int amo, int x, int y, int z", "Explodes the point at x, y, z with a force of amo");
 		addHelp("worldapi", "setBlock", "int blockType, int x, int y, int z", "Set's the point at x, y, z to blockType");
+		addHelp("worldapi", "setCube", "int blockType, int x1, int y1, int z1, int x2, int y2, int z2", "Set's a area to blockType (max 2000 blocks modifyed)");
 		addHelp("worldapi", "time", "long value", "Set's the time in all worlds to value");
 		
 		addHelp("itemstackapi", "getCount", "", "Get's the number of items in a stack");

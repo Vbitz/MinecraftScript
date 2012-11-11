@@ -51,6 +51,10 @@ public class MinecraftScriptPlayerAPI {
 		_player.inventory.addItemStackToInventory(new ItemStack(Item.itemsList[id], count, 0));
 	}
 	
+	public Vector3f getLoc() {
+		return new Vector3f(getLocX(), getLocY(), getLocZ());
+	}
+	
 	public double getLocX() {
 		return _player.getPosition(0.0f).xCoord;
 	}
