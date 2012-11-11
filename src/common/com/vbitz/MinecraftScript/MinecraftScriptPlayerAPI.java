@@ -110,7 +110,7 @@ public class MinecraftScriptPlayerAPI {
 		}
 	}
 	
-	public Vector3f getPlayerLook() {	// This code is based off the code from Item.class
+	public Vector3f getLook() {	// This code is based off the code from Item.class
         double compY = _player.prevPosY + (_player.posY - _player.prevPosY) * (double)1.0F + 1.62D - (double)_player.yOffset;
         Vec3 playerPos = _player.worldObj.func_82732_R().getVecFromPool(_player.posX, compY, _player.posZ);
         float var1 = MathHelper.cos(-_player.rotationYaw * 0.017453292F - (float)Math.PI);

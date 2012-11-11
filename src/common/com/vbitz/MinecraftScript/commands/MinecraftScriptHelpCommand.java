@@ -31,7 +31,8 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 	
 	static {
 		addHelp("topics", "api", "", "General API functions. These can be called before Minecraft has started");
-		addHelp("topics", "playerapi", "", "Methods working on the set player");
+		addHelp("topics", "playerapi1", "", "Methods working on the set player");
+		addHelp("topics", "playerapi2", "", "More methods working on the set player");
 		addHelp("topics", "worldapi", "", "Methods for modifying the world");
 		addHelp("topics", "itemstackapi", "", "Methods for working with a stack of items");
 		addHelp("topics", "effectnames1", "", "A list of effect names");
@@ -46,20 +47,25 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 		addHelp("api", "getWorld", "", "Returns the Current World");
 		addHelp("api", "registerCommand", "string name, function(args) cmd", "Running /c name args will run cmd with args");
 		
-		addHelp("playerapi", "getHealth", "", "Returns the health of the player");
-		addHelp("playerapi", "give", "int itemID, int count", "Gives count of Item ID id to the player");
-		addHelp("playerapi", "getLoc", "", "Returns the player's location as a vector");
-		addHelp("playerapi", "getLocX", "", "Returns the X part of the player's current location");
-		addHelp("playerapi", "getLocY", "", "Returns the Y part of the player's current location");
-		addHelp("playerapi", "getLocZ", "", "Returns the Z part of the player's current location");
-		addHelp("playerapi", "tp", "double x, double y, double z", "Teleports the player to x, y, z");
-		addHelp("playerapi", "addEffect", "string effectName, int level, int time", "Gives the player effectName at level for time ticks");
-		addHelp("playerapi", "fly", "boolean fly", "Set's the ability for the player to fly and causes them to start flying");
-		addHelp("playerapi", "setOnFire", "boolean onFire", "Set's the player alight or extinguishes them");
+		addHelp("playerapi1", "getHealth", "", "Returns the health of the player");
+		addHelp("playerapi1", "give", "int itemID, int count", "Gives count of Item ID id to the player");
+		addHelp("playerapi1", "getLoc", "", "Returns the player's location as a vector");
+		addHelp("playerapi1", "getLocX", "", "Returns the X part of the player's current location");
+		addHelp("playerapi1", "getLocY", "", "Returns the Y part of the player's current location");
+		addHelp("playerapi1", "getLocZ", "", "Returns the Z part of the player's current location");
+		addHelp("playerapi1", "tp", "double x, double y, double z", "Teleports the player to x, y, z");
+		addHelp("playerapi1", "tpv", "vector3f v", "Teleports the player to v");
+		addHelp("playerapi1", "addEffect", "string effectName, int level, int time", "Gives the player effectName at level for time ticks");
+		addHelp("playerapi1", "fly", "boolean fly", "Set's the ability for the player to fly and causes them to start flying");
+		addHelp("playerapi2", "setOnFire", "boolean onFire", "Set's the player alight or extinguishes them");
+		addHelp("playerapi2", "getLook", "", "Returns a vector of the player's current target, it will return the player's locaiton if the target is invalid");
+		addHelp("playerapi2", "getHunger", "", "Returns the player's current food level");
+		addHelp("playerapi2", "setHunger", "int value", "Set's the player's current hunger level");
 		
 		addHelp("worldapi", "explode", "int amo, int x, int y, int z", "Explodes the point at x, y, z with a force of amo");
 		addHelp("worldapi", "setBlock", "int blockType, int x, int y, int z", "Set's the point at x, y, z to blockType");
 		addHelp("worldapi", "setCube", "int blockType, int x1, int y1, int z1, int x2, int y2, int z2", "Set's a area to blockType (max 2000 blocks modifyed)");
+		addHelp("worldapi", "setCubeV", "int blockType, vector3f v1, vector3f v2", "Set's a area to blockType (max 2000 blocks modifyed");
 		addHelp("worldapi", "time", "long value", "Set's the time in all worlds to value");
 		
 		addHelp("itemstackapi", "getCount", "", "Get's the number of items in a stack");
@@ -68,6 +74,8 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 		addHelp("itemstackapi", "getDamage", "", "Returns the damage\\metadata on the stack");
 		addHelp("itemstackapi", "setDamage", "int dmg", "Set's the damage\\metadata on the stack");
 		addHelp("itemstackapi", "enchant", "string enchantName, int level", "Add's a enchantment to the item");
+		
+		addHelp("vector3f", "add", "float x, float y, float z", "Returns a new Vector with x, y, z added");
 		
 		addHelp("effectnames1", "moveSpeed", "", "Increase the player's move speed");
 		addHelp("effectnames1", "moveSlowdown", "", "Decreases the player's move speed");

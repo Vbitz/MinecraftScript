@@ -18,6 +18,7 @@ import com.vbitz.MinecraftScript.commands.JSDofileCommand;
 import com.vbitz.MinecraftScript.commands.JSStickCommand;
 import com.vbitz.MinecraftScript.commands.MinecraftScriptHelpCommand;
 import com.vbitz.MinecraftScript.commands.TestMapData;
+import com.vbitz.MinecraftScript.items.JSStick;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Block;
@@ -84,6 +85,8 @@ public class MinecraftScriptMod {
 		
 		ScriptingManager.loadScriptEngine();
 		ScriptingManager.loadAllScripts(scriptsDirectory);
+		
+		JSStick.getSingilton(); // just to get it to register
 	}
 	
 	private void createScriptedObjects() {
