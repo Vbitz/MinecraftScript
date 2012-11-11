@@ -144,9 +144,9 @@
 			<arg value="install.sh" />
 		</exec>
 
-		<!-- Copy BC source -->
+		<!-- Copy MS source -->
 		<copy todir="${mcpsrc.dir}">
-			<fileset dir="${src.dir}/common">
+			<fileset dir="${src.dir}/src/common">
 				<exclude name="**/MinecraftSript/devel"/>
 			</fileset>
 			<filterset>
