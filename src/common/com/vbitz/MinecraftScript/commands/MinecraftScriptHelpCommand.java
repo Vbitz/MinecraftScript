@@ -97,13 +97,13 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 		addHelp("effectnames2", "weakness", "", "Decreases the amount of damage done by the player");
 		addHelp("effectnames2", "poison", "", "The player will take damage over time, this will not kill them");
 		
-		addHelp("enchants1", "protection", "Armor Enchant", "Converts environmental damage to armour damage");
-		addHelp("enchants1", "fireProtection", "Armor Enchant", "Protection against fire");
-		addHelp("enchants1", "featherFalling", "Boots Enchant", "Less fall damage");
-		addHelp("enchants1", "blastProtection", "Armor Enchant", "Protection against explosions");
-		addHelp("enchants1", "projectileProtection", "Armor Enchant", "Protection against projectile entities (e.g. arrows)");
-		addHelp("enchants1", "respiration", "Helm Enchant", "Decreases the rate of air loss underwater; increases time between damage while suffocating");
-		addHelp("enchants1", "aquaAffinity", "Helm Enchant", "Increases underwater mining rate");
+		addHelp("enchantsArmor", "protection", "Armor Enchant", "Converts environmental damage to armour damage");
+		addHelp("enchantsArmor", "fireProtection", "Armor Enchant", "Protection against fire");
+		addHelp("enchantsArmor", "featherFalling", "Boots Enchant", "Less fall damage");
+		addHelp("enchantsArmor", "blastProtection", "Armor Enchant", "Protection against explosions");
+		addHelp("enchantsArmor", "projectileProtection", "Armor Enchant", "Protection against projectile entities (e.g. arrows)");
+		addHelp("enchantsArmor", "respiration", "Helm Enchant", "Decreases the rate of air loss underwater; increases time between damage while suffocating");
+		addHelp("enchantsArmor", "aquaAffinity", "Helm Enchant", "Increases underwater mining rate");
 		
 	}
 	

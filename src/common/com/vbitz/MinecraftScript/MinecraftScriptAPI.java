@@ -21,7 +21,7 @@ public class MinecraftScriptAPI {
 	}
 	
 	public void sendChat(String chat) {
-		Minecraft.getMinecraft().thePlayer.sendChatToPlayer(chat);
+		MinecraftServer.getServer().sendChatToPlayer(chat);
 	}
 	
 	public int getItemId(String name) {

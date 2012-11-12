@@ -76,7 +76,12 @@ public class MinecraftScriptMod {
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e) {
-		
+		scriptsDirectory = new File(e.getModConfigurationDirectory(), "scripts");
+		if (!scriptsDirectory.exists()) {
+			if (!scriptsDirectory.mkdir()) {
+				Logger.getLogger("MinecraftScriptMod").severe("Can't create scripts directory");
+			}
+		}
 	}
 	
 	@Init
@@ -84,13 +89,6 @@ public class MinecraftScriptMod {
 		proxy.registerRenderers();
 		
 		this.mcLogger.setParent(FMLLog.getLogger());
-		
-		scriptsDirectory = new File(Minecraft.getMinecraftDir(), "scripts");
-		if (!scriptsDirectory.exists()) {
-			if (!scriptsDirectory.mkdir()) {
-				Logger.getLogger("MinecraftScriptMod").severe("Can't create scripts directory");
-			}
-		}
 		
 		createScriptedObjects();
 		
