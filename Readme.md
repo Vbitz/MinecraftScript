@@ -17,7 +17,7 @@ To-do
 - Add Scripted Item support
 - Add rest of block identifiers
 - Add item identifiers
-- Finish Block and Item Texture ID's
+- Finish Block and Item Texture ID'sd
 - Add rest of creative tabs
 - Hide blocks and items not in use from Not Enough Items
 - Add more Scripted Block callbacks
