@@ -154,59 +154,10 @@
 				<filter token="BUILD_NUMBER" value="${build.number}" />
 			</filterset>
 		</copy>
-
 	</target>
 
-	<target name="compile" depends="setup">
-
-		<!-- Recompile -->
-		<exec dir="${mcp.dir}" executable="cmd" osfamily="windows">
-			<arg line="/c recompile.bat"/>
-		</exec>
-
-		<exec dir="${mcp.dir}" executable="sh" osfamily="unix">
-			<arg value="recompile.sh" />
-		</exec>
-
-		<!-- Reobf -->
-		<exec dir="${mcp.dir}" executable="cmd" osfamily="windows">
-			<arg line="/c reobfuscate.bat"/>
-		</exec>
-
-		<exec dir="${mcp.dir}" executable="sh" osfamily="unix">
-			<arg value="reobfuscate.sh" />
-		</exec>
-
-		<!-- Copy MS classes -->
-		<copy todir="${classes.dir}">
-			<fileset dir="${mcp.dir}/reobf/minecraft"/>
-		</copy>
-
-		<!-- Copy resources -->
-		<copy todir="${classes.dir}">
-			<fileset dir="${src.dir}/buildcraft_resources">
-				<exclude name="build.xml"/>
-				<exclude name="build.number"/>
-			</fileset>
-		</copy>
-
-		<!-- Copy localizations -->
-		<copy todir="${classes.dir}" failonerror="false">
-			<fileset dir="${lang.dir}">
-				<exclude name="README.md"/>
-			</fileset>
-		</copy>
-
-	</target>
-
-	<!-- Zip the compiled files -->
-	<target name="package" depends="compile">
-
-		<jar destfile="${jar.dir}/MinecraftScript-${MS.version.full}.zip" basedir="${classes.dir}"/>
-
-	</target>
 
 	<!-- Default target to run -->
-	<target name="main" depends="initialize-version,download-files,clean,package"/>
+	<target name="main" depends="initialize-version,download-files,clean"/>
 
 </project>
