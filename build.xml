@@ -154,30 +154,10 @@
 				<filter token="BUILD_NUMBER" value="${build.number}" />
 			</filterset>
 		</copy>
-
 	</target>
 
-	<target name="compile" depends="setup">
-
-		<!-- Recompile -->
-		<exec dir="${mcp.dir}" executable="cmd" osfamily="windows">
-			<arg line="/c recompile.bat"/>
-		</exec>
-
-		<exec dir="${mcp.dir}" executable="sh" osfamily="unix">
-			<arg value="recompile.sh" />
-		</exec>
-
-		<!-- Copy localizations -->
-		<copy todir="${classes.dir}" failonerror="false">
-			<fileset dir="${lang.dir}">
-				<exclude name="README.md"/>
-			</fileset>
-		</copy>
-
-	</target>
 
 	<!-- Default target to run -->
-	<target name="main" depends="initialize-version,download-files,clean,package"/>
+	<target name="main" depends="initialize-version,download-files,clean"/>
 
 </project>
