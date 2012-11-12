@@ -40,15 +40,17 @@ public class JSCommandCommand extends CommandBase {
 					for (int i = 1; i < var2.length; i++) {
 						str.add(var2[i]);
 					}
-					var1.sendChatToPlayer(MinecraftScriptCommandManager.runCommand(var2[0], str.toArray()));
+					String out = ScriptingManager.getTidyOutput(MinecraftScriptCommandManager.runCommand(var2[0], str.toArray()));
+					if (!out.equals("")) {var1.sendChatToPlayer(out); }
 				} else {
-					var1.sendChatToPlayer(MinecraftScriptCommandManager.runCommand(var2[0], new Object[] {}));
+					String out = ScriptingManager.getTidyOutput(MinecraftScriptCommandManager.runCommand(var2[0], new Object[] { }));
+					if (!out.equals("")) {var1.sendChatToPlayer(out); }
 				}
 			} catch (EcmaError e) {
-				var1.sendChatToPlayer("Error: " + e.toString());
+				var1.sendChatToPlayer("Error: " + e.getMessage());
 				ScriptingManager.exitContext();
 			} catch (EvaluatorException e) {
-				var1.sendChatToPlayer("Error: " + e.toString());
+				var1.sendChatToPlayer("Error: " + e.getMessage());
 				ScriptingManager.exitContext();
 			}
 		} else {

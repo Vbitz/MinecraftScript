@@ -13,7 +13,9 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.FunctionObject;
+import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.Undefined;
 
 public class ScriptingManager {
 	private static Context mcJavascriptContext = null;
@@ -58,6 +60,8 @@ public class ScriptingManager {
 		_scriptsDirectory = scriptsDirectory;
 		
 		enterContext();
+		
+		mcJavascriptScope.put("isPreload", mcJavascriptScope, true);
 		Logger.getLogger("MinecraftScriptMod").info("Loading Startup Scripts");
 		for (File f : scriptsDirectory.listFiles()) {
 			try {
@@ -70,6 +74,8 @@ public class ScriptingManager {
 				MinecraftScriptMod.getLogger().severe(e.toString());
 			}
 		}
+		mcJavascriptScope.put("isPreload", mcJavascriptScope, false);
+		
 		exitContext();
 	}
 
@@ -101,5 +107,17 @@ public class ScriptingManager {
 	
 	public static void setScriptRunner(EntityPlayer ply) {
 		_scriptRunner = ply;
+	}
+	
+	public static String getTidyOutput(Object obj) {
+		if (obj instanceof Undefined) {
+			return "";
+		} else if (obj instanceof NativeJavaObject) {
+			NativeJavaObject natObj = (NativeJavaObject)obj;
+			return "JavaObject [" + natObj.getClassName() + "]";
+		} else if (obj instanceof String) {
+			return (String)obj;
+		}
+		return obj.toString();
 	}
 }

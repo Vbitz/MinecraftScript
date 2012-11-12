@@ -50,4 +50,8 @@ public class MinecraftScriptAPI {
 	public void registerCommand(String name, Function command) {
 		MinecraftScriptCommandManager.addCommand(name, command);
 	}
+	
+	public void registerWebpoint(String name, Function func) {
+		JSHTTPServer.addFunction(name, func);
+	}
 }

@@ -45,12 +45,16 @@ public class JSCommand extends CommandBase {
 		}
 		
 		try {
-			cmdSender.sendChatToPlayer(ScriptingManager.runString(concat(args, " "), MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(cmdSender.getCommandSenderName())).toString());
+			String out = ScriptingManager.getTidyOutput(
+					ScriptingManager.runString(concat(args, " "), MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(cmdSender.getCommandSenderName())));
+			if (!out.equals("")) {
+				cmdSender.sendChatToPlayer(out);
+			}
 		} catch (EcmaError e) {
-			cmdSender.sendChatToPlayer("Error: " + e.toString());
+			cmdSender.sendChatToPlayer("Error: " + e.getMessage());
 			ScriptingManager.exitContext();
 		} catch (EvaluatorException e) {
-			cmdSender.sendChatToPlayer("Error: " + e.toString());
+			cmdSender.sendChatToPlayer("Error: " + e.getMessage());
 			ScriptingManager.exitContext();
 		}
 	}

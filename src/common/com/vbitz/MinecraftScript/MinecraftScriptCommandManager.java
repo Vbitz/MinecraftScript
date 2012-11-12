@@ -15,8 +15,8 @@ public class MinecraftScriptCommandManager {
 		return _commands.containsKey(string);
 	}
 	
-	public static String runCommand(String cmdName, Object[] cmdArgs) {
-		return ScriptingManager.runFunction(_commands.get(cmdName), cmdArgs).toString();
+	public static Object runCommand(String cmdName, Object[] cmdArgs) {
+		return ScriptingManager.runFunction(_commands.get(cmdName), cmdArgs);
 	}
 	
 	
