@@ -48,10 +48,10 @@ public class ScriptingManager {
 		try {
 			mcJavascriptScope.put("me", mcJavascriptScope, new FunctionObject("me", new ScriptingManager().getClass().getMethod("getScriptRunnerJS", new Class<?>[] {}), mcJavascriptScope));
 			mcJavascriptScope.put("world", mcJavascriptScope, new FunctionObject("world", new ScriptingManager().getClass().getMethod("getWorldJS", new Class<?>[] {}), mcJavascriptScope));
-		} catch (SecurityException e) {
-			MinecraftScriptMod.getLogger().severe("Could not load me()");
-		} catch (NoSuchMethodException e) {
-			MinecraftScriptMod.getLogger().severe("Could not load me()");
+			mcJavascriptScope.put("vector", mcJavascriptScope, new FunctionObject("vector", new ScriptingManager().getClass().getMethod("newVectorJS", new Class<?>[] { double.class, double.class, double.class}), mcJavascriptScope));
+		} catch (Exception e) {
+			e.printStackTrace();
+			MinecraftScriptMod.getLogger().severe("Could not load globals");
 		}
 		MinecraftScriptMod.getLogger().info("Loaded Script Engine");
 		Context.exit();
@@ -108,6 +108,10 @@ public class ScriptingManager {
 		} else {
 			return new MinecraftScriptWorldAPI(getScriptRunner().worldObj, getScriptRunner());
 		}
+	}
+	
+	public static Vector3f newVectorJS(double x, double y, double z) {
+		return new Vector3f(x, y, z);
 	}
 	
 	public static EntityPlayer getScriptRunner() {

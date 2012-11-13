@@ -34,6 +34,21 @@ public class Vector3f {
 		return new Vector3f(_X + x, _Y + y, _Z + z);
 	}
 	
+	public Vector3f expand(int look, float amount) {
+		switch (look) {
+		case 0:
+			return this.add(amount, 0, 0);
+		case 1:
+			return this.add(0, 0, amount);
+		case 2:
+			return this.add(-amount, 0, 0);
+		case 3:
+			return this.add(0, 0, -amount);
+		default:
+			return this;
+		}
+	}
+	
 	@Override
 	public String toString() {
 		return "Vector3f X: " + _X + " Y: " + _Y + " Z: " + _Z;
