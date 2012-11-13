@@ -83,4 +83,11 @@ public class MinecraftScriptWorldAPI {
             MinecraftServer.getServer().worldServers[i].setWorldTime(value);
         }
 	}
+        public void time(){
+                for (int i = 0; i < MinecraftServer.getServer().worldServers.length; ++i)
+        {
+            MinecraftServer.getServer().worldServers[i].setWorldTime(0);
+        }
+	}
+
 }
