@@ -66,7 +66,8 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 		addHelp("worldapi", "setBlock", "int blockType, int x, int y, int z", "Set's the point at x, y, z to blockType");
 		addHelp("worldapi", "setCube", "int blockType, int x1, int y1, int z1, int x2, int y2, int z2", "Set's a area to blockType (max 2000 blocks modifyed)");
 		addHelp("worldapi", "setCubeV", "int blockType, vector3f v1, vector3f v2", "Set's a area to blockType (max 2000 blocks modifyed");
-		addHelp("worldapi", "time", "long value", "Set's the time in all worlds to value");
+		addHelp("worldapi", "time", "long value, or nothing", "Set's the time in all worlds to value or 0");
+		addHelp("worldapi", "downfall", "boolean downfall, int time", "Sets the rain to be on or off, and the time it has to be off if turned off");
 		
 		addHelp("itemstackapi", "getCount", "", "Get's the number of items in a stack");
 		addHelp("itemstackapi", "addCount", "int count", "Adds count to the stack");
