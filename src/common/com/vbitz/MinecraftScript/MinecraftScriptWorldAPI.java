@@ -90,4 +90,8 @@ public class MinecraftScriptWorldAPI {
         }
 	}
 
+	public void biome(int biome, int x1, int z1, int x2, int z2){
+		//being worked on, setting an area to an other biome, should be cool :D
+	}
+
 }
