@@ -104,8 +104,8 @@ public class MinecraftScriptWorldAPI {
 		}
 	}
 	
-	/*public void weatherRain(boolean Rain, int time){
-		if(Rain)
+	public void downfall(boolean rain, int time){
+		if(rain)
 		{
 			_world.getWorldInfo().setRaining(true);
 		}
@@ -114,6 +114,6 @@ public class MinecraftScriptWorldAPI {
 			_world.getWorldInfo().setRaining(false);
 			_world.getWorldInfo().setRainTime(time);
 		}
-	}*/
+	}
 
 }
