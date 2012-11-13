@@ -1,7 +1,13 @@
 package com.vbitz.MinecraftScript;
 
+import java.util.List;
+
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.src.AxisAlignedBB;
+import net.minecraft.src.Entity;
+import net.minecraft.src.EntityItem;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.Vec3;
 import net.minecraft.src.World;
 
 public class MinecraftScriptWorldAPI {
@@ -13,42 +19,38 @@ public class MinecraftScriptWorldAPI {
 		this._player = ply;
 	}
 	
-	public void explode(int amo, int x, int y, int z) {
-		if (!this._world.isRemote) {
-			this._world.createExplosion(this._player, x, y, z, amo, false);
-		}
+	public void explode(int amo, Vector3f loc) {
+		//if (!this._world.isRemote) {
+			this._world.createExplosion(this._player, loc.getX(), loc.getY(), loc.getZ(), amo, true);
+		//}
 	}
 	
-	public void setBlock(int blockType, int x, int y, int z) {
-		this._world.setBlockWithNotify(x, y, z, blockType);
-	}
-	
-	public void setBlockV(int blockType, Vector3f loc) {
+	public void setBlock(int blockType, Vector3f loc) {
 		this._world.setBlockWithNotify((int)loc.getX(), (int)loc.getY(), (int)loc.getZ(), blockType);
 	}
 	
-	public void setCube(int blockType, int x1, int y1, int z1, int x2, int y2, int z2) { // TODO : Optimize
+	public void setCube(int blockType, Vector3f v1, Vector3f v2) {
 		int x1f, x2f, y1f, y2f, z1f, z2f;
-		if (x2 < x1) {
-			x1f = x2;
-			x2f = x1;
+		if (v2.getX() < v1.getX()) {
+			x1f = (int) v2.getX();
+			x2f = (int) v1.getX();
 		} else {
-			x1f = x1;
-			x2f = x2;
+			x1f = (int) v1.getX();
+			x2f = (int) v2.getX();
 		}
-		if (y2 < y1) {
-			y1f = y2;
-			y2f = y1;
+		if (v2.getY() < v1.getY()) {
+			y1f = (int) v2.getY();
+			y2f = (int) v1.getY();
 		} else {
-			y1f = y1;
-			y2f = y2;
+			y1f = (int) v1.getY();
+			y2f = (int) v2.getY();
 		}
-		if (z2 < z1) {
-			z1f = z2;
-			z2f = z1;
+		if (v2.getZ() < v1.getZ()) {
+			z1f = (int) v2.getZ();
+			z2f = (int) v1.getZ();
 		} else {
-			z1f = z1;
-			z2f = z2;
+			z1f = (int) v1.getZ();
+			z2f = (int) v2.getZ();
 		}
 		int blocks = 0;
 		for (int x = x1f; x < x2f; x++) {
@@ -73,25 +75,33 @@ public class MinecraftScriptWorldAPI {
 		}
 	}
 	
-	public void setCubeV(int blockType, Vector3f v1, Vector3f v2) {
-		setCube(blockType, (int)v1.getX(), (int)v1.getY(), (int)v1.getZ(), (int)v2.getX(), (int)v2.getY(), (int)v2.getZ());
-	}
-	
 	public void time(long value) {
         for (int i = 0; i < MinecraftServer.getServer().worldServers.length; ++i)
         {
             MinecraftServer.getServer().worldServers[i].setWorldTime(value);
         }
 	}
-        public void time(){
-                for (int i = 0; i < MinecraftServer.getServer().worldServers.length; ++i)
-        {
+    
+	public void time(){
+        for (int i = 0; i < MinecraftServer.getServer().worldServers.length; ++i) {
             MinecraftServer.getServer().worldServers[i].setWorldTime(0);
         }
 	}
 
-	public void biome(int biome, int x1, int z1, int x2, int z2){
+	public void biome(int biome, Vector3f v1, Vector3f v2){
 		//being worked on, setting an area to an other biome, should be cool :D
+	}
+	
+	public void killDrops() {
+		Vec3 playerLoc = _player.getPosition(1.0f);
+		
+		List ents = _world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(
+				playerLoc.xCoord - 100, playerLoc.yCoord - 100, playerLoc.zCoord - 100, playerLoc.xCoord + 100, playerLoc.yCoord + 100, playerLoc.zCoord + 100));
+		for (Object object : ents) {
+			if (object instanceof EntityItem) {
+				((EntityItem) object).age = ((EntityItem) object).lifespan; // kill the little lagger
+			}
+		}
 	}
 
 }

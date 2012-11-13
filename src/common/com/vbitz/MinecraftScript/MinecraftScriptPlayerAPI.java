@@ -54,7 +54,7 @@ public class MinecraftScriptPlayerAPI {
 		return _player.getFoodStats().getFoodLevel();
 	}
 	
-	public void setHunger(int value) {
+	public void setHunger(int value) { // fix these on a server
 		_player.getFoodStats().setFoodLevel(value);
 	}
 	
@@ -62,27 +62,12 @@ public class MinecraftScriptPlayerAPI {
 		_player.inventory.addItemStackToInventory(new ItemStack(Item.itemsList[id], count, 0));
 	}
 	
-	public Vector3f getLoc() {
-		return new Vector3f(getLocX(), getLocY(), getLocZ());
+	public Vector3f pos() {
+		Vec3 v = _player.getPosition(1.0f);
+		return new Vector3f(v.xCoord, v.yCoord, v.zCoord);
 	}
 	
-	public double getLocX() {
-		return _player.getPosition(0.0f).xCoord;
-	}
-	
-	public double getLocY() {
-		return _player.getPosition(0.0f).yCoord;
-	}
-	
-	public double getLocZ() {
-		return _player.getPosition(0.0f).zCoord;
-	}
-	
-	public void tp(double x, double y, double z) {
-		_player.setPositionAndUpdate(x, y, z);
-	}
-	
-	public void tpv(Vector3f v) {
+	public void tp(Vector3f v) {
 		_player.setPositionAndUpdate((double)v.getX(), (double)v.getY(), (double)v.getZ());
 	}
 	

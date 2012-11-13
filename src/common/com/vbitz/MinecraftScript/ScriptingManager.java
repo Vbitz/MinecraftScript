@@ -47,6 +47,7 @@ public class ScriptingManager {
 		mcJavascriptScope.put("api", mcJavascriptScope, new MinecraftScriptAPI());
 		try {
 			mcJavascriptScope.put("me", mcJavascriptScope, new FunctionObject("me", new ScriptingManager().getClass().getMethod("getScriptRunnerJS", new Class<?>[] {}), mcJavascriptScope));
+			mcJavascriptScope.put("world", mcJavascriptScope, new FunctionObject("world", new ScriptingManager().getClass().getMethod("getWorldJS", new Class<?>[] {}), mcJavascriptScope));
 		} catch (SecurityException e) {
 			MinecraftScriptMod.getLogger().severe("Could not load me()");
 		} catch (NoSuchMethodException e) {
@@ -99,6 +100,14 @@ public class ScriptingManager {
 	
 	public static MinecraftScriptPlayerAPI getScriptRunnerJS() {
 		return new MinecraftScriptPlayerAPI(getScriptRunner());
+	}
+	
+	public static MinecraftScriptWorldAPI getWorldJS() {
+		if (getScriptRunner() == null) {
+			return null;
+		} else {
+			return new MinecraftScriptWorldAPI(getScriptRunner().worldObj, getScriptRunner());
+		}
 	}
 	
 	public static EntityPlayer getScriptRunner() {

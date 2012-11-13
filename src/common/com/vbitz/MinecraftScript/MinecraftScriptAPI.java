@@ -38,15 +38,6 @@ public class MinecraftScriptAPI {
 		}
 	}
 	
-	public MinecraftScriptWorldAPI getWorld() {
-		EntityPlayer ply = ScriptingManager.getScriptRunner();
-		if (ply == null) {
-			return null;
-		} else {
-			return new MinecraftScriptWorldAPI(ply.worldObj, ply);
-		}
-	}
-	
 	public void registerCommand(String name, Function command) {
 		MinecraftScriptCommandManager.addCommand(name, command);
 	}
