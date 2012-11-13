@@ -103,5 +103,17 @@ public class MinecraftScriptWorldAPI {
 			}
 		}
 	}
+	
+	/*public void weatherRain(boolean Rain, int time){
+		if(Rain)
+		{
+			_world.getWorldInfo().setRaining(true);
+		}
+		else
+		{
+			_world.getWorldInfo().setRaining(false);
+			_world.getWorldInfo().setRainTime(time);
+		}
+	}*/
 
 }
