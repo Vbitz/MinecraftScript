@@ -99,9 +99,4 @@ public class JSDobookCommand extends CommandBase {
 		return null;
 	}
 
-	@Override
-	public boolean func_82358_a(int var1) {
-		return false;
-	}
-
 }
