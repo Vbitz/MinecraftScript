@@ -12,6 +12,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ScriptableObject;
 
+import com.vbitz.MinecraftScript.blocks.ScriptedBlock;
 import com.vbitz.MinecraftScript.commands.JSCommand;
 import com.vbitz.MinecraftScript.commands.JSCommandCommand;
 import com.vbitz.MinecraftScript.commands.JSDobookCommand;

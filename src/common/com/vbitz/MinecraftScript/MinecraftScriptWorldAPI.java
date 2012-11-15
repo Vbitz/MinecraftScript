@@ -7,6 +7,7 @@ import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.Entity;
 import net.minecraft.src.EntityItem;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.Vec3;
 import net.minecraft.src.World;
 
@@ -20,9 +21,23 @@ public class MinecraftScriptWorldAPI {
 	}
 	
 	public void explode(int amo, Vector3f loc) {
-		//if (!this._world.isRemote) {
+		if (!this._world.isRemote) {
 			this._world.createExplosion(this._player, loc.getX(), loc.getY(), loc.getZ(), amo, true);
-		//}
+		}
+	}
+	
+	public int getBlock(Vector3f loc) {
+		return _world.getBlockId((int) loc.getX(), (int) loc.getY(), (int) loc.getZ());
+	}
+	
+	public void dropBlock(Vector3f loc) {
+		if (_world.getBlockId((int) loc.getX(), (int) loc.getY(), (int) loc.getZ()) != 0) {
+			EntityItem t = new EntityItem(_world, loc.getX(), loc.getY(), loc.getZ(), 
+				new ItemStack(_world.getBlockId((int) loc.getX(), (int) loc.getY(), (int) loc.getZ()),
+						1, _world.getBlockMetadata((int) loc.getX(), (int) loc.getY(), (int) loc.getZ())));
+			_world.spawnEntityInWorld(t);
+			_world.setBlockWithNotify((int) loc.getX(), (int) loc.getY(), (int) loc.getZ(), 0);
+		}
 	}
 	
 	public void setBlock(int blockType, Vector3f loc) {

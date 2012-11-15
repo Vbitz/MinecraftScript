@@ -40,15 +40,20 @@ public class ScriptingManager {
 		Context.exit();
 	}
 	
+	public static void addGlobal(String jsName, String methodName, Class<?>[] args) throws SecurityException, NoSuchMethodException {
+		mcJavascriptScope.put(jsName, mcJavascriptScope, new FunctionObject(jsName, ScriptingGlobals.class.getMethod(methodName, args), mcJavascriptScope));
+	}
+	
 	public static void loadScriptEngine() {
 		mcJavascriptContext = Context.enter();
 		mcJavascriptContext.setClassShutter(new MinecraftScriptClassShutter());
 		mcJavascriptScope = mcJavascriptContext.initStandardObjects();
 		mcJavascriptScope.put("api", mcJavascriptScope, new MinecraftScriptAPI());
 		try {
-			mcJavascriptScope.put("me", mcJavascriptScope, new FunctionObject("me", new ScriptingManager().getClass().getMethod("getScriptRunnerJS", new Class<?>[] {}), mcJavascriptScope));
-			mcJavascriptScope.put("world", mcJavascriptScope, new FunctionObject("world", new ScriptingManager().getClass().getMethod("getWorldJS", new Class<?>[] {}), mcJavascriptScope));
-			mcJavascriptScope.put("vector", mcJavascriptScope, new FunctionObject("vector", new ScriptingManager().getClass().getMethod("newVectorJS", new Class<?>[] { double.class, double.class, double.class}), mcJavascriptScope));
+			addGlobal("me", "getScriptRunnerJS", null);
+			addGlobal("world", "getWorldJS", null);
+			addGlobal("vector", "newVectorJS", new Class<?>[] { double.class, double.class, double.class});
+			addGlobal("block", "getBlockJS", new Class<?>[] { int.class });
 		} catch (Exception e) {
 			e.printStackTrace();
 			MinecraftScriptMod.getLogger().severe("Could not load globals");
@@ -96,22 +101,6 @@ public class ScriptingManager {
 		FileReader fr = new FileReader(fullPath);
 		mcJavascriptContext.evaluateReader(mcJavascriptScope, fr, fullPath.getName(), 0, null);
 		exitContext();
-	}
-	
-	public static MinecraftScriptPlayerAPI getScriptRunnerJS() {
-		return new MinecraftScriptPlayerAPI(getScriptRunner());
-	}
-	
-	public static MinecraftScriptWorldAPI getWorldJS() {
-		if (getScriptRunner() == null) {
-			return null;
-		} else {
-			return new MinecraftScriptWorldAPI(getScriptRunner().worldObj, getScriptRunner());
-		}
-	}
-	
-	public static Vector3f newVectorJS(double x, double y, double z) {
-		return new Vector3f(x, y, z);
 	}
 	
 	public static EntityPlayer getScriptRunner() {

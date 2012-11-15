@@ -2,21 +2,16 @@ package com.vbitz.MinecraftScript;
 
 import java.util.HashMap;
 
-import org.mozilla.javascript.Context;
+import net.minecraft.src.CreativeTabs;
+
 import org.mozilla.javascript.Function;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.Material;
-import net.minecraft.src.World;
+import com.vbitz.MinecraftScript.blocks.ScriptedBlock;
 
-public class ScriptedBlock extends Block {
+public class MinecraftScriptScriptedBlockAPI {
 
 	private static HashMap<String, CreativeTabs> tabs = new HashMap<String, CreativeTabs>();
 	public static HashMap<String, Integer> texs = new HashMap<String, Integer>();
-	
-	private Function rightClickFunction = null;
 	
 	private static void addTextures(String[] strs) {
 		for (int i = 0; i < strs.length; i++) {
@@ -34,48 +29,53 @@ public class ScriptedBlock extends Block {
 				"wool", "monstorSpawner", "snow", "ice", "snowGrassSide", "cactusTop", "cactusSide", "cactusBottom", "clay", "reads", "musicBoxSide", "musicBoxTop"});
 	}
 	
-	public ScriptedBlock(int blockId) {
-		super(blockId, Material.ground);
+	private ScriptedBlock blockID = null;
+	
+	public MinecraftScriptScriptedBlockAPI(int i) {
+		blockID = MinecraftScriptMod.getInstance().getScriptedBlock(i);
 	}
 	
-	public void setBlockHardness(float hard) {
-		this.setHardness(hard);
+	public void setHardness(float hard) {
+		blockID.setHardness(hard);
 	}
 	
 	public boolean setBlockCreativeTab(String tab) {
 		if (tabs.containsKey(tab)) {
-			this.setCreativeTab(tabs.get(tab));
+			blockID.setCreativeTab(tabs.get(tab));
 			return true;
 		}
 		return false;
 	}
 	
-	public void setBlockBrightness(float bright) {
-		this.setLightValue(bright);
+	public void setLight(float bright) {
+		blockID.setLightValue(bright);
 	}
 	
-	public boolean setBlockTexture(String tex) {
+	public boolean setTexture(String tex) {
+		setTexture(tex, 0);
+		setTexture(tex, 1);
+		setTexture(tex, 2);
+		setTexture(tex, 3);
+		setTexture(tex, 4);
+		return setTexture(tex, 5);
+	}
+	
+	public boolean setTexture(String tex, int side) {
 		if (texs.containsKey(tex)) {
-			this.blockIndexInTexture = texs.get(tex);
+			blockID.blockTextures.put(side, texs.get(tex));
 			return true;
 		}
 		return false;
 	}
 	
-	public void setRightClickFunction(Function func) {
-		rightClickFunction = func;
+	public void onRightClick(Function func) {
+		blockID.lastUpdater = ScriptingManager.getScriptRunner();
+		blockID.rightClickFunction = func;
 	}
 	
-	@Override
-	public boolean onBlockActivated(World par1World, int worldX, int worldY,
-			int worldZ, EntityPlayer par5EntityPlayer, int par6, float par7,
-			float par8, float par9) {
-		if (rightClickFunction != null) {
-			ScriptingManager.enterContext();
-			ScriptingManager.runFunction(rightClickFunction, new MinecraftScriptWorldAPI(par1World, par5EntityPlayer), worldX, worldY, worldZ);
-			ScriptingManager.exitContext();
-		}
-		return true;
+	public void onBlockUpdate(Function func) {
+		blockID.lastUpdater = ScriptingManager.getScriptRunner();
+		blockID.updateFunction = func;
 	}
 
 }

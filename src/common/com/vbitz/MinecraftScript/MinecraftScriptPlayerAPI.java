@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.src.EnumGameType;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.MathHelper;
@@ -15,6 +16,7 @@ public class MinecraftScriptPlayerAPI {
 	private EntityPlayer _player;
 	
 	private static HashMap<String, Integer> _effects = new HashMap<String, Integer>();
+	private static HashMap<String, Integer> _gamemodes = new HashMap<String, Integer>();
 	
 	static {
 		_effects.put("moveSpeed", 1);
@@ -36,6 +38,10 @@ public class MinecraftScriptPlayerAPI {
 		_effects.put("hunger", 17);
 		_effects.put("weakness", 18);
 		_effects.put("poison", 19);
+		
+		_gamemodes.put("survial", 0);
+		_gamemodes.put("creative", 1);
+		_gamemodes.put("adventure", 2);
 	}
 	
 	public MinecraftScriptPlayerAPI(EntityPlayer ply) {
@@ -127,5 +133,15 @@ public class MinecraftScriptPlayerAPI {
 		} else {
 			return 1;
 		}
+	}
+	
+	public void gamemode(String gamemode) {
+		if (_gamemodes.containsKey(gamemode)) {
+			gamemode(_gamemodes.get(gamemode));
+		}
+	}
+	
+	public void gamemode(int gamemode) {
+		_player.sendGameTypeToPlayer(EnumGameType.getByID(gamemode));
 	}
 }

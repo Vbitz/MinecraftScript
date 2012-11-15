@@ -2,6 +2,8 @@ package com.vbitz.MinecraftScript;
 
 import org.mozilla.javascript.Function;
 
+import com.vbitz.MinecraftScript.blocks.ScriptedBlock;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
