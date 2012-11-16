@@ -29,7 +29,9 @@ import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.ICommand;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.Material;
+import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.Property;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import cpw.mods.fml.common.FMLLog;
@@ -57,7 +59,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 
 @Mod(modid="MinecraftScript", name="MinecraftScript", version="0.0.0")
-@NetworkMod(clientSideRequired=true, serverSideRequired=true) // may change in the future
+@NetworkMod(clientSideRequired=false, serverSideRequired=true) // may change in the future
 public class MinecraftScriptMod {
 	@Instance("MinecraftScriptMod")
 	public static MinecraftScriptMod instance;
@@ -75,6 +77,8 @@ public class MinecraftScriptMod {
 	
 	private boolean webServerStarted = false;
 	
+	private Property clientSideEnabled = new Property();
+	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e) {
 		scriptsDirectory = new File(e.getModConfigurationDirectory(), "scripts");
@@ -83,6 +87,14 @@ public class MinecraftScriptMod {
 				Logger.getLogger("MinecraftScriptMod").severe("Can't create scripts directory");
 			}
 		}
+		
+		Configuration config = new Configuration(e.getSuggestedConfigurationFile());
+		
+		config.load();
+		
+		clientSideEnabled = config.get(Configuration.CATEGORY_GENERAL, "clientSideEnabled", true);
+		
+		config.save();
 	}
 	
 	@Init
@@ -94,7 +106,6 @@ public class MinecraftScriptMod {
 		createScriptedObjects();
 		
 		ScriptingManager.loadScriptEngine();
-		ScriptingManager.loadAllScripts(scriptsDirectory);
 		
 		JSStick.getSingilton(); // just to get it to register
 		
@@ -121,6 +132,9 @@ public class MinecraftScriptMod {
 	}
 	
 	private void createScriptedObjects() {
+		if (!getClientSideEnabled()) {
+			return;
+		}
 		blocks = new ScriptedBlock[128]; // this will get bigger in the future
 		for (int i = 0; i < blocks.length; i++) {
 			blocks[i] = new ScriptedBlock(512 + i);
@@ -148,6 +162,8 @@ public class MinecraftScriptMod {
 		commandManager.registerCommand(new JSStickCommand());
 		commandManager.registerCommand(new MinecraftScriptHelpCommand());
 		commandManager.registerCommand(new TestMapData());
+		
+		ScriptingManager.loadAllScripts(scriptsDirectory);
 	}
 	
 	@ServerStarted
@@ -160,6 +176,10 @@ public class MinecraftScriptMod {
 	public void serverStopping(FMLServerStoppingEvent e) {
 		JSHTTPServer.destroy();
 		webServerStarted = false;
+	}
+	
+	public boolean getClientSideEnabled() {
+		return clientSideEnabled.getBoolean(true);
 	}
 
 	public static MinecraftScriptMod getInstance() {

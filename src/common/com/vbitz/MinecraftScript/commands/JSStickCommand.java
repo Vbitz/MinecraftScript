@@ -1,5 +1,6 @@
 package com.vbitz.MinecraftScript.commands;
 
+import com.vbitz.MinecraftScript.MinecraftScriptMod;
 import com.vbitz.MinecraftScript.items.JSStick;
 
 import net.minecraft.src.CommandBase;
@@ -41,6 +42,9 @@ public class JSStickCommand extends CommandBase {
 	public void processCommand(ICommandSender sender, String[] args) {
 		if (args.length == 0) {
 			throw new WrongUsageException(this.getCommandUsage(sender));
+		}
+		if (!MinecraftScriptMod.getInstance().getClientSideEnabled()) {
+			sender.sendChatToPlayer("Error: You need to enable MinecraftScript client functions for this command to work");
 		}
 		
 		EntityPlayer ply = getCommandSenderAsPlayer(sender);

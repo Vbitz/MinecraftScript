@@ -36,7 +36,10 @@ public class ScriptingGlobals {
 		}
 	}
 	
-	public static MinecraftScriptScriptedBlockAPI getBlockJS(int i) {
+	public static MinecraftScriptScriptedBlockAPI getBlockJS(int i) throws ScriptErrorException {
+		if (!MinecraftScriptMod.getInstance().getClientSideEnabled()) {
+			throw new ScriptErrorException("Client side needs to be enabled for ScriptedBlocks to work");
+		}
 		if (i > 128) {
 			return null;
 		} else {
