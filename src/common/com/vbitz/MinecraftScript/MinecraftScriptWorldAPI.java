@@ -1,6 +1,7 @@
 package com.vbitz.MinecraftScript;
 
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.AxisAlignedBB;
@@ -8,8 +9,11 @@ import net.minecraft.src.Entity;
 import net.minecraft.src.EntityItem;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.TileEntity;
 import net.minecraft.src.Vec3;
 import net.minecraft.src.World;
+import net.minecraft.src.WorldGenBigTree;
+import net.minecraft.src.WorldGenTrees;
 
 public class MinecraftScriptWorldAPI {
 	private World _world;
@@ -129,6 +133,17 @@ public class MinecraftScriptWorldAPI {
 			_world.getWorldInfo().setRaining(false);
 			_world.getWorldInfo().setRainTime(time);
 		}
+	}
+	
+	public void growTree(Vector3f pos) {
+		WorldGenTrees t = new WorldGenTrees(true);
+		t.generate(_world, _world.rand, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
+	}
+	
+	public boolean growBigTree(Vector3f pos, double heightLimit, double scaleWidth, double leafDensity) {
+		WorldGenBigTree t = new WorldGenBigTree(true);
+		t.setScale(heightLimit, scaleWidth, leafDensity);
+		return t.generate(_world, _world.rand, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
 	}
 
 }

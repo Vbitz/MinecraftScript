@@ -117,11 +117,16 @@ public class MinecraftScriptPlayerAPI {
         }
 	}
 	
-	public MinecraftScriptItemStackAPI getCurrentItem() {
+	public MinecraftScriptItemStackAPI getItem() {
 		return new MinecraftScriptItemStackAPI(_player.inventory.getCurrentItem());
 	}
 	
 	public float getLookDirection() {
+		if (_player.rotationPitch < 45) {
+			return 4;
+		} else if (_player.rotationPitch > 135) {
+			return 5;
+		}
 		if (_player.rotationYaw < 45) {
 			return 1;
 		} else if (_player.rotationYaw < 135) {

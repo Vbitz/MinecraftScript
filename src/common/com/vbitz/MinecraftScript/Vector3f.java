@@ -44,6 +44,10 @@ public class Vector3f {
 			return this.add(-amount, 0, 0);
 		case 3:
 			return this.add(0, 0, -amount);
+		case 4:
+			return this.add(0, amount, 0);
+		case 5:
+			return this.add(0, -amount, 0);
 		default:
 			return this;
 		}

@@ -13,6 +13,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.FunctionObject;
+import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
@@ -114,12 +115,23 @@ public class ScriptingManager {
 	public static String getTidyOutput(Object obj) {
 		if (obj instanceof Undefined) {
 			return "";
-		} else if (obj instanceof NativeJavaObject) {
-			NativeJavaObject natObj = (NativeJavaObject)obj;
-			return "JavaObject [" + natObj.getClassName() + "]";
 		} else if (obj instanceof String) {
 			return (String)obj;
+		} else if (obj instanceof NativeArray) {
+			String ret = "[";
+			for (Object object : ((NativeArray) obj).getAllIds()) {
+				ret += getTidyOutput(((NativeArray) obj).get(object)) + ", ";
+			}
+			return ret + "]";
+		} else if (obj instanceof NativeJavaObject) {
+			NativeJavaObject natObj = (NativeJavaObject)obj;
+			if (!(natObj.unwrap() instanceof String)) {
+				return "JavaObject [" + natObj.getClassName() + "]";
+			} else {
+				return (String) natObj.unwrap();
+			}
+		} else {
+			return obj.toString();
 		}
-		return obj.toString();
 	}
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import net.minecraft.src.Enchantment;
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.NBTTagCompound;
 
 public class MinecraftScriptItemStackAPI {
 	private ItemStack _stack;
@@ -61,6 +62,16 @@ public class MinecraftScriptItemStackAPI {
 	public void enchant(String enchantName, int enchantLevel) {
 		if (_enchants.containsKey(enchantName)) {
 			_stack.addEnchantment(Enchantment.enchantmentsList[_enchants.get(enchantName)], enchantLevel);
+		}
+	}
+	
+	public MinecraftScriptNBTagAPI tag() {
+		if (_stack.getTagCompound() != null) {
+			return new MinecraftScriptNBTagAPI(_stack.getTagCompound());
+		} else {
+			NBTTagCompound comp = new NBTTagCompound();
+			_stack.setTagCompound(comp);
+			return new MinecraftScriptNBTagAPI(comp);
 		}
 	}
 }
