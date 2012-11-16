@@ -2,6 +2,8 @@ package com.vbitz.MinecraftScript;
 
 import java.util.HashMap;
 
+import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
+
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.EnumGameType;
@@ -77,9 +79,11 @@ public class MinecraftScriptPlayerAPI {
 		_player.setPositionAndUpdate((double)v.getX(), (double)v.getY(), (double)v.getZ());
 	}
 	
-	public void addEffect(String effectName, int level, int time) {
+	public void addEffect(String effectName, int level, int time) throws ScriptErrorException {
 		if (_effects.containsKey(effectName)) {
 			_player.addPotionEffect(new PotionEffect(_effects.get(effectName), time, level));
+		} else {
+			throw new ScriptErrorException("Effect not found");
 		}
 	}
 	
@@ -117,7 +121,10 @@ public class MinecraftScriptPlayerAPI {
         }
 	}
 	
-	public MinecraftScriptItemStackAPI getItem() {
+	public MinecraftScriptItemStackAPI getItem() throws ScriptErrorException {
+		if (_player.inventory.getCurrentItem() == null) {
+			throw new ScriptErrorException("No Current Item");
+		}
 		return new MinecraftScriptItemStackAPI(_player.inventory.getCurrentItem());
 	}
 	

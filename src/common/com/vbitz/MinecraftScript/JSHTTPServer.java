@@ -157,5 +157,9 @@ public class JSHTTPServer {
 			e.printStackTrace();
 		}
 	}
+
+	public static int getPort() {
+		return serverPort;
+	}
 	
 }

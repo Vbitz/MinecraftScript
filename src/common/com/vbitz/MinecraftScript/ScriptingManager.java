@@ -49,12 +49,18 @@ public class ScriptingManager {
 		mcJavascriptContext = Context.enter();
 		mcJavascriptContext.setClassShutter(new MinecraftScriptClassShutter());
 		mcJavascriptScope = mcJavascriptContext.initStandardObjects();
-		mcJavascriptScope.put("api", mcJavascriptScope, new MinecraftScriptAPI());
 		try {
 			addGlobal("me", "getScriptRunnerJS", null);
 			addGlobal("world", "getWorldJS", null);
 			addGlobal("vector", "newVectorJS", new Class<?>[] { double.class, double.class, double.class});
 			addGlobal("block", "getBlockJS", new Class<?>[] { int.class });
+			addGlobal("log", "logJS", new Class<?>[] { Object.class });
+			addGlobal("chat", "sendChatJS", new Class<?>[] { String.class });
+			addGlobal("itemId", "getItemIdJS", new Class<?>[] { String.class });
+			addGlobal("player", "playerJS", new Class<?>[] { String.class });
+			addGlobal("registerCommand", "registerCommandJS", new Class<?>[] { String.class, Function.class });
+			addGlobal("registerWebpoint", "registerWebpointJS", new Class<?>[] { String.class, Function.class });
+			addGlobal("command", "commandJS", new Class<?>[] { String.class });
 		} catch (Exception e) {
 			e.printStackTrace();
 			MinecraftScriptMod.getLogger().severe("Could not load globals");

@@ -3,6 +3,9 @@ package com.vbitz.MinecraftScript.commands;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.vbitz.MinecraftScript.JSHTTPServer;
+import com.vbitz.MinecraftScript.Vector3f;
+
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.ICommandSender;
 
@@ -30,44 +33,55 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 	}
 	
 	static {
-		addHelp("topics", "api", "", "General API functions. These can be called before Minecraft has started");
+		addHelp("topics", "globals", "", "General API functions. These can be called before Minecraft has started");
 		addHelp("topics", "playerapi1", "", "Methods working on the set player");
 		addHelp("topics", "playerapi2", "", "More methods working on the set player");
 		addHelp("topics", "worldapi", "", "Methods for modifying the world");
 		addHelp("topics", "itemstackapi", "", "Methods for working with a stack of items");
+		addHelp("topics", "nbtapi", "", "Methods for working with nbt tags");
 		addHelp("topics", "effectnames1", "", "A list of effect names");
 		addHelp("topics", "effectnames2", "", "A list of the effect names not covered in the first list");
 		addHelp("topics", "enchantsArmor", "", "A list of Armor Enchantments (The Descriptions are taken from MCP)");
 		
-		addHelp("api", "getScriptedBlock", "int id", "Returns a Scripted block with the ID id");
-		addHelp("api", "log", "Object obj", "Prints obj to Console");
-		addHelp("api", "sendChat", "string chat", "Sends chat to the current player as a chat message");
-		addHelp("api", "getItemId", "string itemName", "Returns the ID of the item");
-		addHelp("api", "getPlayer", "string nickname", "Returns a PlayerAPI for nickname");
-		addHelp("api", "getWorld", "", "Returns the Current World");
-		addHelp("api", "registerCommand", "string name, function(args) cmd", "Running /c name args will run cmd with args");
+		addHelp("globals", "me", "", "Returns the current player");
+		addHelp("globals", "world", "", "Returns the current world");
+		addHelp("globals", "vector", "float x, float y, float z", "Returns the vector x, y, z");
+		addHelp("globals", "block", "int id", "Returns a Scripted Block with ID");
+		addHelp("globals", "log", "Object obj", "Prints obj to Console");
+		addHelp("globals", "chat", "string chat", "Sends chat to the current player as a chat message");
+		addHelp("globals", "itemId", "string itemName", "Returns the ID of the item");
+		addHelp("globals", "player", "string nickname", "Returns a PlayerAPI for nickname");
+		addHelp("globals", "registerCommand", "string name, function(args) cmd", "Running /c name args will run cmd with args");
+		addHelp("globals", "registerWebpoint", "string name, function() cmd", "Visiting the server address on port" + JSHTTPServer.getPort() + " with a web brower will trigger this function");
+		addHelp("globals", "command", "string command", "Run's command on the server");
 		
 		addHelp("playerapi1", "getHealth", "", "Returns the health of the player");
+		addHelp("playerapi1", "heal", "int amount", "Heals the player by amount");
 		addHelp("playerapi1", "give", "int itemID, int count", "Gives count of Item ID id to the player");
-		addHelp("playerapi1", "getLoc", "", "Returns the player's location as a vector");
-		addHelp("playerapi1", "getLocX", "", "Returns the X part of the player's current location");
-		addHelp("playerapi1", "getLocY", "", "Returns the Y part of the player's current location");
-		addHelp("playerapi1", "getLocZ", "", "Returns the Z part of the player's current location");
-		addHelp("playerapi1", "tp", "double x, double y, double z", "Teleports the player to x, y, z");
-		addHelp("playerapi1", "tpv", "vector3f v", "Teleports the player to v");
+		addHelp("playerapi1", "pos", "", "Returns the player's location as a vector");
+		addHelp("playerapi1", "tp", "vector3f v", "Teleports the player to v");
 		addHelp("playerapi1", "addEffect", "string effectName, int level, int time", "Gives the player effectName at level for time ticks");
-		addHelp("playerapi1", "fly", "boolean fly", "Set's the ability for the player to fly and causes them to start flying");
+		addHelp("playerapi1", "cureAll", "", "Cures the player of all effects");
+		addHelp("playerapi2", "fly", "boolean fly", "Set's the ability for the player to fly and causes them to start flying");
 		addHelp("playerapi2", "setOnFire", "boolean onFire", "Set's the player alight or extinguishes them");
 		addHelp("playerapi2", "getLook", "", "Returns a vector of the player's current target, it will return the player's locaiton if the target is invalid");
 		addHelp("playerapi2", "getHunger", "", "Returns the player's current food level");
 		addHelp("playerapi2", "setHunger", "int value", "Set's the player's current hunger level");
+		addHelp("playerapi2", "getItem", "", "Returns a itemapi for the current item the player is holding");
+		addHelp("playerapi2", "getLookDirection", "", "Returns the direction the player is looking in");
+		addHelp("playerapi2", "gamemode", "string or int", "Set's the current gamemode the player is on");
+		
 		
 		addHelp("worldapi", "explode", "int amo, int x, int y, int z", "Explodes the point at x, y, z with a force of amo");
-		addHelp("worldapi", "setBlock", "int blockType, int x, int y, int z", "Set's the point at x, y, z to blockType");
-		addHelp("worldapi", "setCube", "int blockType, int x1, int y1, int z1, int x2, int y2, int z2", "Set's a area to blockType (max 2000 blocks modifyed)");
-		addHelp("worldapi", "setCubeV", "int blockType, vector3f v1, vector3f v2", "Set's a area to blockType (max 2000 blocks modifyed");
+		addHelp("worldapi", "getBlock", "vector3f pos", "Returns the Block ID at pos");
+		addHelp("worldapi", "dropBlock", "vector3f pos", "Drops the block at pos on the ground");
+		addHelp("worldapi", "setBlock", "int blockType, vector3f pos", "Set's the point at v to blockType");
+		addHelp("worldapi", "setCube", "int blockType, vector3f v1, vector3f v2", "Set's a area to blockType (max 2000 blocks modifyed");
 		addHelp("worldapi", "time", "long value, or nothing", "Set's the time in all worlds to value or 0");
 		addHelp("worldapi", "downfall", "boolean downfall, int time", "Sets the rain to be on or off, and the time it has to be off if turned off");
+		addHelp("worldapi", "killDrops", "vector3f pos, or nothing", "Destorys all droped items withen 100 blocks of the player or pos");
+		addHelp("worldapi", "growTree", "vector3f pos", "Grows a tree at pos and returns if a tree grew");
+		addHelp("worldapi", "growBigTree", "vector3f pos, double heightLimit, double scaleWidth, double leafDensity", "The parameters are capped but you can grow a big tree at pos");
 		
 		addHelp("itemstackapi", "getCount", "", "Get's the number of items in a stack");
 		addHelp("itemstackapi", "addCount", "int count", "Adds count to the stack");
@@ -75,8 +89,18 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 		addHelp("itemstackapi", "getDamage", "", "Returns the damage\\metadata on the stack");
 		addHelp("itemstackapi", "setDamage", "int dmg", "Set's the damage\\metadata on the stack");
 		addHelp("itemstackapi", "enchant", "string enchantName, int level", "Add's a enchantment to the item");
+		addHelp("itemstackapi", "tag", "", "Returns the NBT tag or a new tag for the item");
 		
 		addHelp("vector3f", "add", "float x, float y, float z", "Returns a new Vector with x, y, z added");
+		addHelp("vector3f", "expand", "int side, float amount", "Moves the vector by amount in side");
+		
+		addHelp("nbtapi", "set", "string key, object obj", "Set's key to obj");
+		addHelp("nbtapi", "getString", "string key", "Returns the value at key");
+		addHelp("nbtapi", "getInt", "string key", "Returns the value at key");
+		addHelp("nbtapi", "getFloat", "string key", "Returns the value at key");
+		addHelp("nbtapi", "getDouble", "string key", "Returns the value at key");
+		addHelp("nbtapi", "getCompound", "string key", "Returns the sub compound at key");
+		addHelp("nbtapi", "tags", "", "Returns all tags");
 		
 		addHelp("effectnames1", "moveSpeed", "", "Increase the player's move speed");
 		addHelp("effectnames1", "moveSlowdown", "", "Decreases the player's move speed");

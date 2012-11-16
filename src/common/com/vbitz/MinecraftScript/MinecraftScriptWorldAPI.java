@@ -3,6 +3,8 @@ package com.vbitz.MinecraftScript;
 import java.util.List;
 import java.util.Random;
 
+import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.Entity;
@@ -48,7 +50,7 @@ public class MinecraftScriptWorldAPI {
 		this._world.setBlockWithNotify((int)loc.getX(), (int)loc.getY(), (int)loc.getZ(), blockType);
 	}
 	
-	public void setCube(int blockType, Vector3f v1, Vector3f v2) {
+	public void setCube(int blockType, Vector3f v1, Vector3f v2) throws ScriptErrorException {
 		int x1f, x2f, y1f, y2f, z1f, z2f;
 		if (v2.getX() < v1.getX()) {
 			x1f = (int) v2.getX();
@@ -80,10 +82,7 @@ public class MinecraftScriptWorldAPI {
 			}
 		}
 		if (blocks > 2000) {
-			if (ScriptingManager.getScriptRunner() != null) {
-				ScriptingManager.getScriptRunner().sendChatToPlayer("Error: Too many blocks modifyed");
-			}
-			return;
+			throw new ScriptErrorException("Too many Blocks");
 		}
 		for (int x = x1f; x < x2f; x++) {
 			for (int y = y1f; y < y2f; y++) {
@@ -95,8 +94,7 @@ public class MinecraftScriptWorldAPI {
 	}
 	
 	public void time(long value) {
-        for (int i = 0; i < MinecraftServer.getServer().worldServers.length; ++i)
-        {
+        for (int i = 0; i < MinecraftServer.getServer().worldServers.length; ++i) {
             MinecraftServer.getServer().worldServers[i].setWorldTime(value);
         }
 	}
@@ -123,6 +121,16 @@ public class MinecraftScriptWorldAPI {
 		}
 	}
 	
+	public void killDrops(Vector3f pos) {
+		List ents = _world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(
+				pos.getX() - 100, pos.getY() - 100, pos.getZ() - 100, pos.getX() + 100, pos.getY() + 100, pos.getZ() + 100));
+		for (Object object : ents) {
+			if (object instanceof EntityItem) {
+				((EntityItem) object).age = ((EntityItem) object).lifespan; // kill the little lagger
+			}
+		}
+	}
+	
 	public void downfall(boolean rain, int time){
 		if(rain)
 		{
@@ -135,15 +143,23 @@ public class MinecraftScriptWorldAPI {
 		}
 	}
 	
-	public void growTree(Vector3f pos) {
-		WorldGenTrees t = new WorldGenTrees(true);
-		t.generate(_world, _world.rand, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
+	public void downfall(boolean rain) {
+		downfall(rain, _world.rand.nextInt(20000) + 1000);
 	}
 	
-	public boolean growBigTree(Vector3f pos, double heightLimit, double scaleWidth, double leafDensity) {
-		WorldGenBigTree t = new WorldGenBigTree(true);
-		t.setScale(heightLimit, scaleWidth, leafDensity);
+	public boolean growTree(Vector3f pos) {
+		WorldGenTrees t = new WorldGenTrees(true);
 		return t.generate(_world, _world.rand, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
+	}
+	
+	public boolean growBigTree(Vector3f pos, double heightLimit, double scaleWidth, double leafDensity) throws ScriptErrorException {
+		if (heightLimit < 4 && scaleWidth < 3 && leafDensity < 3) {
+			WorldGenBigTree t = new WorldGenBigTree(true);
+			t.setScale(heightLimit, scaleWidth, leafDensity);
+			return t.generate(_world, _world.rand, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ());	
+		} else {
+			throw new ScriptErrorException("growBigTree is limited");
+		}
 	}
 
 }
