@@ -25,6 +25,11 @@ public class TestMapData extends CommandBase {
 	public String getCommandName() {
 		return "testmapdata";
 	}
+	
+	@Override
+    public int getRequiredPermissionLevel() {
+        return 2;
+    }
 
 	@Override
 	public void processCommand(ICommandSender cmdSender, String[] args) {

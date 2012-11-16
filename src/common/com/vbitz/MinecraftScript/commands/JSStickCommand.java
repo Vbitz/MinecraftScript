@@ -31,6 +31,11 @@ public class JSStickCommand extends CommandBase {
 	public String getCommandUsage(ICommandSender par1iCommandSender) {
 		return "/" + this.getCommandName() + " js-string";
 	}
+	
+	@Override
+    public int getRequiredPermissionLevel() {
+        return 2;
+    }
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {

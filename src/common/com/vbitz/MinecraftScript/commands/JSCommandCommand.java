@@ -24,6 +24,11 @@ public class JSCommandCommand extends CommandBase {
 	public String getCommandUsage(ICommandSender par1iCommandSender) {
 		return "/" + this.getCommandName() + " js-command command-args";
 	}
+	
+	@Override
+    public int getRequiredPermissionLevel() {
+        return 2;
+    }
 
 	@Override
 	public void processCommand(ICommandSender var1, String[] var2) {

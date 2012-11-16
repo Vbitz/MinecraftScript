@@ -42,6 +42,11 @@ public class JSDobookCommand extends CommandBase {
 	public List getCommandAliases() {
 		return null;
 	}
+	
+	@Override
+    public int getRequiredPermissionLevel() {
+        return 2;
+    }
 
 	@Override
 	public void processCommand(ICommandSender cmdSender, String[] args) {

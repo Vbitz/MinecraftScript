@@ -24,6 +24,11 @@ public class JSDofileCommand extends CommandBase {
 	public String getCommandUsage(ICommandSender var1) {
 		return "/" + this.getCommandName() + " filename";
 	}
+	
+	@Override
+    public int getRequiredPermissionLevel() {
+        return 2;
+    }
 
 	@Override
 	public void processCommand(ICommandSender cmdSender, String[] args) {
