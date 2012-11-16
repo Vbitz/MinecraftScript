@@ -8,8 +8,23 @@ import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.Entity;
+import net.minecraft.src.EntityBat;
+import net.minecraft.src.EntityChicken;
+import net.minecraft.src.EntityCow;
+import net.minecraft.src.EntityCreeper;
+import net.minecraft.src.EntityDragon;
+import net.minecraft.src.EntityEnderman;
 import net.minecraft.src.EntityItem;
+import net.minecraft.src.EntityLiving;
+import net.minecraft.src.EntityPig;
+import net.minecraft.src.EntityPigZombie;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.EntitySkeleton;
+import net.minecraft.src.EntitySpider;
+import net.minecraft.src.EntityVillager;
+import net.minecraft.src.EntityZombie;
+import net.minecraft.src.Item;
+import net.minecraft.src.ItemDye;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.Vec3;
@@ -109,6 +124,10 @@ public class MinecraftScriptWorldAPI {
 		//being worked on, setting an area to an other biome, should be cool :D
 	}
 	
+	public String getBiome(Vector3f pos) {
+		return _world.getBiomeGenForCoords((int) pos.getX(), (int) pos.getZ()).biomeName;
+	}
+	
 	public void killDrops() {
 		Vec3 playerLoc = _player.getPosition(1.0f);
 		
@@ -160,6 +179,46 @@ public class MinecraftScriptWorldAPI {
 		} else {
 			throw new ScriptErrorException("growBigTree is limited");
 		}
+	}
+	
+	public void spawn(Vector3f pos, String name) throws ScriptErrorException {
+		EntityLiving ent = null;
+		if (name.equals("creeper")) {
+			ent = new EntityCreeper(_world);
+		} else if (name.equals("zombie")) {
+			ent = new EntityZombie(_world);
+		} else if (name.equals("spider")) {
+			ent = new EntitySpider(_world);
+		} else if (name.equals("skeleton")) {
+			ent = new EntitySkeleton(_world);
+		} else if (name.equals("pig")) {
+			ent = new EntityPig(_world);
+		} else if (name.equals("cow")) {
+			ent = new EntityCow(_world);
+		} else if (name.equals("chicken")) {
+			ent = new EntityChicken(_world);
+		} else if (name.equals("pigzombie")) {
+			ent = new EntityPigZombie(_world);
+		} else if (name.equals("enderman")) {
+			ent = new EntityEnderman(_world);
+		} else if (name.equals("enderdragon")) {
+			ent = new EntityDragon(_world);
+		} else if (name.equals("bat")) {
+			ent = new EntityBat(_world);
+		} else if (name.equals("villager")) {
+			ent = new EntityVillager(_world);
+		} else {
+			throw new ScriptErrorException("Ent not found");
+		}
+		ent.initCreature();
+		ent.setPosition(pos.getX(), pos.getY(), pos.getZ());
+		_world.spawnEntityInWorld(ent);
+	}
+	
+	public boolean grow(Vector3f pos) {
+		ItemStack t = new ItemStack(Item.dyePowder, 1);
+		t.setItemDamage(15);
+		return Item.dyePowder.onItemUse(t, _player, _world, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ(), 0, 0, 0, 0);
 	}
 
 }

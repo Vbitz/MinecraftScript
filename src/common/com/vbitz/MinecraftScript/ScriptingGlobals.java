@@ -1,5 +1,7 @@
 package com.vbitz.MinecraftScript;
 
+import java.util.HashMap;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayerMP;
 
@@ -8,6 +10,16 @@ import org.mozilla.javascript.Function;
 import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
 
 public class ScriptingGlobals {
+	
+	private static HashMap<String, Integer> Difficultys = new HashMap<String, Integer>();
+	
+	static {
+		Difficultys.put("peaceful", 0);
+		Difficultys.put("easy", 1);
+		Difficultys.put("normal", 2);
+		Difficultys.put("hard", 3);
+	}
+	
 	public static Vector3f newVectorJS(double x, double y, double z) {
 		return new Vector3f(x, y, z);
 	}
@@ -62,10 +74,11 @@ public class ScriptingGlobals {
 		JSHTTPServer.addFunction(name, func);
 	}
 	
-	public static void commandJS(String command) throws ScriptErrorException {
-		if (getScriptRunnerJS() == null) {
-			throw new ScriptErrorException("No Script Runner");
+	public void setDifficultyJS(String diff) throws ScriptErrorException {
+		if (Difficultys.containsKey(diff)) {
+			MinecraftServer.getServer().setDifficultyForAllWorlds(Difficultys.get(diff));
+		} else {
+			throw new ScriptErrorException("Difficulty not found");
 		}
-		MinecraftServer.getServer().getCommandManager().executeCommand(ScriptingManager.getScriptRunner(), command);
 	}
 }

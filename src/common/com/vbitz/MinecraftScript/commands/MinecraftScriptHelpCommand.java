@@ -36,7 +36,9 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 		addHelp("topics", "globals", "", "General API functions. These can be called before Minecraft has started");
 		addHelp("topics", "playerapi1", "", "Methods working on the set player");
 		addHelp("topics", "playerapi2", "", "More methods working on the set player");
-		addHelp("topics", "worldapi", "", "Methods for modifying the world");
+		addHelp("topics", "playerapi3", "", "Even more methods working on the set player");
+		addHelp("topics", "worldapi1", "", "Methods for modifying the world");
+		addHelp("topics", "worldapi2", "", "More Methods for modifying the world");
 		addHelp("topics", "itemstackapi", "", "Methods for working with a stack of items");
 		addHelp("topics", "nbtapi", "", "Methods for working with nbt tags");
 		addHelp("topics", "effectnames1", "", "A list of effect names");
@@ -53,7 +55,7 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 		addHelp("globals", "player", "string nickname", "Returns a PlayerAPI for nickname");
 		addHelp("globals", "registerCommand", "string name, function(args) cmd", "Running /c name args will run cmd with args");
 		addHelp("globals", "registerWebpoint", "string name, function() cmd", "Visiting the server address on port" + JSHTTPServer.getPort() + " with a web brower will trigger this function");
-		addHelp("globals", "command", "string command", "Run's command on the server");
+		addHelp("globals", "difficulty", "string difficulty", "Sets the Difficulty to difficulty, difficulty can be peaceful, easy, normal or hard");
 		
 		addHelp("playerapi1", "getHealth", "", "Returns the health of the player");
 		addHelp("playerapi1", "heal", "int amount", "Heals the player by amount");
@@ -70,18 +72,19 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 		addHelp("playerapi2", "getItem", "", "Returns a itemapi for the current item the player is holding");
 		addHelp("playerapi2", "getLookDirection", "", "Returns the direction the player is looking in");
 		addHelp("playerapi2", "gamemode", "string or int", "Set's the current gamemode the player is on");
+		addHelp("playerapi3", "command", "string command", "Run's command on the server");
 		
-		
-		addHelp("worldapi", "explode", "int amo, int x, int y, int z", "Explodes the point at x, y, z with a force of amo");
-		addHelp("worldapi", "getBlock", "vector3f pos", "Returns the Block ID at pos");
-		addHelp("worldapi", "dropBlock", "vector3f pos", "Drops the block at pos on the ground");
-		addHelp("worldapi", "setBlock", "int blockType, vector3f pos", "Set's the point at v to blockType");
-		addHelp("worldapi", "setCube", "int blockType, vector3f v1, vector3f v2", "Set's a area to blockType (max 2000 blocks modifyed");
-		addHelp("worldapi", "time", "long value, or nothing", "Set's the time in all worlds to value or 0");
-		addHelp("worldapi", "downfall", "boolean downfall, int time", "Sets the rain to be on or off, and the time it has to be off if turned off");
-		addHelp("worldapi", "killDrops", "vector3f pos, or nothing", "Destorys all droped items withen 100 blocks of the player or pos");
-		addHelp("worldapi", "growTree", "vector3f pos", "Grows a tree at pos and returns if a tree grew");
-		addHelp("worldapi", "growBigTree", "vector3f pos, double heightLimit, double scaleWidth, double leafDensity", "The parameters are capped but you can grow a big tree at pos");
+		addHelp("worldapi1", "explode", "int amo, int x, int y, int z", "Explodes the point at x, y, z with a force of amo");
+		addHelp("worldapi1", "getBlock", "vector3f pos", "Returns the Block ID at pos");
+		addHelp("worldapi1", "dropBlock", "vector3f pos", "Drops the block at pos on the ground");
+		addHelp("worldapi1", "setBlock", "int blockType, vector3f pos", "Set's the point at v to blockType");
+		addHelp("worldapi1", "setCube", "int blockType, vector3f v1, vector3f v2", "Set's a area to blockType (max 2000 blocks modifyed");
+		addHelp("worldapi1", "time", "long value, or nothing", "Set's the time in all worlds to value or 0");
+		addHelp("worldapi1", "downfall", "boolean downfall, int time", "Sets the rain to be on or off, and the time it has to be off if turned off");
+		addHelp("worldapi1", "killDrops", "vector3f pos, or nothing", "Destorys all droped items withen 100 blocks of the player or pos");
+		addHelp("worldapi1", "growTree", "vector3f pos", "Grows a tree at pos and returns if a tree grew");
+		addHelp("worldapi1", "growBigTree", "vector3f pos, double heightLimit, double scaleWidth, double leafDensity", "The parameters are capped but you can grow a big tree at pos");
+		addHelp("worldapi2", "spawn", "vector3f pos, string monstorName", "Spawns monstorName at pos");
 		
 		addHelp("itemstackapi", "getCount", "", "Get's the number of items in a stack");
 		addHelp("itemstackapi", "addCount", "int count", "Adds count to the stack");

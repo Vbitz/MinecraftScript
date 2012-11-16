@@ -1,9 +1,11 @@
 package com.vbitz.MinecraftScript;
 
+import java.io.ObjectInputStream.GetField;
 import java.util.HashMap;
 
 import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.EnumGameType;
@@ -155,5 +157,9 @@ public class MinecraftScriptPlayerAPI {
 	
 	public void gamemode(int gamemode) {
 		_player.sendGameTypeToPlayer(EnumGameType.getByID(gamemode));
+	}
+	
+	public void command(String command) {
+		MinecraftServer.getServer().getCommandManager().executeCommand(_player, command);
 	}
 }
