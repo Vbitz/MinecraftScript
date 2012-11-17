@@ -73,8 +73,7 @@ public class MinecraftScriptPlayerAPI {
 	}
 	
 	public Vector3f pos() {
-		Vec3 v = _player.getPosition(1.0f);
-		return new Vector3f(v.xCoord, v.yCoord, v.zCoord);
+		return new Vector3f(_player.posX, _player.posY, _player.posZ);
 	}
 	
 	public void tp(Vector3f v) {

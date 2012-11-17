@@ -186,18 +186,6 @@ public class MinecraftScriptWorldAPI {
 		return _world.getBiomeGenForCoords((int) pos.getX(), (int) pos.getZ()).biomeName;
 	}
 	
-	public void killDrops() {
-		Vec3 playerLoc = _player.getPosition(1.0f);
-		
-		List ents = _world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(
-				playerLoc.xCoord - 100, playerLoc.yCoord - 100, playerLoc.zCoord - 100, playerLoc.xCoord + 100, playerLoc.yCoord + 100, playerLoc.zCoord + 100));
-		for (Object object : ents) {
-			if (object instanceof EntityItem) {
-				((EntityItem) object).age = ((EntityItem) object).lifespan; // kill the little lagger
-			}
-		}
-	}
-	
 	public void killDrops(Vector3f pos) {
 		List ents = _world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(
 				pos.getX() - 100, pos.getY() - 100, pos.getZ() - 100, pos.getX() + 100, pos.getY() + 100, pos.getZ() + 100));
