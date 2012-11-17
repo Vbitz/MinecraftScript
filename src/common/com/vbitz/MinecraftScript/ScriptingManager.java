@@ -61,6 +61,7 @@ public class ScriptingManager {
 			addGlobal("registerCommand", "registerCommandJS", new Class<?>[] { String.class, Function.class });
 			addGlobal("registerWebpoint", "registerWebpointJS", new Class<?>[] { String.class, Function.class });
 			addGlobal("difficulty", "setDifficultyJS", new Class<?>[] { String.class });
+			addGlobal("addSmeltingRecipe", "addSmeltingRecipeJS", new Class<?>[] { int.class, int.class, int.class });
 		} catch (Exception e) {
 			e.printStackTrace();
 			MinecraftScriptMod.getLogger().severe("Could not load globals");

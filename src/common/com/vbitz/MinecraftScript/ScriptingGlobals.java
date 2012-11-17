@@ -4,10 +4,13 @@ import java.util.HashMap;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.src.ItemStack;
 
 import org.mozilla.javascript.Function;
 
 import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
+
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ScriptingGlobals {
 	
@@ -77,11 +80,15 @@ public class ScriptingGlobals {
 		JSHTTPServer.addFunction(name, func);
 	}
 	
-	public void setDifficultyJS(String diff) throws ScriptErrorException {
+	public static void setDifficultyJS(String diff) throws ScriptErrorException {
 		if (Difficultys.containsKey(diff)) {
 			MinecraftServer.getServer().setDifficultyForAllWorlds(Difficultys.get(diff));
 		} else {
 			throw new ScriptErrorException("Difficulty not found");
 		}
+	}
+	
+	public static void addSmeltingRecipeJS(int input, int output, int xp) {
+		GameRegistry.addSmelting(input, new ItemStack(output, 1, 0), xp);
 	}
 }

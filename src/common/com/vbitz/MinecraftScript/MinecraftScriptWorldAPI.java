@@ -7,6 +7,8 @@ import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.AxisAlignedBB;
+import net.minecraft.src.Chunk;
+import net.minecraft.src.ChunkProviderServer;
 import net.minecraft.src.Entity;
 import net.minecraft.src.EntityBat;
 import net.minecraft.src.EntityChicken;
@@ -23,13 +25,16 @@ import net.minecraft.src.EntitySkeleton;
 import net.minecraft.src.EntitySpider;
 import net.minecraft.src.EntityVillager;
 import net.minecraft.src.EntityZombie;
+import net.minecraft.src.IChunkProvider;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemDye;
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.MapGenVillage;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.Vec3;
 import net.minecraft.src.World;
 import net.minecraft.src.WorldGenBigTree;
+import net.minecraft.src.WorldGenForest;
 import net.minecraft.src.WorldGenTrees;
 
 public class MinecraftScriptWorldAPI {
@@ -108,6 +113,53 @@ public class MinecraftScriptWorldAPI {
 		}
 	}
 	
+	public void replaceCube(int srcType, int targetType, Vector3f v1, Vector3f v2) throws ScriptErrorException {
+		int x1f, x2f, y1f, y2f, z1f, z2f;
+		if (v2.getX() < v1.getX()) {
+			x1f = (int) v2.getX();
+			x2f = (int) v1.getX();
+		} else {
+			x1f = (int) v1.getX();
+			x2f = (int) v2.getX();
+		}
+		if (v2.getY() < v1.getY()) {
+			y1f = (int) v2.getY();
+			y2f = (int) v1.getY();
+		} else {
+			y1f = (int) v1.getY();
+			y2f = (int) v2.getY();
+		}
+		if (v2.getZ() < v1.getZ()) {
+			z1f = (int) v2.getZ();
+			z2f = (int) v1.getZ();
+		} else {
+			z1f = (int) v1.getZ();
+			z2f = (int) v2.getZ();
+		}
+		int blocks = 0;
+		for (int x = x1f; x < x2f; x++) {
+			for (int y = y1f; y < y2f; y++) {
+				for (int z = z1f; z < z2f; z++) {
+					if (_world.getBlockId(x, y, z) == srcType) {
+						blocks++;
+					}
+				}
+			}
+		}
+		if (blocks > 2000) {
+			throw new ScriptErrorException("Too many Blocks");
+		}
+		for (int x = x1f; x < x2f; x++) {
+			for (int y = y1f; y < y2f; y++) {
+				for (int z = z1f; z < z2f; z++) {
+					if (_world.getBlockId(x, y, z) == srcType) {
+						this._world.setBlockWithNotify(x, y, z, targetType);
+					}
+				}
+			}
+		}
+	}
+	
 	public void time(long value) {
         for (int i = 0; i < MinecraftServer.getServer().worldServers.length; ++i) {
             MinecraftServer.getServer().worldServers[i].setWorldTime(value);
@@ -120,8 +172,14 @@ public class MinecraftScriptWorldAPI {
         }
 	}
 
-	public void biome(int biome, Vector3f v1, Vector3f v2){
-		//being worked on, setting an area to an other biome, should be cool :D
+	public void setBiome(int biome, Vector3f loc) { // not quite working yet, the client needs to reload to see the change
+		byte[] bytes = new byte[16 * 16];
+		for (int i = 0; i < bytes.length; i++) {
+			bytes[i] = (byte) biome;
+		}
+		Chunk chk = _world.getChunkFromBlockCoords((int) loc.getX(), (int) loc.getZ());
+		chk.setBiomeArray(bytes);
+		chk.setChunkModified();
 	}
 	
 	public String getBiome(Vector3f pos) {

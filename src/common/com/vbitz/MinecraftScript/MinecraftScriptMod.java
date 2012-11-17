@@ -77,7 +77,7 @@ public class MinecraftScriptMod {
 	
 	private boolean webServerStarted = false;
 	
-	private Property clientSideEnabled = new Property();
+	private Property clientSideEnabled = new Property("clientSideEnabled", "true", null);
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e) {
