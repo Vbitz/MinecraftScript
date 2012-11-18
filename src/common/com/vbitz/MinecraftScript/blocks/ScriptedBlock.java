@@ -3,6 +3,8 @@ package com.vbitz.MinecraftScript.blocks;
 import java.util.HashMap;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.EcmaError;
+import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.Function;
 
 import com.vbitz.MinecraftScript.MinecraftScriptWorldAPI;
@@ -42,7 +44,13 @@ public class ScriptedBlock extends Block {
 			float par8, float par9) {
 		if (rightClickFunction != null) {
 			ScriptingManager.enterContext();
-			ScriptingManager.runFunction(rightClickFunction, new MinecraftScriptWorldAPI(par1World, par5EntityPlayer), worldX, worldY, worldZ);
+			try {
+				ScriptingManager.runFunction(rightClickFunction, new MinecraftScriptWorldAPI(par1World, par5EntityPlayer), worldX, worldY, worldZ);
+			} catch (EcmaError e) {
+				par5EntityPlayer.sendChatToPlayer("Error: " + e.getMessage());
+			} catch (EvaluatorException e) {
+				par5EntityPlayer.sendChatToPlayer("Error: " + e.getMessage());
+			}
 			ScriptingManager.exitContext();
 		}
 		return true;
@@ -53,7 +61,13 @@ public class ScriptedBlock extends Block {
 			int worldZ, int neiBlock) {
 		if (updateFunction != null) {
 			ScriptingManager.enterContext();
-			ScriptingManager.runFunction(updateFunction, new MinecraftScriptWorldAPI(par1World, lastUpdater), worldX, worldY, worldZ);
+			try {
+				ScriptingManager.runFunction(updateFunction, new MinecraftScriptWorldAPI(par1World, lastUpdater), worldX, worldY, worldZ);
+			} catch (EcmaError e) {
+				lastUpdater.sendChatToPlayer("Error: " + e.getMessage());
+			} catch (EvaluatorException e) {
+				lastUpdater.sendChatToPlayer("Error: " + e.getMessage());
+			}
 			ScriptingManager.exitContext();
 		}
 		super.onNeighborBlockChange(par1World, worldX, worldY, worldZ, neiBlock);

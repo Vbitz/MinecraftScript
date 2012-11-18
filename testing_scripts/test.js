@@ -1,12 +1,12 @@
-var stoneId = api.getItemId("cobblestone");
-var glassId = api.getItemId("glass");
-var airId = api.getItemId("air");
+var stoneId = itemId("cobblestone");
+var glassId = itemId("glass");
+var airId = itemId("air");
 
-var blk = api.getScriptedBlock(1);
-blk.setBlockBrightness(0.8);
+var blk = block(1);
+blk.setLight(0.8);
 blk.setBlockCreativeTab("blocks");
-blk.setBlockTexture("tntSide");
-blk.setRightClickFunction(function (world, x, y, z) {
+blk.setTexture("tntSide");
+blk.onRightClick(function (world, x, y, z) {
 	var x3 = 0;
 	var x2 = 0;
 	var x1 = 0;
@@ -14,7 +14,7 @@ blk.setRightClickFunction(function (world, x, y, z) {
 	for (x1 = x - 5; x1 < x + 4; x1++) {
 		for (x3 = y - 2; x3 < y + 3; x3++) {
 			for (x2 = z - 5; x2 < z + 4; x2++) {
-				world.setBlock(stoneId, x1, x3, x2);
+				world.setBlock(stoneId, vector(x1, x3, x2));
 			}
 		}
 	}
@@ -23,7 +23,7 @@ blk.setRightClickFunction(function (world, x, y, z) {
 	for (x1 = x - 4; x1 < x + 3; x1++) {
 		for (x3 = y - 1; x3 < y + 2; x3++) {
 			for (x2 = z - 4; x2 < z + 3; x2++) {
-				world.setBlock(airId, x1, x3, x2);
+				world.setBlock(airId, vector(x1, x3, x2));
 			}
 		}
 	}
@@ -32,7 +32,7 @@ blk.setRightClickFunction(function (world, x, y, z) {
 	for (x1 = x - 4; x1 < x + 3; x1++) {
 		for (x2 = z - 4; x2 < z + 3; x2++) {
 			if (x2 != z && x1 != x) {
-				world.setBlock(glassId, x1, y + 2, x2);
+				world.setBlock(glassId, vector(x1, y + 2, x2));
 			}
 		}
 	}
