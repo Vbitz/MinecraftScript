@@ -51,11 +51,15 @@ public class ScriptingGlobals {
 	}
 	
 	public static void logJS(Object obj) {
-		MinecraftScriptMod.getLogger().info(obj.toString());
+		MinecraftScriptMod.getLogger().info(ScriptingManager.getTidyOutput(obj));
 	}
 	
 	public static void sendChatJS(String chat) {
-		MinecraftServer.getServer().sendChatToPlayer(chat);
+		if (ScriptingManager.getScriptRunner() == null) {
+			MinecraftScriptMod.getLogger().info("chat(\"" + chat + "\")");
+		} else {
+			ScriptingManager.getScriptRunner().sendChatToPlayer(chat);
+		}
 	}
 	
 	public static int getItemIdJS(String name) {

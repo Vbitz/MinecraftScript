@@ -53,6 +53,7 @@ public class ScriptingManager {
 			addGlobal("me", "getScriptRunnerJS", null);
 			addGlobal("world", "getWorldJS", null);
 			addGlobal("vector", "newVectorJS", new Class<?>[] { double.class, double.class, double.class});
+			addGlobal("v", "newVectorJS", new Class<?>[] { double.class, double.class, double.class}); // it's a nice shorthand
 			addGlobal("block", "getBlockJS", new Class<?>[] { int.class });
 			addGlobal("log", "logJS", new Class<?>[] { Object.class });
 			addGlobal("chat", "sendChatJS", new Class<?>[] { String.class });

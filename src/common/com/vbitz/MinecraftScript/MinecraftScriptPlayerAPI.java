@@ -161,4 +161,12 @@ public class MinecraftScriptPlayerAPI {
 	public void command(String command) {
 		MinecraftServer.getServer().getCommandManager().executeCommand(_player, command);
 	}
+	
+	public void exp(int amo) {
+		_player.addExperience(amo);
+	}
+	
+	public void expLevel(int amo) {
+		_player.addExperienceLevel(amo);
+	}
 }
