@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import net.minecraft.src.EntityPlayer;
@@ -15,6 +16,7 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeJavaObject;
+import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
 
@@ -25,6 +27,8 @@ public class ScriptingManager {
 	private static File _scriptsDirectory = null;
 	
 	private static EntityPlayer _scriptRunner = null;
+	
+	private static HashMap<String, FunctionObject> _calls = new HashMap<String, FunctionObject>();
 	
 	public static Object runFunction(Function func, Object... args) {
 		return func.call(mcJavascriptContext, mcJavascriptScope, mcJavascriptScope, args);
@@ -41,7 +45,7 @@ public class ScriptingManager {
 		Context.exit();
 	}
 	
-	public static void addGlobal(String jsName, String methodName, Class<?>[] args) throws SecurityException, NoSuchMethodException {
+	public static void addGlobal(String jsName, String methodName, Class<?>... args) throws SecurityException, NoSuchMethodException {
 		mcJavascriptScope.put(jsName, mcJavascriptScope, new FunctionObject(jsName, ScriptingGlobals.class.getMethod(methodName, args), mcJavascriptScope));
 	}
 	
@@ -50,19 +54,22 @@ public class ScriptingManager {
 		mcJavascriptContext.setClassShutter(new MinecraftScriptClassShutter());
 		mcJavascriptScope = mcJavascriptContext.initStandardObjects();
 		try {
-			addGlobal("me", "getScriptRunnerJS", null);
-			addGlobal("world", "getWorldJS", null);
-			addGlobal("vector", "newVectorJS", new Class<?>[] { double.class, double.class, double.class});
-			addGlobal("v", "newVectorJS", new Class<?>[] { double.class, double.class, double.class}); // it's a nice shorthand
-			addGlobal("block", "getBlockJS", new Class<?>[] { int.class });
-			addGlobal("log", "logJS", new Class<?>[] { Object.class });
-			addGlobal("chat", "sendChatJS", new Class<?>[] { String.class });
-			addGlobal("itemId", "getItemIdJS", new Class<?>[] { String.class });
-			addGlobal("player", "playerJS", new Class<?>[] { String.class });
-			addGlobal("registerCommand", "registerCommandJS", new Class<?>[] { String.class, Function.class });
-			addGlobal("registerWebpoint", "registerWebpointJS", new Class<?>[] { String.class, Function.class });
-			addGlobal("difficulty", "setDifficultyJS", new Class<?>[] { String.class });
-			addGlobal("addSmeltingRecipe", "addSmeltingRecipeJS", new Class<?>[] { int.class, int.class, int.class });
+			addGlobal("me", "getScriptRunnerJS");
+			addGlobal("world", "getWorldJS");
+			addGlobal("vector", "newVectorJS", double.class, double.class, double.class);
+			addGlobal("v", "newVectorJS", double.class, double.class, double.class); // it's a nice shorthand
+			addGlobal("block", "getBlockJS", int.class);
+			addGlobal("item", "getItemJS", int.class);
+			addGlobal("log", "logJS", Object.class);
+			addGlobal("chat", "sendChatJS", String.class);
+			addGlobal("itemId", "getItemIdJS", String.class);
+			addGlobal("player", "playerJS", String.class);
+			addGlobal("registerCommand", "registerCommandJS", String.class, Function.class);
+			addGlobal("registerWebpoint", "registerWebpointJS", String.class, Function.class);
+			addGlobal("difficulty", "setDifficultyJS", String.class);
+			addGlobal("addSmeltingRecipe", "addSmeltingRecipeJS", int.class, int.class, int.class);
+			addGlobal("runExt", "runExtJS", String.class, NativeArray.class);
+			addGlobal("hasExt", "hasExtJS", String.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 			MinecraftScriptMod.getLogger().severe("Could not load globals");
@@ -141,5 +148,17 @@ public class ScriptingManager {
 		} else {
 			return obj.toString();
 		}
+	}
+	
+	public static void addExtCall(String jsName, Class<?> classObj, String methodName, Class<?>... methodArgs) throws SecurityException, NoSuchMethodException {
+		_calls.put(jsName, new FunctionObject(jsName, classObj.getMethod(methodName, methodArgs), mcJavascriptScope));
+	}
+	
+	public static boolean hasExt(String jsName) {
+		return _calls.containsKey(jsName);
+	}
+	
+	public static Object extCall(String jsName, Object[] args) {
+		return _calls.get(jsName).call(mcJavascriptContext, mcJavascriptScope, mcJavascriptScope, args);
 	}
 }

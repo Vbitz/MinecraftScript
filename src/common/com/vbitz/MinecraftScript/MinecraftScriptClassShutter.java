@@ -14,6 +14,7 @@ public class MinecraftScriptClassShutter implements ClassShutter {
 		_allowedClasses.add("com.vbitz.MinecraftScript.MinecraftScriptWorldAPI");
 		_allowedClasses.add("com.vbitz.MinecraftScript.MinecraftScriptItemStackAPI");
 		_allowedClasses.add("com.vbitz.MinecraftScript.MinecraftScriptScriptedBlockAPI");
+		_allowedClasses.add("com.vbitz.MinecraftScript.MinecraftScriptScriptedItemAPI");
 		_allowedClasses.add("com.vbitz.MinecraftScript.MinecraftScriptNBTagAPI");
 		_allowedClasses.add("com.vbitz.MinecraftScript.Vector3f");
 		_allowedClasses.add("java.lang.String");

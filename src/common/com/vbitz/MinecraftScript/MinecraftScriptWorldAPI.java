@@ -7,6 +7,7 @@ import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.AxisAlignedBB;
+import net.minecraft.src.Block;
 import net.minecraft.src.Chunk;
 import net.minecraft.src.ChunkProviderServer;
 import net.minecraft.src.Entity;
@@ -265,6 +266,14 @@ public class MinecraftScriptWorldAPI {
 		ItemStack t = new ItemStack(Item.dyePowder, 1);
 		t.setItemDamage(15);
 		return Item.dyePowder.onItemUse(t, _player, _world, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ(), 0, 0, 0, 0);
+	}
+	
+	public void activate(Vector3f pos) {
+		if (_world.blockExists((int) pos.getX(), (int) pos.getY(), (int) pos.getZ())) {
+			Block blk = Block.blocksList[_world.getBlockId((int) pos.getX(), (int) pos.getY(), (int) pos.getZ())];
+			blk.onBlockActivated(_world, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ(), _player,
+					0, 0, 0, 0);
+		}
 	}
 
 }

@@ -21,6 +21,7 @@ import com.vbitz.MinecraftScript.commands.JSStickCommand;
 import com.vbitz.MinecraftScript.commands.MinecraftScriptHelpCommand;
 import com.vbitz.MinecraftScript.commands.TestMapData;
 import com.vbitz.MinecraftScript.items.JSStick;
+import com.vbitz.MinecraftScript.items.ScriptedItem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Block;
@@ -54,6 +55,7 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -74,6 +76,7 @@ public class MinecraftScriptMod {
 	private static Logger mcLogger = Logger.getLogger("MinecraftScriptMod");
 	
 	private static ScriptedBlock blocks[];
+	private static ScriptedItem items[];
 	
 	private boolean webServerStarted = false;
 	
@@ -129,6 +132,9 @@ public class MinecraftScriptMod {
 			@Override
 			public String getLabel() { return null; }
 		}, Side.SERVER);
+		
+		EntityRegistry.registerModEntity(ScriptedThrowable.class, "scriptedThrowable",
+				1234, this, 50, 1, true); // need to change the id maybe
 	}
 	
 	private void createScriptedObjects() {
@@ -141,10 +147,19 @@ public class MinecraftScriptMod {
 			GameRegistry.registerBlock(blocks[i]);
 			LanguageRegistry.addName(blocks[i], "Scripted Block " + i);
 		}
+		items = new ScriptedItem[128]; // this will get bigger in the future
+		for (int i = 0; i < items.length; i++) {
+			items[i] = new ScriptedItem(8192 + i); // allow people to configure this value
+			LanguageRegistry.addName(items[i], "Scripted Item " + i);
+		}
 	}
 	
 	public ScriptedBlock getScriptedBlock(int id) {
 		return blocks[id];
+	}
+	
+	public ScriptedItem getScriptedItem(int id) {
+		return items[id];
 	}
 
 	@PostInit

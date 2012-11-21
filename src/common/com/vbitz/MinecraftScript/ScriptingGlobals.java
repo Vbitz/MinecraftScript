@@ -7,6 +7,7 @@ import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.ItemStack;
 
 import org.mozilla.javascript.Function;
+import org.mozilla.javascript.NativeArray;
 
 import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
 
@@ -47,6 +48,17 @@ public class ScriptingGlobals {
 			return null;
 		} else {
 			return new MinecraftScriptScriptedBlockAPI(i);
+		}
+	}
+	
+	public static MinecraftScriptScriptedItemAPI getItemJS(int i) throws ScriptErrorException {
+		if (!MinecraftScriptMod.getInstance().getClientSideEnabled()) {
+			throw new ScriptErrorException("Client side needs to be enabled for ScriptedItems to work");
+		}
+		if (i > 128) {
+			return null;
+		} else {
+			return new MinecraftScriptScriptedItemAPI(i);
 		}
 	}
 	
@@ -94,5 +106,17 @@ public class ScriptingGlobals {
 	
 	public static void addSmeltingRecipeJS(int input, int output, int xp) {
 		GameRegistry.addSmelting(input, new ItemStack(output, 1, 0), xp);
+	}
+	
+	public static void runExtJS(String name, NativeArray args) throws ScriptErrorException {
+		if (ScriptingManager.hasExt(name)) {
+			ScriptingManager.extCall(name, args.toArray());
+		} else {
+			throw new ScriptErrorException("Extention does not exist");
+		}
+	}
+	
+	public static boolean hasExtJS(String name) {
+		return ScriptingManager.hasExt(name);
 	}
 }

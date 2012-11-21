@@ -169,4 +169,8 @@ public class MinecraftScriptPlayerAPI {
 	public void expLevel(int amo) {
 		_player.addExperienceLevel(amo);
 	}
+	
+	public String getName() {
+		return _player.getEntityName();
+	}
 }

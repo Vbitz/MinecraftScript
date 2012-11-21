@@ -25,8 +25,11 @@ public class ScriptedBlock extends Block {
 	
 	public HashMap<Integer, Integer> blockTextures = new HashMap<Integer, Integer>();
 	
+	public int blockId = 0;
+	
 	public ScriptedBlock(int blockId) {
 		super(blockId, Material.ground);
+		this.blockId = blockId;
 	}
 	
 	@Override
