@@ -133,6 +133,8 @@ public class MinecraftScriptMod {
 			public String getLabel() { return null; }
 		}, Side.SERVER);
 		
+		TickRegistry.registerTickHandler(MinecraftScriptedTickManager.getInstance(), Side.SERVER);
+		
 		EntityRegistry.registerModEntity(ScriptedThrowable.class, "scriptedThrowable",
 				1234, this, 50, 1, true); // need to change the id maybe
 	}

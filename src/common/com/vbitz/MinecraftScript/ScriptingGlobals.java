@@ -119,4 +119,16 @@ public class ScriptingGlobals {
 	public static boolean hasExtJS(String name) {
 		return ScriptingManager.hasExt(name);
 	}
+	
+	public static boolean registerTickJS(String id, Function func) {
+		if (ScriptingManager.getScriptRunner() == null) {
+			return false;
+		} else {
+			return MinecraftScriptedTickManager.getInstance().registerOnTick(id, ScriptingManager.getScriptRunner(), func);
+		}
+	}
+	
+	public static void deregisterTickJS(String id) {
+		MinecraftScriptedTickManager.getInstance().deregisterTick(id);
+	}
 }

@@ -70,6 +70,8 @@ public class ScriptingManager {
 			addGlobal("addSmeltingRecipe", "addSmeltingRecipeJS", int.class, int.class, int.class);
 			addGlobal("runExt", "runExtJS", String.class, NativeArray.class);
 			addGlobal("hasExt", "hasExtJS", String.class);
+			addGlobal("registerTick", "registerTickJS", String.class, Function.class);
+			addGlobal("deregisterTick", "deregisterTickJS", String.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 			MinecraftScriptMod.getLogger().severe("Could not load globals");
