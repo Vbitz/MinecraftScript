@@ -68,7 +68,15 @@ public class MinecraftScriptWorldAPI {
 	}
 	
 	public void setBlock(int blockType, Vector3f loc) {
-		this._world.setBlockWithNotify((int)loc.getX(), (int)loc.getY(), (int)loc.getZ(), blockType);
+		setBlock(blockType, loc, true);
+	}
+	
+	public void setBlock(int blockType, Vector3f loc, boolean update) {
+		if (update) {
+			this._world.setBlockWithNotify((int)loc.getX(), (int)loc.getY(), (int)loc.getZ(), blockType);
+		} else {
+			this._world.setBlock((int)loc.getX(), (int)loc.getY(), (int)loc.getZ(), blockType);
+		}
 	}
 	
 	public void setCube(int blockType, Vector3f v1, Vector3f v2) throws ScriptErrorException {
@@ -142,19 +150,11 @@ public class MinecraftScriptWorldAPI {
 			for (int y = y1f; y < y2f; y++) {
 				for (int z = z1f; z < z2f; z++) {
 					if (_world.getBlockId(x, y, z) == srcType) {
-						blocks++;
-					}
-				}
-			}
-		}
-		if (blocks > 2000) {
-			throw new ScriptErrorException("Too many Blocks");
-		}
-		for (int x = x1f; x < x2f; x++) {
-			for (int y = y1f; y < y2f; y++) {
-				for (int z = z1f; z < z2f; z++) {
-					if (_world.getBlockId(x, y, z) == srcType) {
 						this._world.setBlockWithNotify(x, y, z, targetType);
+						blocks++;
+						if (blocks > 4000) {
+							return;
+						}
 					}
 				}
 			}
