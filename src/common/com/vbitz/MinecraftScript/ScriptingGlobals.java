@@ -10,6 +10,7 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeArray;
 
 import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
+import com.vbitz.MinecraftScript.web.MinecraftScriptHTTPServer;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -93,7 +94,7 @@ public class ScriptingGlobals {
 	}
 	
 	public static void registerWebpointJS(String name, Function func) {
-		JSHTTPServer.addFunction(name, func);
+		MinecraftScriptHTTPServer.addFunction(name, func);
 	}
 	
 	public static void setDifficultyJS(String diff) throws ScriptErrorException {

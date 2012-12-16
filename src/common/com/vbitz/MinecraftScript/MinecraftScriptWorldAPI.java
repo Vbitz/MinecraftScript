@@ -1,5 +1,7 @@
 package com.vbitz.MinecraftScript;
 
+import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -7,6 +9,7 @@ import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.AxisAlignedBB;
+import net.minecraft.src.BiomeGenBase;
 import net.minecraft.src.Block;
 import net.minecraft.src.Chunk;
 import net.minecraft.src.ChunkProviderServer;
@@ -30,7 +33,11 @@ import net.minecraft.src.IChunkProvider;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemDye;
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.MapGenMineshaft;
+import net.minecraft.src.MapGenRavine;
+import net.minecraft.src.MapGenStronghold;
 import net.minecraft.src.MapGenVillage;
+import net.minecraft.src.StructureStart;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.Vec3;
 import net.minecraft.src.World;
@@ -273,6 +280,77 @@ public class MinecraftScriptWorldAPI {
 			Block blk = Block.blocksList[_world.getBlockId((int) pos.getX(), (int) pos.getY(), (int) pos.getZ())];
 			blk.onBlockActivated(_world, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ(), _player,
 					0, 0, 0, 0);
+		}
+	}
+	
+	public void dropItem(int id, int count, Vector3f pos) {
+		EntityItem t = new EntityItem(_world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(id, count, 0));
+		_world.spawnEntityInWorld(t);
+	}
+	
+	public void spawnStructure(String type, Vector3f pos) throws ScriptErrorException {
+		final Chunk chk = _world.getChunkFromBlockCoords((int) pos.getX(), (int) pos.getZ());
+		BiomeGenBase biome = _world.getBiomeGenForCoords((int) pos.getX(), (int) pos.getZ());
+		if (type.toLowerCase() == "village") {
+			if (MapGenVillage.villageSpawnBiomes instanceof AbstractList) {
+				MapGenVillage.villageSpawnBiomes = new ArrayList(MapGenVillage.villageSpawnBiomes);
+			}
+			boolean added = false;
+			if (!MapGenVillage.villageSpawnBiomes.contains(biome)) {
+				MapGenVillage.villageSpawnBiomes.add(biome);
+				added = true;
+			}
+			MapGenVillage vilGen = new MapGenVillage() {
+				@Override
+				protected boolean canSpawnStructureAtCoords(int par1, int par2) {
+					return par1 == chk.xPosition && par2 == chk.zPosition;
+				}
+			};
+			vilGen.generate(_world.getChunkProvider(), _world, chk.xPosition, chk.zPosition, new byte[] {});
+	    	for (int var11 = chk.xPosition - 8; var11 <= chk.xPosition + 8; ++var11)
+	    	{
+	    		for (int var12 = chk.zPosition - 8; var12 <= chk.zPosition + 8; ++var12)
+	    		{
+	    			vilGen.generateStructuresInChunk(_world, _world.rand, var11, var12);
+	    		}
+	    	}
+	    	if (added) {
+	    		MapGenVillage.villageSpawnBiomes.remove(biome);
+			}
+		} else if (type.toLowerCase() == "stronghold") {
+			if (MapGenStronghold.allowedBiomes instanceof AbstractList) {
+				MapGenStronghold.allowedBiomes = new ArrayList(MapGenStronghold.allowedBiomes);
+			}
+			boolean added = false;
+			if (!MapGenStronghold.allowedBiomes.contains(biome)) {
+				MapGenStronghold.allowedBiomes.add(biome);
+				added = true;
+			}
+			MapGenStronghold strGen = new MapGenStronghold() {
+				@Override
+				protected boolean canSpawnStructureAtCoords(int par1, int par2) {
+					return par1 == chk.xPosition && par2 == chk.zPosition;
+				}
+				
+				@Override
+				protected List getCoordList() {
+					return new ArrayList();
+				}
+			};
+			strGen.generate(_world.getChunkProvider(), _world, chk.xPosition, chk.zPosition, new byte[] {});
+	    	for (int var11 = chk.xPosition - 8; var11 <= chk.xPosition + 8; ++var11)
+	    	{
+	    		for (int var12 = chk.zPosition - 8; var12 <= chk.zPosition + 8; ++var12)
+	    		{
+	    			strGen.generateStructuresInChunk(_world, _world.rand, var11, var12);
+	    		}
+	    	}
+	    	if (added) {
+	    		MapGenStronghold.allowedBiomes.remove(biome);
+			}
+		} else {
+			// no mineshafts sorry, it has the bad tendancy to crash the client
+			throw new ScriptErrorException("type needs to be village, stronghold or mineshaft");
 		}
 	}
 

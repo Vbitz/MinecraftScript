@@ -3,8 +3,8 @@ package com.vbitz.MinecraftScript.commands;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.vbitz.MinecraftScript.JSHTTPServer;
 import com.vbitz.MinecraftScript.Vector3f;
+import com.vbitz.MinecraftScript.web.MinecraftScriptHTTPServer;
 
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.ICommandSender;
@@ -54,7 +54,7 @@ public class MinecraftScriptHelpCommand extends CommandBase {
 		addHelp("globals", "itemId", "string itemName", "Returns the ID of the item");
 		addHelp("globals", "player", "string nickname", "Returns a PlayerAPI for nickname");
 		addHelp("globals", "registerCommand", "string name, function(args) cmd", "Running /c name args will run cmd with args");
-		addHelp("globals", "registerWebpoint", "string name, function() cmd", "Visiting the server address on port" + JSHTTPServer.getPort() + " with a web brower will trigger this function");
+		addHelp("globals", "registerWebpoint", "string name, function() cmd", "Visiting the server address on port" + MinecraftScriptHTTPServer.getPort() + " with a web brower will trigger this function");
 		addHelp("globals", "difficulty", "string difficulty", "Sets the Difficulty to difficulty, difficulty can be peaceful, easy, normal or hard");
 		
 		addHelp("playerapi1", "getHealth", "", "Returns the health of the player");

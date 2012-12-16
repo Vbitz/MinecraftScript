@@ -22,6 +22,7 @@ import com.vbitz.MinecraftScript.commands.MinecraftScriptHelpCommand;
 import com.vbitz.MinecraftScript.commands.TestMapData;
 import com.vbitz.MinecraftScript.items.JSStick;
 import com.vbitz.MinecraftScript.items.ScriptedItem;
+import com.vbitz.MinecraftScript.web.MinecraftScriptHTTPServer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Block;
@@ -112,27 +113,6 @@ public class MinecraftScriptMod {
 		
 		JSStick.getSingilton(); // just to get it to register
 		
-		TickRegistry.registerTickHandler(new ITickHandler() {
-			
-			@Override
-			public EnumSet<TickType> ticks() {
-				return EnumSet.of(TickType.SERVER);
-			}
-			
-			@Override
-			public void tickStart(EnumSet<TickType> type, Object... tickData) { }
-			
-			@Override
-			public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-				if (webServerStarted) {
-					JSHTTPServer.tryDo();
-				}
-			}
-			
-			@Override
-			public String getLabel() { return null; }
-		}, Side.SERVER);
-		
 		TickRegistry.registerTickHandler(MinecraftScriptedTickManager.getInstance(), Side.SERVER);
 		
 		EntityRegistry.registerModEntity(ScriptedThrowable.class, "scriptedThrowable",
@@ -185,13 +165,14 @@ public class MinecraftScriptMod {
 	
 	@ServerStarted
 	public void serverStarted(FMLServerStartedEvent e) {
-		JSHTTPServer.init();
+		//MinecraftScriptHTTPServer.start(); // until this is done it's disabled
+			// otherwise no new stuff for a good while
 		webServerStarted = true;
 	}
 	
 	@ServerStopping
 	public void serverStopping(FMLServerStoppingEvent e) {
-		JSHTTPServer.destroy();
+		//MinecraftScriptHTTPServer.stop();
 		webServerStarted = false;
 	}
 	
