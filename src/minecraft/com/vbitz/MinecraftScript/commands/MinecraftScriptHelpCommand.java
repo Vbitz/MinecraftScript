@@ -3,11 +3,11 @@ package com.vbitz.MinecraftScript.commands;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+
 import com.vbitz.MinecraftScript.Vector3f;
 import com.vbitz.MinecraftScript.web.MinecraftScriptHTTPServer;
-
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.ICommandSender;
 
 public class MinecraftScriptHelpCommand extends CommandBase {
 

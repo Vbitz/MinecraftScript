@@ -2,9 +2,9 @@ package com.vbitz.MinecraftScript;
 
 import java.util.HashMap;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ItemStack;
 
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeArray;

@@ -3,15 +3,14 @@ package com.vbitz.MinecraftScript.commands;
 import java.io.IOException;
 import java.util.List;
 
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
+
 import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.EvaluatorException;
 
 import com.vbitz.MinecraftScript.ScriptingManager;
-
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.ICommand;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.WrongUsageException;
 
 public class JSDofileCommand extends CommandBase {
 

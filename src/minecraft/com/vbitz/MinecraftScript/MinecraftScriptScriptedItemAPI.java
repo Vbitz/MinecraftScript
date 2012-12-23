@@ -1,8 +1,8 @@
 package com.vbitz.MinecraftScript;
 
-import org.mozilla.javascript.Function;
+import net.minecraft.item.ItemStack;
 
-import net.minecraft.src.ItemStack;
+import org.mozilla.javascript.Function;
 
 import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
 import com.vbitz.MinecraftScript.items.ScriptedItem;

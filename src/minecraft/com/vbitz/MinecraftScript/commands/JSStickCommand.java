@@ -1,14 +1,14 @@
 package com.vbitz.MinecraftScript.commands;
 
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
 import com.vbitz.MinecraftScript.MinecraftScriptMod;
 import com.vbitz.MinecraftScript.items.JSStick;
-
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.WrongUsageException;
 
 public class JSStickCommand extends CommandBase {
 

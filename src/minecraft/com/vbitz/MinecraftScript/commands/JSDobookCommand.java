@@ -8,18 +8,16 @@ import org.mozilla.javascript.EvaluatorException;
 
 import com.vbitz.MinecraftScript.ScriptingManager;
 
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemWritableBook;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ICommand;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.ItemWritableBook;
-import net.minecraft.src.NBTTagList;
-import net.minecraft.src.NBTTagString;
-import net.minecraft.src.WrongUsageException;
 
 public class JSDobookCommand extends CommandBase {
 

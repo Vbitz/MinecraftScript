@@ -9,11 +9,10 @@ import org.mozilla.javascript.EvaluatorException;
 import com.vbitz.MinecraftScript.MinecraftScriptMod;
 import com.vbitz.MinecraftScript.ScriptingManager;
 
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.ICommand;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.WrongUsageException;
 
 public class JSCommand extends CommandBase {
 

@@ -25,12 +25,7 @@ import com.vbitz.MinecraftScript.items.ScriptedItem;
 import com.vbitz.MinecraftScript.web.MinecraftScriptHTTPServer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.Block;
-import net.minecraft.src.CommandHandler;
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.ICommand;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.Material;
+import net.minecraft.command.CommandHandler;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
@@ -39,7 +34,6 @@ import net.minecraftforge.event.ForgeSubscribe;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.ServerStarted;
@@ -60,6 +54,7 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid="MinecraftScript", name="MinecraftScript", version="0.0.0")
 @NetworkMod(clientSideRequired=false, serverSideRequired=true) // may change in the future
@@ -126,7 +121,7 @@ public class MinecraftScriptMod {
 		blocks = new ScriptedBlock[128]; // this will get bigger in the future
 		for (int i = 0; i < blocks.length; i++) {
 			blocks[i] = new ScriptedBlock(512 + i);
-			GameRegistry.registerBlock(blocks[i]);
+			GameRegistry.registerBlock(blocks[i],"Scripted Block " + i);
 			LanguageRegistry.addName(blocks[i], "Scripted Block " + i);
 		}
 		items = new ScriptedItem[128]; // this will get bigger in the future

@@ -2,6 +2,11 @@ package com.vbitz.MinecraftScript.blocks;
 
 import java.util.HashMap;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.EvaluatorException;
@@ -9,12 +14,6 @@ import org.mozilla.javascript.Function;
 
 import com.vbitz.MinecraftScript.MinecraftScriptWorldAPI;
 import com.vbitz.MinecraftScript.ScriptingManager;
-
-import net.minecraft.src.Block;
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.Material;
-import net.minecraft.src.World;
 
 public class ScriptedBlock extends Block {
 	

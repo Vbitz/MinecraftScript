@@ -1,5 +1,10 @@
 package com.vbitz.MinecraftScript.items;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+
 import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.Function;
@@ -8,11 +13,6 @@ import com.vbitz.MinecraftScript.MinecraftScriptPlayerAPI;
 import com.vbitz.MinecraftScript.MinecraftScriptWorldAPI;
 import com.vbitz.MinecraftScript.ScriptedThrowable;
 import com.vbitz.MinecraftScript.ScriptingManager;
-
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.World;
 
 public class ScriptedItem extends Item {
 

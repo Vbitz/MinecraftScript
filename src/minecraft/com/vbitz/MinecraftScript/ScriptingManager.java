@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-import net.minecraft.src.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayer;
 
 import org.mozilla.javascript.ClassShutter;
 import org.mozilla.javascript.Context;

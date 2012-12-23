@@ -4,20 +4,15 @@ import java.util.Random;
 
 import cpw.mods.fml.common.network.Player;
 
+import net.minecraft.block.material.MapColor;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemMap;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.ItemWritableBook;
-import net.minecraft.src.MapColor;
-import net.minecraft.src.MapData;
-import net.minecraft.src.NBTTagList;
-import net.minecraft.src.NBTTagString;
-import net.minecraft.src.Packet;
-import net.minecraft.src.WrongUsageException;
+import net.minecraft.world.storage.MapData;
 
 public class TestMapData extends CommandBase {
 

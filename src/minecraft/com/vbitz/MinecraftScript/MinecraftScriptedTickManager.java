@@ -6,7 +6,7 @@ import java.util.EnumSet;
 import java.util.Queue;
 import java.util.logging.Logger;
 
-import net.minecraft.src.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayer;
 
 import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.EvaluatorException;

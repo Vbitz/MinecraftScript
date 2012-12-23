@@ -2,8 +2,8 @@ package com.vbitz.MinecraftScript;
 
 import java.util.HashMap;
 
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.ItemStack;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemStack;
 
 import org.mozilla.javascript.Function;
 

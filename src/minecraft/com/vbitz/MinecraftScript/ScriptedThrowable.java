@@ -1,14 +1,14 @@
 package com.vbitz.MinecraftScript;
 
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
+
 import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.Function;
-
-import net.minecraft.src.EntityLiving;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityThrowable;
-import net.minecraft.src.MovingObjectPosition;
-import net.minecraft.src.World;
 
 public class ScriptedThrowable extends EntityThrowable {
 

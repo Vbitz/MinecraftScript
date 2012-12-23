@@ -2,10 +2,10 @@ package com.vbitz.MinecraftScript;
 
 import java.util.ArrayList;
 
-import org.mozilla.javascript.NativeArray;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 
-import net.minecraft.src.NBTBase;
-import net.minecraft.src.NBTTagCompound;
+import org.mozilla.javascript.NativeArray;
 
 public class MinecraftScriptNBTagAPI {
 	private NBTTagCompound _comp = null;
