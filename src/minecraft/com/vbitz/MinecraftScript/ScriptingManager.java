@@ -72,6 +72,7 @@ public class ScriptingManager {
 			addGlobal("hasExt", "hasExtJS", String.class);
 			addGlobal("registerTick", "registerTickJS", String.class, Function.class);
 			addGlobal("deregisterTick", "deregisterTickJS", String.class);
+			addGlobal("col", "collectionJS", Object.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 			MinecraftScriptMod.getLogger().severe("Could not load globals");

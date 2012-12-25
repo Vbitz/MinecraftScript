@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
+
 import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
 
 import net.minecraft.block.Block;
@@ -21,7 +23,12 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
+import net.minecraft.world.gen.MapGenCaves;
+import net.minecraft.world.gen.MapGenRavine;
 import net.minecraft.world.gen.feature.WorldGenBigTree;
+import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraft.world.gen.feature.WorldGenTrees;
 import net.minecraft.world.gen.structure.MapGenStronghold;
 import net.minecraft.world.gen.structure.MapGenVillage;
@@ -333,6 +340,69 @@ public class MinecraftScriptWorldAPI {
 			// no mineshafts sorry, it has the bad tendancy to crash the client
 			throw new ScriptErrorException("type needs to be village, stronghold or mineshaft");
 		}
+	}
+	
+	public void genCaves(Vector3f pos, int chunkWidth, boolean addRavines, boolean newGen) {
+		final Random rand_new = new Random(_world.rand.nextLong());
+		MapGenCaves caves = new MapGenCaves();
+		MapGenRavine ravines = new MapGenRavine();
+		if (newGen) {
+			caves = new MapGenCaves() {
+				@Override
+				public void generate(IChunkProvider par1iChunkProvider,
+						World par2World, int par3, int par4,
+						byte[] par5ArrayOfByte) {
+					this.rand.setSeed(rand_new.nextLong());
+					super.generate(par1iChunkProvider, par2World, par3, par4, par5ArrayOfByte);
+				}
+			};
+			ravines = new MapGenRavine() {
+				@Override
+				public void generate(IChunkProvider par1iChunkProvider,
+						World par2World, int par3, int par4,
+						byte[] par5ArrayOfByte) {
+					this.rand.setSeed(rand_new.nextLong());
+					super.generate(par1iChunkProvider, par2World, par3, par4, par5ArrayOfByte);
+				}
+			};
+		}
+		Chunk baseChunk = _world.getChunkFromBlockCoords((int) pos.getX(), (int) pos.getZ());
+		for (int x = baseChunk.xPosition - chunkWidth; x < baseChunk.xPosition + chunkWidth; x++) { 
+			for (int z = baseChunk.zPosition - chunkWidth; z < baseChunk.zPosition + chunkWidth; z++) { 
+				byte[] bteArray = new byte[32768]; // this might cause problems
+				Arrays.fill(bteArray, (byte) 1);
+				caves.generate(_world.getChunkProvider(), _world, x, z, bteArray);
+				if (addRavines) {
+					ravines.generate(_world.getChunkProvider(), _world, x, z, bteArray);
+				}
+				
+				Chunk chk = _world.getChunkFromChunkCoords(x, z);
+				
+				// for compatability's sake this is based off built in minecraft code after being modifyed
+		        int var5 = bteArray.length / 256;
+
+		        for (int var6 = 0; var6 < 16; ++var6)
+		        {
+		            for (int var7 = 0; var7 < 16; ++var7)
+		            {
+		                for (int var8 = 0; var8 < var5; ++var8)
+		                {
+		                    /* FORGE: The following change, a cast from unsigned byte to int,
+		                     * fixes a vanilla bug when generating new chunks that contain a block ID > 127 */
+		                    int var9 = bteArray[var6 << 11 | var7 << 7 | var8] & 0xFF;
+		                    if (var9 != (byte) 1) {
+		                    	_world.setBlockWithNotify(var6 + (x*16), var8, var7 + (z*16), 0); // no lava sorry, covering super flat in lava is not nice
+		                    }
+		                }
+		            }
+		        }
+			}
+		}
+	}
+	
+	public void genVeins(Vector3f pos, int blockId, int amount) {
+		WorldGenMinable m = new WorldGenMinable(blockId, amount);
+		m.generate(_world, _world.rand, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
 	}
 
 }

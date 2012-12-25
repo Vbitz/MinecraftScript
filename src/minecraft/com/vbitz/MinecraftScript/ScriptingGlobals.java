@@ -132,4 +132,12 @@ public class ScriptingGlobals {
 	public static void deregisterTickJS(String id) {
 		MinecraftScriptedTickManager.getInstance().deregisterTick(id);
 	}
+	
+	public MCSCollection collectionJS(Object vec) throws ScriptErrorException {
+		if (vec instanceof Vector3f) {
+			return new MCSCollection((Vector3f) vec);
+		} else {
+			throw new ScriptErrorException("vec should be a vector");
+		}
+	}
 }
