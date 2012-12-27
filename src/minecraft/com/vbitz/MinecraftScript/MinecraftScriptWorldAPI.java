@@ -12,13 +12,17 @@ import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
 import net.minecraft.block.Block;
 import net.minecraft.entity.*;
 import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.item.EntityFireworkRocket;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -42,7 +46,10 @@ public class MinecraftScriptWorldAPI {
 		this._player = ply;
 	}
 	
-	public void explode(int amo, Vector3f loc) {
+	public void explode(int amo, Vector3f loc) throws ScriptErrorException {
+		if (amo > 200) {
+			throw new ScriptErrorException("Bad Idea");
+		}
 		if (!this._world.isRemote) {
 			this._world.createExplosion(this._player, loc.getX(), loc.getY(), loc.getZ(), amo, true);
 		}
@@ -403,6 +410,44 @@ public class MinecraftScriptWorldAPI {
 	public void genVeins(Vector3f pos, int blockId, int amount) {
 		WorldGenMinable m = new WorldGenMinable(blockId, amount);
 		m.generate(_world, _world.rand, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
+	}
+	
+	public void addItemToChest(Vector3f pos, int itemId, int itemCount) throws ScriptErrorException {
+		if (_world.getBlockTileEntity((int) pos.getX(), (int) pos.getY(), (int) pos.getZ()) != null &&
+				_world.getBlockTileEntity((int) pos.getX(), (int) pos.getY(), (int) pos.getZ()) instanceof TileEntityChest) {
+			TileEntityChest chest = (TileEntityChest) _world.getBlockTileEntity((int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
+			for (int i = 0; i < chest.getSizeInventory(); i++) {
+				if (chest.getStackInSlot(i) == null) {
+					chest.setInventorySlotContents(i, new ItemStack(itemId, itemCount, 0)); // combining stacks will come later, too many edge cases right now
+					break;
+				}
+			}
+		} else {
+			throw new ScriptErrorException("Block is not a chest");
+		}
+	}
+	
+	// happy new years
+	public void firework(Vector3f pos, int color, int type, int flightTime, int explodeCount) {
+		Random rand = new Random(_world.rand.nextLong());
+		ItemStack stk = new ItemStack(Item.field_92052_bU); // mcp really needs to update this
+		NBTTagCompound baseComp = new NBTTagCompound();
+		baseComp.setCompoundTag("Fireworks", new NBTTagCompound("Fireworks"));
+		baseComp.getCompoundTag("Fireworks").setByte("Flight", (byte) flightTime);
+		NBTTagList lst = baseComp.getCompoundTag("Fireworks").getTagList("Explosions");
+		for (int i = 0; i < explodeCount; i++) {
+			NBTTagCompound explosion = new NBTTagCompound();
+			explosion.setByte("Type", (byte) type);
+			explosion.setBoolean("Trail", true);
+			explosion.setBoolean("Flicker", rand.nextBoolean());
+			explosion.setIntArray("Colors", new int[] { color + (rand.nextInt(400) - 200) });
+			explosion.setIntArray("FadeColors", new int[] { color + (rand.nextInt(400) - 200)  });
+			lst.appendTag(explosion);
+		}
+		baseComp.getCompoundTag("Fireworks").setTag("Explosions", lst);
+		stk.setTagCompound(baseComp);
+		EntityFireworkRocket fireWork = new EntityFireworkRocket(_world, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ(), stk);
+		_world.spawnEntityInWorld(fireWork);
 	}
 
 }

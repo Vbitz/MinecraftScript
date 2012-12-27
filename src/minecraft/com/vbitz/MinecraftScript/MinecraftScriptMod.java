@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.logging.Logger;
 
@@ -20,6 +21,8 @@ import com.vbitz.MinecraftScript.commands.JSDofileCommand;
 import com.vbitz.MinecraftScript.commands.JSStickCommand;
 import com.vbitz.MinecraftScript.commands.MinecraftScriptHelpCommand;
 import com.vbitz.MinecraftScript.commands.TestMapData;
+import com.vbitz.MinecraftScript.extend.BlockFunctions;
+import com.vbitz.MinecraftScript.extend.IInternalExtendApi;
 import com.vbitz.MinecraftScript.items.JSStick;
 import com.vbitz.MinecraftScript.items.ScriptedItem;
 import com.vbitz.MinecraftScript.web.MinecraftScriptHTTPServer;
@@ -77,6 +80,10 @@ public class MinecraftScriptMod {
 	private boolean webServerStarted = false;
 	
 	private Property clientSideEnabled = new Property("clientSideEnabled", "true", null);
+	
+	private static IInternalExtendApi[] _internalApis = new IInternalExtendApi[] {
+		new BlockFunctions()
+	};
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e) {
@@ -141,7 +148,9 @@ public class MinecraftScriptMod {
 
 	@PostInit
 	public void postInit(FMLPostInitializationEvent e) {
-		
+		for (IInternalExtendApi exApi : _internalApis) {
+			exApi.init();
+		}
 	}
 	
 	@ServerStarting
