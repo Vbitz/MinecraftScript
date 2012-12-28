@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.mozilla.javascript.EcmaError;
+import org.mozilla.javascript.EvaluatorException;
+import org.mozilla.javascript.Function;
 import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 
 import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
@@ -447,6 +450,44 @@ public class MinecraftScriptWorldAPI {
 		baseComp.getCompoundTag("Fireworks").setTag("Explosions", lst);
 		stk.setTagCompound(baseComp);
 		EntityFireworkRocket fireWork = new EntityFireworkRocket(_world, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ(), stk);
+		_world.spawnEntityInWorld(fireWork);
+	}
+	
+	public void firecode(Vector3f pos, int flightTime, Function func) {
+		final Function explodeFunc = func;
+		final EntityPlayer owner = _player;
+		ItemStack stk = new ItemStack(Item.field_92052_bU);
+		NBTTagCompound baseComp = new NBTTagCompound();
+		baseComp.setCompoundTag("Fireworks", new NBTTagCompound("Fireworks"));
+		baseComp.getCompoundTag("Fireworks").setByte("Flight", (byte) flightTime);
+		stk.setTagCompound(baseComp);
+		EntityFireworkRocket fireWork = new EntityFireworkRocket(_world, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ(), stk) {
+			@Override
+			public void onUpdate() {
+				super.onUpdate();
+				if (this.isDead) {
+					if (explodeFunc != null && !worldObj.isRemote) {
+						ScriptingManager.enterContext();
+						try {
+							if (owner instanceof EntityPlayer) {
+								ScriptingManager.runFunction(explodeFunc,
+										new MinecraftScriptWorldAPI(owner.worldObj, (EntityPlayer) owner),
+										new Vector3f(this.posX, this.posY, this.posZ));
+							}
+						} catch (EcmaError e) {
+							if (owner instanceof EntityPlayer) {
+								((EntityPlayer) owner).sendChatToPlayer("Error: " + e.getMessage());
+							}
+						} catch (EvaluatorException e) {
+							if (owner instanceof EntityPlayer) {
+								((EntityPlayer) owner).sendChatToPlayer("Error: " + e.getMessage());
+							}
+						}
+						ScriptingManager.exitContext();
+					}
+				}
+			}
+		};
 		_world.spawnEntityInWorld(fireWork);
 	}
 
