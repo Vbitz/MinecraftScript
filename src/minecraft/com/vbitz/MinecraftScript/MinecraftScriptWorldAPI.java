@@ -37,6 +37,7 @@ import net.minecraft.world.gen.MapGenRavine;
 import net.minecraft.world.gen.feature.WorldGenBigTree;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraft.world.gen.feature.WorldGenTrees;
+import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraft.world.gen.structure.MapGenStronghold;
 import net.minecraft.world.gen.structure.MapGenVillage;
 
@@ -346,6 +347,26 @@ public class MinecraftScriptWorldAPI {
 	    	if (added) {
 	    		MapGenStronghold.allowedBiomes.remove(biome);
 			}
+		} else if (type.toLowerCase() == "netherfort") {
+			MapGenNetherBridge strGen = new MapGenNetherBridge() {
+				@Override
+				protected boolean canSpawnStructureAtCoords(int par1, int par2) {
+					return par1 == chk.xPosition && par2 == chk.zPosition;
+				}
+				
+				@Override
+				protected List getCoordList() {
+					return new ArrayList();
+				}
+			};
+			strGen.generate(_world.getChunkProvider(), _world, chk.xPosition, chk.zPosition, new byte[] {});
+	    	for (int var11 = chk.xPosition - 8; var11 <= chk.xPosition + 8; ++var11)
+	    	{
+	    		for (int var12 = chk.zPosition - 8; var12 <= chk.zPosition + 8; ++var12)
+	    		{
+	    			strGen.generateStructuresInChunk(_world, _world.rand, var11, var12);
+	    		}
+	    	}
 		} else {
 			// no mineshafts sorry, it has the bad tendancy to crash the client
 			throw new ScriptErrorException("type needs to be village, stronghold or mineshaft");
