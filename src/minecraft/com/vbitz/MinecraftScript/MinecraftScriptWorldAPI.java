@@ -17,6 +17,7 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.item.EntityFireworkRocket;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
@@ -51,7 +52,11 @@ public class MinecraftScriptWorldAPI {
 	}
 	
 	public void explode(int amo, Vector3f loc) throws ScriptErrorException {
-		if (amo > 200) {
+		explode(amo, loc, false);
+	}
+	
+	public void explode(int amo, Vector3f loc, boolean bypass) throws ScriptErrorException {
+		if (!bypass && amo > 200) {
 			throw new ScriptErrorException("Bad Idea");
 		}
 		if (!this._world.isRemote) {
@@ -69,7 +74,7 @@ public class MinecraftScriptWorldAPI {
 				new ItemStack(_world.getBlockId((int) loc.getX(), (int) loc.getY(), (int) loc.getZ()),
 						1, _world.getBlockMetadata((int) loc.getX(), (int) loc.getY(), (int) loc.getZ())));
 			_world.spawnEntityInWorld(t);
-			_world.setBlockWithNotify((int) loc.getX(), (int) loc.getY(), (int) loc.getZ(), 0);
+			setBlock(0, loc);
 		}
 	}
 	
@@ -77,15 +82,29 @@ public class MinecraftScriptWorldAPI {
 		setBlock(blockType, loc, true);
 	}
 	
+	public void setBlock(int blockType, int metadata, Vector3f loc) {
+		setBlock(blockType, metadata, loc, true);
+	}
+	
 	public void setBlock(int blockType, Vector3f loc, boolean update) {
-		if (update) {
-			this._world.setBlockWithNotify((int)loc.getX(), (int)loc.getY(), (int)loc.getZ(), blockType);
-		} else {
-			this._world.setBlock((int)loc.getX(), (int)loc.getY(), (int)loc.getZ(), blockType);
-		}
+		setBlock(blockType, 0, loc, update);
 	}
 	
-	public void setCube(int blockType, Vector3f v1, Vector3f v2) throws ScriptErrorException {
+	public void setBlock(int blockType, int metadata, Vector3f loc, boolean update) {
+		this._world.setBlockAndMetadataWithUpdate((int)loc.getX(), (int)loc.getY(), (int)loc.getZ(), blockType, metadata, update);
+	}
+	
+	public boolean setCube(int blockType, Vector3f v1, Vector3f v2, int limit) throws ScriptErrorException {
+		return replaceCube(-1, blockType, v1, v2, limit);
+	}
+	
+	/*
+	 * If you want to do this on something big then do a "slow replace", register a tick handler that calls this method until it returns true, setting a limit of about 5
+	 */
+	public boolean replaceCube(int srcType, int targetType, Vector3f v1, Vector3f v2, int limit) throws ScriptErrorException {
+		if (limit > 4000) {
+			limit = 4000;
+		}
 		int x1f, x2f, y1f, y2f, z1f, z2f;
 		if (v2.getX() < v1.getX()) {
 			x1f = (int) v2.getX();
@@ -112,59 +131,20 @@ public class MinecraftScriptWorldAPI {
 		for (int x = x1f; x < x2f; x++) {
 			for (int y = y1f; y < y2f; y++) {
 				for (int z = z1f; z < z2f; z++) {
-					blocks++;
-				}
-			}
-		}
-		if (blocks > 2000) {
-			throw new ScriptErrorException("Too many Blocks");
-		}
-		for (int x = x1f; x < x2f; x++) {
-			for (int y = y1f; y < y2f; y++) {
-				for (int z = z1f; z < z2f; z++) {
-					this._world.setBlockWithNotify(x, y, z, blockType);
-				}
-			}
-		}
-	}
-	
-	public void replaceCube(int srcType, int targetType, Vector3f v1, Vector3f v2) throws ScriptErrorException {
-		int x1f, x2f, y1f, y2f, z1f, z2f;
-		if (v2.getX() < v1.getX()) {
-			x1f = (int) v2.getX();
-			x2f = (int) v1.getX();
-		} else {
-			x1f = (int) v1.getX();
-			x2f = (int) v2.getX();
-		}
-		if (v2.getY() < v1.getY()) {
-			y1f = (int) v2.getY();
-			y2f = (int) v1.getY();
-		} else {
-			y1f = (int) v1.getY();
-			y2f = (int) v2.getY();
-		}
-		if (v2.getZ() < v1.getZ()) {
-			z1f = (int) v2.getZ();
-			z2f = (int) v1.getZ();
-		} else {
-			z1f = (int) v1.getZ();
-			z2f = (int) v2.getZ();
-		}
-		int blocks = 0;
-		for (int x = x1f; x < x2f; x++) {
-			for (int y = y1f; y < y2f; y++) {
-				for (int z = z1f; z < z2f; z++) {
-					if (_world.getBlockId(x, y, z) == srcType) {
-						this._world.setBlockWithNotify(x, y, z, targetType);
+					if (_world.getBlockId(x, y, z) == srcType || srcType < 0) {
+						if (_world.getBlockId(x, y, z) == targetType) {
+							continue;
+						}
+						this._world.setBlockAndMetadataWithUpdate(x, y, z, targetType, 0, true);
 						blocks++;
-						if (blocks > 4000) {
-							return;
+						if (blocks > limit) {
+							return false;
 						}
 					}
 				}
 			}
 		}
+		return true;
 	}
 	
 	public void time(long value) {
@@ -174,9 +154,7 @@ public class MinecraftScriptWorldAPI {
 	}
     
 	public void time(){
-        for (int i = 0; i < MinecraftServer.getServer().worldServers.length; ++i) {
-            MinecraftServer.getServer().worldServers[i].setWorldTime(0);
-        }
+		time(0);
 	}
 
 	public void setBiome(int biome, Vector3f loc) { // not quite working yet, the client needs to reload to see the change
@@ -194,11 +172,18 @@ public class MinecraftScriptWorldAPI {
 	}
 	
 	public void killDrops(Vector3f pos) {
+		killDrops(pos, false);
+	}
+	
+	public void killDrops(Vector3f pos, boolean killExp) {
 		List ents = _world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(
 				pos.getX() - 100, pos.getY() - 100, pos.getZ() - 100, pos.getX() + 100, pos.getY() + 100, pos.getZ() + 100));
 		for (Object object : ents) {
 			if (object instanceof EntityItem) {
-				((EntityItem) object).age = ((EntityItem) object).lifespan; // kill the little lagger
+				_world.removeEntity(((EntityItem) object));
+			}
+			if (killExp && object instanceof EntityXPOrb) {
+				_world.removeEntity(((EntityXPOrb) object));
 			}
 		}
 	}

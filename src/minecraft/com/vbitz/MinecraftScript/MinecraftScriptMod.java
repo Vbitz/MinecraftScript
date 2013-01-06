@@ -119,6 +119,8 @@ public class MinecraftScriptMod {
 		
 		EntityRegistry.registerModEntity(ScriptedThrowable.class, "scriptedThrowable",
 				1234, this, 50, 1, true); // need to change the id maybe
+		
+		GameRegistry.registerWorldGenerator(new MinecraftScriptWorldGen());
 	}
 	
 	private void createScriptedObjects() {

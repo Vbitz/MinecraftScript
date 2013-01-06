@@ -42,7 +42,9 @@ public class ScriptingManager {
 	}
 	
 	public static void exitContext() {
-		Context.exit();
+		if (Context.getCurrentContext() != null) {
+			Context.exit();
+		}
 	}
 	
 	public static void addGlobal(String jsName, String methodName, Class<?>... args) throws SecurityException, NoSuchMethodException {
@@ -73,6 +75,7 @@ public class ScriptingManager {
 			addGlobal("registerTick", "registerTickJS", String.class, Function.class);
 			addGlobal("deregisterTick", "deregisterTickJS", String.class);
 			addGlobal("col", "collectionJS", Object.class);
+			addGlobal("genFunc", "genFuncJS", Function.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 			MinecraftScriptMod.getLogger().severe("Could not load globals");
