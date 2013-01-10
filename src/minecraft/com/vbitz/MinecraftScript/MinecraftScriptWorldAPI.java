@@ -98,10 +98,18 @@ public class MinecraftScriptWorldAPI {
 		return replaceCube(-1, blockType, v1, v2, limit);
 	}
 	
+	public boolean setCube(int blockType, Vector3f v1, Vector3f v2, int limit, boolean hollow) throws ScriptErrorException {
+		return replaceCube(-1, blockType, v1, v2, limit, hollow);
+	}
+	
+	public boolean replaceCube(int srcType, int targetType, Vector3f v1, Vector3f v2, int limit) throws ScriptErrorException {
+		return replaceCube(srcType, targetType, v1, v2, limit, false);
+	}
+	
 	/*
 	 * If you want to do this on something big then do a "slow replace", register a tick handler that calls this method until it returns true, setting a limit of about 5
 	 */
-	public boolean replaceCube(int srcType, int targetType, Vector3f v1, Vector3f v2, int limit) throws ScriptErrorException {
+	public boolean replaceCube(int srcType, int targetType, Vector3f v1, Vector3f v2, int limit, boolean hollow) throws ScriptErrorException {
 		if (limit > 4000) {
 			limit = 4000;
 		}
@@ -131,6 +139,9 @@ public class MinecraftScriptWorldAPI {
 		for (int x = x1f; x < x2f; x++) {
 			for (int y = y1f; y < y2f; y++) {
 				for (int z = z1f; z < z2f; z++) {
+					if (hollow && x > x1f && x < x2f - 1 && y > y1f && y < y2f - 1 && z > z1f && z < z2f - 1) {
+						continue;
+					}
 					if (_world.getBlockId(x, y, z) == srcType || srcType < 0) {
 						if (_world.getBlockId(x, y, z) == targetType) {
 							continue;
