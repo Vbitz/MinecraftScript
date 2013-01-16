@@ -79,7 +79,8 @@ public class MinecraftScriptMod {
 	
 	private boolean webServerStarted = false;
 	
-	private Property clientSideEnabled = new Property("clientSideEnabled", "true", null);
+	private static boolean clientSideEnabled = true;
+	private static boolean unsafeModeEnabled = false;
 	
 	private static IInternalExtendApi[] _internalApis = new IInternalExtendApi[] {
 		new BlockFunctions()
@@ -98,7 +99,8 @@ public class MinecraftScriptMod {
 		
 		config.load();
 		
-		clientSideEnabled = config.get(Configuration.CATEGORY_GENERAL, "clientSideEnabled", true);
+		clientSideEnabled = config.get(Configuration.CATEGORY_GENERAL, "clientSideEnabled", true).getBoolean(true);
+		unsafeModeEnabled = config.get(Configuration.CATEGORY_GENERAL, "unsafeEnabled", false).getBoolean(false);
 		
 		config.save();
 	}
@@ -182,8 +184,12 @@ public class MinecraftScriptMod {
 		webServerStarted = false;
 	}
 	
-	public boolean getClientSideEnabled() {
-		return clientSideEnabled.getBoolean(true);
+	public static boolean getClientSideEnabled() {
+		return clientSideEnabled;
+	}
+	
+	public static boolean getUnsafeEnabled() {
+		return unsafeModeEnabled;
 	}
 
 	public static MinecraftScriptMod getInstance() {

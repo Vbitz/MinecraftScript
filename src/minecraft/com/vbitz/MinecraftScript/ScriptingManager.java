@@ -76,6 +76,10 @@ public class ScriptingManager {
 			addGlobal("deregisterTick", "deregisterTickJS", String.class);
 			addGlobal("col", "collectionJS", Object.class);
 			addGlobal("genFunc", "genFuncJS", Function.class);
+			if (MinecraftScriptMod.getUnsafeEnabled()) {
+				MinecraftScriptMod.getLogger().warning("UNSAFE MODE ENABLED");
+				mcJavascriptScope.put("$", mcJavascriptScope, new MinecraftScriptUnsafeAPI());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			MinecraftScriptMod.getLogger().severe("Could not load globals");
@@ -147,7 +151,7 @@ public class ScriptingManager {
 		} else if (obj instanceof NativeJavaObject) {
 			NativeJavaObject natObj = (NativeJavaObject)obj;
 			if (!(natObj.unwrap() instanceof String)) {
-				return "JavaObject [" + natObj.getClassName() + "]";
+				return "JavaObject [" + natObj.unwrap().getClass().getName() + "]";
 			} else {
 				return (String) natObj.unwrap();
 			}

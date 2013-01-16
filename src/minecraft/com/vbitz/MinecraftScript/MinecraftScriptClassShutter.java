@@ -24,5 +24,9 @@ public class MinecraftScriptClassShutter implements ClassShutter {
 
 	@Override
 	public boolean visibleToScripts(String className) {
-		return _allowedClasses.contains(className);
+		if (MinecraftScriptMod.getInstance().getUnsafeEnabled()) {
+			return true;
+		} else {
+			return _allowedClasses.contains(className);
+		}
 	}}
