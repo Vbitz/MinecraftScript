@@ -138,6 +138,9 @@ public class ScriptingManager {
 	}
 	
 	public static String getTidyOutput(Object obj) {
+		if (obj == null) {
+			return "";
+		}
 		if (obj instanceof Undefined) {
 			return "";
 		} else if (obj instanceof String) {

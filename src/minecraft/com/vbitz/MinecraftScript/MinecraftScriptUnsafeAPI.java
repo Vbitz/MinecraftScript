@@ -15,6 +15,7 @@ import cpw.mods.fml.common.ModContainer;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -22,6 +23,27 @@ import net.minecraft.world.World;
  * Tread with caution, this is a massively powerful API
  */
 public class MinecraftScriptUnsafeAPI {
+	private static Object getRealObject(Object obj, Class<?> target) {
+		if (obj instanceof Number) {
+			if (obj.getClass().getName().equals(target.getName())) {
+				return obj;
+			} else {
+				if (target.getSimpleName() == "int") {
+					return ((Number) obj).intValue();
+				} else if (target.getSimpleName() == "float") {
+					return ((Number) obj).floatValue();
+				} else if (target.getSimpleName() == "double") {
+					return ((Number) obj).doubleValue();
+				} else {
+					MinecraftScriptMod.getLogger().severe(target.getSimpleName() + " not implamented");
+					return obj;
+				}
+			}
+		} else {
+			return obj;
+		}
+	}
+	
 	private static void printMethods(EntityPlayer ply, Class<?> cls, String search, boolean recurse) {
 		for (Method method : cls.getDeclaredMethods()) {
 			if (method.getName().contains(search)) {
@@ -49,6 +71,19 @@ public class MinecraftScriptUnsafeAPI {
 		}
 		if (cls.getSuperclass() != null || !recurse) {
 			printFields(ply, cls.getSuperclass(), search, true);
+		}
+	}
+	
+	private static Field getFieldRecurse(Class<?> objClass, String name) {
+		for (Field field : objClass.getDeclaredFields()) {
+			if (field.getName().equals(name)) {
+				return field;
+			}
+		}
+		if (objClass.getSuperclass() != null) {
+			return getFieldRecurse(objClass.getSuperclass(), name);
+		} else {
+			return null;
 		}
 	}
 	
@@ -107,29 +142,35 @@ public class MinecraftScriptUnsafeAPI {
 				Class<?>[] params = method.getParameterTypes();
 				Object[] realArgs = new Object[args.length];
 				for (int i = 0; i < realArgs.length; i++) {
-					if (args[i] instanceof Number) {
-						if (args[i].getClass().getName().equals(params[i].getName())) {
-							realArgs[i] = args[i];
-						} else {
-							if (params[i].getSimpleName() == "int") {
-								realArgs[i] = ((Number) args[i]).intValue();
-							} else if (params[i].getSimpleName() == "float") {
-								realArgs[i] = ((Number) args[i]).floatValue();
-							} else if (params[i].getSimpleName() == "double") {
-								realArgs[i] = ((Number) args[i]).doubleValue();
-							} else {
-								MinecraftScriptMod.getLogger().severe(params[i] + " not implamented");
-							}
-						}
-					} else {
-						realArgs[i] = args[i];
-					}
+					realArgs[i] = getRealObject(args[i], params[i]);
 				}
 				method.invoke(obj, realArgs);
 				return;
 			}
 		}
 		throw new ScriptErrorException("Method not Found");
+	}
+	
+	public static Object getField(Object obj, String name) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+		Field f = getFieldRecurse(obj.getClass(), name);
+		if (f == null) {
+			return null;
+		}
+		if (!f.isAccessible()) {
+			f.setAccessible(true);
+		}
+		return f.get(obj);
+	}
+	
+	public static void setField(Object obj, String name, Object value) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+		Field f = getFieldRecurse(obj.getClass(), name);
+		if (f == null) {
+			return;
+		}
+		if (!f.isAccessible()) {
+			f.setAccessible(true);
+		}
+		f.set(obj, value);
 	}
 	
 	public static Object getTileEntity(Vector3f pos) {
@@ -146,5 +187,9 @@ public class MinecraftScriptUnsafeAPI {
 	
 	public static World getWorld() {
 		return ScriptingManager.getScriptRunner().worldObj;
+	}
+	
+	public static ItemStack getItem(int id, int metadata, int count) {
+		return new ItemStack(id, count, metadata);
 	}
 }
