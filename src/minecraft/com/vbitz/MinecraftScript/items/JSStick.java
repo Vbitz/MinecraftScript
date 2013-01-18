@@ -35,6 +35,9 @@ public class JSStick extends Item {
 				} catch (EvaluatorException e) {
 					par3EntityPlayer.sendChatToPlayer("Error: " + e.toString());
 					ScriptingManager.exitContext();
+				} catch (Error e) {
+					par3EntityPlayer.sendChatToPlayer("Error: " + e.getMessage());
+					ScriptingManager.exitContext();
 				}
 			}
 		}

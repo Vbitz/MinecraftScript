@@ -46,6 +46,9 @@ public class JSDofileCommand extends CommandBase {
 		} catch (IOException e) {
 			cmdSender.sendChatToPlayer("Error: " + e.toString());
 			ScriptingManager.exitContext();
+		} catch (Error e) {
+			cmdSender.sendChatToPlayer("Error: " + e.getMessage());
+			ScriptingManager.exitContext();
 		}
 	}
 

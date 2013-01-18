@@ -170,7 +170,7 @@ public class MinecraftScriptUnsafeAPI {
 		if (!f.isAccessible()) {
 			f.setAccessible(true);
 		}
-		f.set(obj, value);
+		f.set(obj, getRealObject(value, f.getType()));
 	}
 	
 	public static Object getTileEntity(Vector3f pos) {
@@ -179,6 +179,10 @@ public class MinecraftScriptUnsafeAPI {
 	
 	public static Object getBlock(Vector3f pos) {
 		return Block.blocksList[ScriptingManager.getScriptRunner().worldObj.getBlockId((int) pos.getX(), (int) pos.getY(), (int) pos.getZ())];
+	}
+	
+	public static ItemStack getItemStack(EntityPlayer ply, int pos) {
+		return ply.inventory.getStackInSlot(pos);
 	}
 	
 	public static EntityPlayer getMe() {

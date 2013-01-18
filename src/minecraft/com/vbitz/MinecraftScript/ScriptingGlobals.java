@@ -144,4 +144,8 @@ public class ScriptingGlobals {
 	public static void genFuncJS(Function func) {
 		MinecraftScriptWorldGen.setFunc(func, ScriptingManager.getScriptRunner());
 	}
+	
+	public static void reloadScopeJS() {
+		ScriptingManager.reloadScope();
+	}
 }

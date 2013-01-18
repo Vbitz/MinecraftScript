@@ -52,6 +52,8 @@ public class ScriptedBlock extends Block {
 				par5EntityPlayer.sendChatToPlayer("Error: " + e.getMessage());
 			} catch (EvaluatorException e) {
 				par5EntityPlayer.sendChatToPlayer("Error: " + e.getMessage());
+			} catch (Error e) {
+				par5EntityPlayer.sendChatToPlayer("Error: " + e.getMessage());
 			}
 			ScriptingManager.exitContext();
 		}
@@ -68,6 +70,8 @@ public class ScriptedBlock extends Block {
 			} catch (EcmaError e) {
 				lastUpdater.sendChatToPlayer("Error: " + e.getMessage());
 			} catch (EvaluatorException e) {
+				lastUpdater.sendChatToPlayer("Error: " + e.getMessage());
+			} catch (Error e) {
 				lastUpdater.sendChatToPlayer("Error: " + e.getMessage());
 			}
 			ScriptingManager.exitContext();

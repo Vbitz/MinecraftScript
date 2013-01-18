@@ -60,6 +60,9 @@ public class JSCommand extends CommandBase {
 		} catch (EvaluatorException e) {
 			cmdSender.sendChatToPlayer("Error: " + e.getMessage());
 			ScriptingManager.exitContext();
+		} catch (Error e) {
+			cmdSender.sendChatToPlayer("Error: " + e.getMessage());
+			ScriptingManager.exitContext();
 		}
 	}
 

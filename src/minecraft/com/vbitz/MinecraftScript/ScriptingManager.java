@@ -51,9 +51,7 @@ public class ScriptingManager {
 		mcJavascriptScope.put(jsName, mcJavascriptScope, new FunctionObject(jsName, ScriptingGlobals.class.getMethod(methodName, args), mcJavascriptScope));
 	}
 	
-	public static void loadScriptEngine() {
-		mcJavascriptContext = Context.enter();
-		mcJavascriptContext.setClassShutter(new MinecraftScriptClassShutter());
+	public static void loadScope(boolean firstLoad) {
 		mcJavascriptScope = mcJavascriptContext.initStandardObjects();
 		try {
 			addGlobal("me", "getScriptRunnerJS");
@@ -76,16 +74,34 @@ public class ScriptingManager {
 			addGlobal("deregisterTick", "deregisterTickJS", String.class);
 			addGlobal("col", "collectionJS", Object.class);
 			addGlobal("genFunc", "genFuncJS", Function.class);
+			addGlobal("reload", "reloadScopeJS");
 			if (MinecraftScriptMod.getUnsafeEnabled()) {
-				MinecraftScriptMod.getLogger().warning("UNSAFE MODE ENABLED");
+				if (firstLoad) {
+					MinecraftScriptMod.getLogger().warning("UNSAFE MODE ENABLED");
+				}
 				mcJavascriptScope.put("$", mcJavascriptScope, new MinecraftScriptUnsafeAPI());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			MinecraftScriptMod.getLogger().severe("Could not load globals");
+			if (firstLoad) {
+				e.printStackTrace();
+				MinecraftScriptMod.getLogger().severe("Could not load globals");
+			}
 		}
+	}
+	
+	public static void loadScriptEngine() {
+		MinecraftScriptContextFactory.setup();
+		mcJavascriptContext = Context.enter();
+		mcJavascriptContext.setClassShutter(new MinecraftScriptClassShutter());
+		loadScope(true);
 		MinecraftScriptMod.getLogger().info("Loaded Script Engine");
 		Context.exit();
+	}
+	
+	public static void reloadScope() {
+		MinecraftScriptMod.getLogger().fine("Reloading Scripting Scope");
+		loadScope(false);
+		loadAllScripts(_scriptsDirectory);
 	}
 
 	public static void loadAllScripts(File scriptsDirectory) {
@@ -104,6 +120,8 @@ public class ScriptingManager {
 				MinecraftScriptMod.getLogger().severe("Could not find " + f.getName());
 			} catch (IOException e) {
 				MinecraftScriptMod.getLogger().severe(e.toString());
+			} catch (Error e) {
+				MinecraftScriptMod.getLogger().severe("Error Loading " + f.getName());
 			}
 		}
 		mcJavascriptScope.put("isPreload", mcJavascriptScope, false);
@@ -145,6 +163,10 @@ public class ScriptingManager {
 			return "";
 		} else if (obj instanceof String) {
 			return (String)obj;
+		} else if (obj instanceof Integer) {
+			return ((Integer)obj).toString();
+		} else if (obj instanceof Boolean) {
+			return ((Boolean)obj).toString();
 		} else if (obj instanceof NativeArray) {
 			String ret = "[";
 			for (Object object : ((NativeArray) obj).getAllIds()) {

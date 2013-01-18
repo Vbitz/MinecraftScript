@@ -57,6 +57,9 @@ public class JSCommandCommand extends CommandBase {
 			} catch (EvaluatorException e) {
 				var1.sendChatToPlayer("Error: " + e.getMessage());
 				ScriptingManager.exitContext();
+			} catch (Error e) {
+				var1.sendChatToPlayer("Error: " + e.getMessage());
+				ScriptingManager.exitContext();
 			}
 		} else {
 			var1.sendChatToPlayer("Error: Command not found, add with api.registerCommand(name, function)");
