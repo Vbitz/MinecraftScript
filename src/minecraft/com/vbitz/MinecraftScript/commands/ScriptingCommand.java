@@ -64,8 +64,6 @@ public abstract class ScriptingCommand extends CommandBase {
 			throw new WrongUsageException(this.getCommandUsage(cmdSender));
 		}
 		
-		System.out.println(args[0]);
-		
 		if (args[0].equals("dofile")) {
 			runFile(cmdSender, args[1]);
 		} else if (args[0].equals("dobook")) {

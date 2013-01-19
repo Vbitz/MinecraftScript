@@ -34,7 +34,7 @@ public class JSScriptingCommand extends ScriptingCommand {
 	public void runString(ICommandSender cmdSender, String code) {
 		try {
 			String out = ScriptingManager.getTidyOutput(
-					ScriptingManager.runString(code, MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(cmdSender.getCommandSenderName())));
+					ScriptingManager.runString(code, func_82359_c(cmdSender, cmdSender.getCommandSenderName())));
 			if (!out.equals("")) {
 				cmdSender.sendChatToPlayer(out);
 			}

@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+	<title>MCS Web Client</title>
+
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script src="src-min-noconflict/ace.js"></script>
+
+	<style type="text/css">
+	body {
+		font-family: sans-serif;
+	}
+
+	#editor {
+		position: absolute;
+		top: 40px;
+		bottom: 0px;
+		left: 0px;
+		right: 0px;
+	}
+	</style>
+</head>
+<body>
+
+	<div>
+		<form>
+			<span>Server Address: </span>
+			<input type="text" id="serverAddress" content="localhost:12543" />
+			<span>API Key: </span>
+			<input type="text" id="apiKey" placeholder="Run /api ingame"/>
+			<button id="runScript" onclick="runScript()">Run Script</button>
+		</form>
+	</div>
+
+	<div id="editor"></div>
+
+	<script type="text/javascript">
+    	var editor = ace.edit("editor");
+    	editor.setTheme("ace/theme/monokai");
+    	editor.getSession().setMode("ace/mode/javascript");
+
+    	$("#serverAddress").val("localhost:12543");
+
+    	function runScript() {
+    		$.ajax({
+    			method: "POST",
+    			url: "/runScript?apiKey=" + $("#apiKey").val(),
+    			
+    		});
+    	}
+	</script>
+
+</body>
+</html>

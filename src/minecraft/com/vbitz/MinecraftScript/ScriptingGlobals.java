@@ -93,10 +93,6 @@ public class ScriptingGlobals {
 		MinecraftScriptCommandManager.addCommand(name, command);
 	}
 	
-	public static void registerWebpointJS(String name, Function func) {
-		MinecraftScriptHTTPServer.addFunction(name, func);
-	}
-	
 	public static void setDifficultyJS(String diff) throws ScriptErrorException {
 		if (Difficultys.containsKey(diff)) {
 			MinecraftServer.getServer().setDifficultyForAllWorlds(Difficultys.get(diff));

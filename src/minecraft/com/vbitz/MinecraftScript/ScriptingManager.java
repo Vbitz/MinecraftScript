@@ -65,7 +65,6 @@ public class ScriptingManager {
 			addGlobal("itemId", "getItemIdJS", String.class);
 			addGlobal("player", "playerJS", String.class);
 			addGlobal("registerCommand", "registerCommandJS", String.class, Function.class);
-			addGlobal("registerWebpoint", "registerWebpointJS", String.class, Function.class);
 			addGlobal("difficulty", "setDifficultyJS", String.class);
 			addGlobal("addSmeltingRecipe", "addSmeltingRecipeJS", int.class, int.class, int.class);
 			addGlobal("runExt", "runExtJS", String.class, NativeArray.class);

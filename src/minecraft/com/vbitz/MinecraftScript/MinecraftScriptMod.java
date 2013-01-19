@@ -9,11 +9,10 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.logging.Logger;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.*;
 
 import com.vbitz.MinecraftScript.blocks.ScriptedBlock;
+import com.vbitz.MinecraftScript.commands.APIKeyCommand;
 import com.vbitz.MinecraftScript.commands.JSScriptingCommand;
 import com.vbitz.MinecraftScript.commands.MinecraftScriptHelpCommand;
 import com.vbitz.MinecraftScript.extend.BlockFunctions;
@@ -33,25 +32,12 @@ import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.common.Mod.Init;
-import cpw.mods.fml.common.Mod.ServerStarted;
-import cpw.mods.fml.common.Mod.ServerStarting;
-import cpw.mods.fml.common.Mod.ServerStopping;
+import cpw.mods.fml.common.Mod.*;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PostInit;
-import cpw.mods.fml.common.Mod.PreInit;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.Mod.*;
+import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.common.registry.*;
 import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid="MinecraftScript", name="MinecraftScript", version="0.0.0")
@@ -113,6 +99,7 @@ public class MinecraftScriptMod {
 		JSStick.getSingilton(); // just to get it to register
 		
 		TickRegistry.registerTickHandler(MinecraftScriptedTickManager.getInstance(), Side.SERVER);
+		TickRegistry.registerTickHandler(MinecraftScriptHTTPServer.getInstance(), Side.SERVER);
 		
 		EntityRegistry.registerModEntity(ScriptedThrowable.class, "scriptedThrowable",
 				1234, this, 50, 1, true); // need to change the id maybe
@@ -155,6 +142,7 @@ public class MinecraftScriptMod {
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent e) {
 		CommandHandler commandManager = (CommandHandler)e.getServer().getCommandManager();
+		commandManager.registerCommand(new APIKeyCommand());
 		commandManager.registerCommand(new JSScriptingCommand());
 		commandManager.registerCommand(new MinecraftScriptHelpCommand());
 		
@@ -163,14 +151,13 @@ public class MinecraftScriptMod {
 	
 	@ServerStarted
 	public void serverStarted(FMLServerStartedEvent e) {
-		//MinecraftScriptHTTPServer.start(); // until this is done it's disabled
-			// otherwise no new stuff for a good while
+		MinecraftScriptHTTPServer.start();
 		webServerStarted = true;
 	}
 	
 	@ServerStopping
 	public void serverStopping(FMLServerStoppingEvent e) {
-		//MinecraftScriptHTTPServer.stop();
+		MinecraftScriptHTTPServer.stop();
 		webServerStarted = false;
 	}
 	
