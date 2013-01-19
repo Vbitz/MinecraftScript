@@ -52,10 +52,7 @@ public class StaticFileEndpoint implements HttpHandler {
 					arrLength = fileSizeRead.available();
 				}
 				byte[] buf = new byte[arrLength];
-				if (fileSizeRead.read(buf) != arrLength) {
-					break;
-				}
-				fileSize += arrLength;
+				fileSize += fileSizeRead.read(buf);
 			}
 			fileSizeRead.close();
 			InputStream str = this.getClass().getResourceAsStream(filename);
@@ -68,11 +65,7 @@ public class StaticFileEndpoint implements HttpHandler {
 					arrLength = str.available();
 				}
 				byte[] buf = new byte[arrLength];
-				if (str.read(buf) != arrLength) {
-					break;
-				}
-				writenCount += arrLength;
-				System.out.println(fileSize + " : " + writenCount);
+				writenCount += str.read(buf);
 				resStr.write(buf);
 			}
 			resStr.close(); // this sometimes fails
