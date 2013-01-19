@@ -14,13 +14,8 @@ import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ScriptableObject;
 
 import com.vbitz.MinecraftScript.blocks.ScriptedBlock;
-import com.vbitz.MinecraftScript.commands.JSCommand;
-import com.vbitz.MinecraftScript.commands.JSCommandCommand;
-import com.vbitz.MinecraftScript.commands.JSDobookCommand;
-import com.vbitz.MinecraftScript.commands.JSDofileCommand;
-import com.vbitz.MinecraftScript.commands.JSStickCommand;
+import com.vbitz.MinecraftScript.commands.JSScriptingCommand;
 import com.vbitz.MinecraftScript.commands.MinecraftScriptHelpCommand;
-import com.vbitz.MinecraftScript.commands.TestMapData;
 import com.vbitz.MinecraftScript.extend.BlockFunctions;
 import com.vbitz.MinecraftScript.extend.IInternalExtendApi;
 import com.vbitz.MinecraftScript.items.JSStick;
@@ -160,13 +155,8 @@ public class MinecraftScriptMod {
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent e) {
 		CommandHandler commandManager = (CommandHandler)e.getServer().getCommandManager();
-		commandManager.registerCommand(new JSCommand());
-		commandManager.registerCommand(new JSDofileCommand());
-		commandManager.registerCommand(new JSDobookCommand());
-		commandManager.registerCommand(new JSCommandCommand());
-		commandManager.registerCommand(new JSStickCommand());
+		commandManager.registerCommand(new JSScriptingCommand());
 		commandManager.registerCommand(new MinecraftScriptHelpCommand());
-		commandManager.registerCommand(new TestMapData());
 		
 		ScriptingManager.loadAllScripts(scriptsDirectory);
 	}
