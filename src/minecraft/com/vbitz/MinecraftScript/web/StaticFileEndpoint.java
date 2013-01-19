@@ -41,9 +41,8 @@ public class StaticFileEndpoint implements HttpHandler {
 				ex.close();
 				return;
 			}
-			long fileLength = new File(fileURL.getFile()).length();
-			ex.sendResponseHeaders(200, fileLength);
 			InputStream str = this.getClass().getResourceAsStream("/com/vbitz/MinecraftScript/htmlsrc/" + filename);
+			ex.sendResponseHeaders(200, str.available());
 			OutputStream resStr = ex.getResponseBody();
 			int writenCount = 0;
 			while (str.available() > 0) {
