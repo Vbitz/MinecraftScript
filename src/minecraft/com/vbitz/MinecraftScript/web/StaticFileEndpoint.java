@@ -35,14 +35,29 @@ public class StaticFileEndpoint implements HttpHandler {
 				ex.close();
 				return;
 			}
-			URL fileURL = this.getClass().getResource("/com/vbitz/MinecraftScript/htmlsrc/" + filename);
+			filename = "/com/vbitz/MinecraftScript/htmlsrc/" + filename;
+			URL fileURL = this.getClass().getResource(filename);
 			if (fileURL == null) {
 				ex.sendResponseHeaders(404, 0);
 				ex.close();
 				return;
 			}
-			InputStream str = this.getClass().getResourceAsStream("/com/vbitz/MinecraftScript/htmlsrc/" + filename);
-			ex.sendResponseHeaders(200, str.available());
+			int fileSize = 0;
+			InputStream fileSizeRead = this.getClass().getResourceAsStream(filename);
+			while (fileSizeRead.available() > 0) { // not the best code but it works, I might improve this in the future
+				int arrLength = 2048;
+				if (fileSizeRead.available() < 2048) {
+					arrLength = fileSizeRead.available();
+				}
+				byte[] buf = new byte[arrLength];
+				if (fileSizeRead.read(buf) != arrLength) {
+					break;
+				}
+				fileSize += arrLength;
+			}
+			fileSizeRead.close();
+			InputStream str = this.getClass().getResourceAsStream(filename);
+			ex.sendResponseHeaders(200, fileSize);
 			OutputStream resStr = ex.getResponseBody();
 			int writenCount = 0;
 			while (str.available() > 0) {
@@ -57,7 +72,7 @@ public class StaticFileEndpoint implements HttpHandler {
 				writenCount += arrLength;
 				resStr.write(buf);
 			}
-			resStr.close();
+			resStr.close(); // this sometimes fails
 			str.close();
 		} catch (IOException e) {
 			e.printStackTrace();
