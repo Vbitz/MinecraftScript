@@ -8,8 +8,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.bouncycastle.jcajce.provider.asymmetric.dsa.DSASigner.stdDSA;
-
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -46,7 +44,7 @@ public class StaticFileEndpoint implements HttpHandler {
 				ex.close();
 				return;
 			}
-			int fileSize = 0;
+			/*
 			InputStream fileSizeRead = this.getClass().getResourceAsStream(filename);
 			while (fileSizeRead.available() > 0) { // not the best code but it works, I might improve this in the future
 				int arrLength = readSize;
@@ -57,8 +55,9 @@ public class StaticFileEndpoint implements HttpHandler {
 				fileSize += fileSizeRead.read(buf);
 			}
 			fileSizeRead.close();
+			*/
 			InputStream str = this.getClass().getResourceAsStream(filename);
-			ex.sendResponseHeaders(200, fileSize);
+			ex.sendResponseHeaders(200, 0);
 			OutputStream resStr = ex.getResponseBody();
 			int writenCount = 0;
 			while (str.available() > 0) {
