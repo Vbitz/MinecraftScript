@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bouncycastle.jcajce.provider.asymmetric.dsa.DSASigner.stdDSA;
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -70,6 +72,7 @@ public class StaticFileEndpoint implements HttpHandler {
 					break;
 				}
 				writenCount += arrLength;
+				System.out.println(fileSize + " : " + writenCount);
 				resStr.write(buf);
 			}
 			resStr.close(); // this sometimes fails

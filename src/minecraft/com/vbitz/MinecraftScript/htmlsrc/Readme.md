@@ -1,2 +1,2 @@
-MinecraftScript Web Client
-==========================
+MCS Web Client
+==============
