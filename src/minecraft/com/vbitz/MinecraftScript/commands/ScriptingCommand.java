@@ -63,7 +63,11 @@ public abstract class ScriptingCommand extends CommandBase {
 		}
 		
 		if (args[0].equals("dofile")) {
-			runFile(cmdSender, args[1]);
+			if (args.length > 1) {
+				runFile(cmdSender, args[1]);
+			} else {
+				throw new WrongUsageException("/" + this.getCommandName() + " dofile filename");
+			}
 		} else if (args[0].equals("dobook")) {
 			runBook(cmdSender);
 		} else if (args[0].equals("stick")) {
