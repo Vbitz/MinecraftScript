@@ -44,18 +44,6 @@ public class StaticFileEndpoint implements HttpHandler {
 				ex.close();
 				return;
 			}
-			/*
-			InputStream fileSizeRead = this.getClass().getResourceAsStream(filename);
-			while (fileSizeRead.available() > 0) { // not the best code but it works, I might improve this in the future
-				int arrLength = readSize;
-				if (fileSizeRead.available() < readSize) {
-					arrLength = fileSizeRead.available();
-				}
-				byte[] buf = new byte[arrLength];
-				fileSize += fileSizeRead.read(buf);
-			}
-			fileSizeRead.close();
-			*/
 			InputStream str = this.getClass().getResourceAsStream(filename);
 			ex.sendResponseHeaders(200, 0);
 			OutputStream resStr = ex.getResponseBody();

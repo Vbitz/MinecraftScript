@@ -8,8 +8,10 @@ import org.mozilla.javascript.EvaluatorException;
 
 import com.vbitz.MinecraftScript.MinecraftScriptCommandManager;
 import com.vbitz.MinecraftScript.MinecraftScriptMod;
-import com.vbitz.MinecraftScript.ScriptingManager;
+import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
 import com.vbitz.MinecraftScript.items.JSStick;
+import com.vbitz.MinecraftScript.scripting.ScriptRunnerPlayer;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -32,40 +34,24 @@ public class JSScriptingCommand extends ScriptingCommand {
 	
 	@Override
 	public void runString(ICommandSender cmdSender, String code) {
-		try {
-			String out = ScriptingManager.getTidyOutput(
-					ScriptingManager.runString(code, func_82359_c(cmdSender, cmdSender.getCommandSenderName())));
+			String out = "";
+			try {
+				out = JSScriptingManager.getInstance().getTidyOutput(
+						JSScriptingManager.getInstance().runString(code, new ScriptRunnerPlayer(func_82359_c(cmdSender, cmdSender.getCommandSenderName()))));
+			} catch (InternalScriptingException e) {
+				cmdSender.sendChatToPlayer("Error: " + e.getMessage());
+			}
 			if (!out.equals("")) {
 				cmdSender.sendChatToPlayer(out);
 			}
-		} catch (EcmaError e) {
-			cmdSender.sendChatToPlayer("Error: " + e.getMessage());
-			ScriptingManager.exitContext();
-		} catch (EvaluatorException e) {
-			cmdSender.sendChatToPlayer("Error: " + e.getMessage());
-			ScriptingManager.exitContext();
-		} catch (Error e) {
-			cmdSender.sendChatToPlayer("Error: " + e.getMessage());
-			ScriptingManager.exitContext();
-		}
 	}
 
 	@Override
 	public void runFile(ICommandSender cmdSender, String filename) {
 		try {
-			ScriptingManager.doFile(filename);
-		} catch (EcmaError e) {
-			cmdSender.sendChatToPlayer("Error: " + e.toString());
-			ScriptingManager.exitContext();
-		} catch (EvaluatorException e) {
-			cmdSender.sendChatToPlayer("Error: " + e.toString());
-			ScriptingManager.exitContext();
-		} catch (IOException e) {
-			cmdSender.sendChatToPlayer("Error: " + e.toString());
-			ScriptingManager.exitContext();
-		} catch (Error e) {
-			cmdSender.sendChatToPlayer("Error: " + e.getMessage());
-			ScriptingManager.exitContext();
+			JSScriptingManager.getInstance().runFile(filename, new ScriptRunnerPlayer(func_82359_c(cmdSender, cmdSender.getCommandSenderName())));
+		} catch (InternalScriptingException e) {
+			cmdSender.sendChatToPlayer("Error: "+ e.getMessage());
 		}
 	}
 	
@@ -107,17 +93,12 @@ public class JSScriptingCommand extends ScriptingCommand {
             }
         }
 		
-		try {
-			ScriptingManager.runString(script, MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(cmdSender.getCommandSenderName()));
-		} catch (EcmaError e) {
-			cmdSender.sendChatToPlayer("Error: " + e.toString());
-			ScriptingManager.exitContext();
-		} catch (EvaluatorException e) {
-			cmdSender.sendChatToPlayer("Error: " + e.toString());
-			ScriptingManager.exitContext();
-		} catch (Error e) {
+        ScriptRunnerPlayer ply = new ScriptRunnerPlayer(MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(cmdSender.getCommandSenderName()));
+        
+        try {
+			JSScriptingManager.getInstance().runString(script, ply);
+		} catch (InternalScriptingException e) {
 			cmdSender.sendChatToPlayer("Error: " + e.getMessage());
-			ScriptingManager.exitContext();
 		}
 	}
 
@@ -144,26 +125,15 @@ public class JSScriptingCommand extends ScriptingCommand {
 	@Override
 	public void runCommand(ICommandSender cmdSender, String commandName,
 			String[] args) {
-		ScriptingManager.setScriptRunner(getCommandSenderAsPlayer(cmdSender));
 		if (MinecraftScriptCommandManager.containsCommand(commandName)) {
 			try {
-				ScriptingManager.enterContext();
-					String out = ScriptingManager.getTidyOutput(MinecraftScriptCommandManager.runCommand(commandName, args));
-					if (!out.equals("")) {cmdSender.sendChatToPlayer(out); }
-			} catch (EcmaError e) {
-				cmdSender.sendChatToPlayer("Error: " + e.getMessage());
-				ScriptingManager.exitContext();
-			} catch (EvaluatorException e) {
-				cmdSender.sendChatToPlayer("Error: " + e.getMessage());
-				ScriptingManager.exitContext();
-			} catch (Error e) {
-				cmdSender.sendChatToPlayer("Error: " + e.getMessage());
-				ScriptingManager.exitContext();
+				MinecraftScriptCommandManager.runCommand(commandName, args, new ScriptRunnerPlayer(getCommandSenderAsPlayer(cmdSender)));
+			} catch (InternalScriptingException e) {
+				cmdSender.sendChatToPlayer(e.getMessage());
 			}
 		} else {
 			cmdSender.sendChatToPlayer("Error: Command not found, add with registerCommand(name, function)");
 		}
-		ScriptingManager.setScriptRunner(null);
 	}
 
 	@Override

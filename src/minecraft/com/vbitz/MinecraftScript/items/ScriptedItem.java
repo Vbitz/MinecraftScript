@@ -5,14 +5,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import org.mozilla.javascript.EcmaError;
-import org.mozilla.javascript.EvaluatorException;
-import org.mozilla.javascript.Function;
-
 import com.vbitz.MinecraftScript.MinecraftScriptPlayerAPI;
 import com.vbitz.MinecraftScript.MinecraftScriptWorldAPI;
 import com.vbitz.MinecraftScript.ScriptedThrowable;
-import com.vbitz.MinecraftScript.ScriptingManager;
+import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
+import com.vbitz.MinecraftScript.scripting.ScriptRunnerPlayer;
+import com.vbitz.MinecraftScript.scripting.IFunction;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 
 public class ScriptedItem extends Item {
 
@@ -22,7 +21,7 @@ public class ScriptedItem extends Item {
 	
 	public boolean rightClickThrows = false;
 	
-	public Function rightClickFunction = null;
+	public IFunction rightClickFunction = null;
 	
 	public ScriptedItem(int itemId) {
 		super(itemId);
@@ -37,17 +36,11 @@ public class ScriptedItem extends Item {
 				ScriptedThrowable thr = new ScriptedThrowable(par2World, par3EntityPlayer, rightClickFunction);
 				par2World.spawnEntityInWorld(thr);
 			} else {
-				ScriptingManager.enterContext();
 				try {
-					ScriptingManager.runFunction(rightClickFunction,
-							new MinecraftScriptWorldAPI(par2World, par3EntityPlayer),
-							new MinecraftScriptPlayerAPI(par3EntityPlayer));
-				} catch (EcmaError e) {
-					par3EntityPlayer.sendChatToPlayer("Error: " + e.getMessage());
-				} catch (EvaluatorException e) {
+					JSScriptingManager.getInstance().runFunction(new ScriptRunnerPlayer(par3EntityPlayer), rightClickFunction);
+				} catch (InternalScriptingException e) {
 					par3EntityPlayer.sendChatToPlayer("Error: " + e.getMessage());
 				}
-				ScriptingManager.exitContext();
 			}
 		}
 		if (rightClickConsumes) {

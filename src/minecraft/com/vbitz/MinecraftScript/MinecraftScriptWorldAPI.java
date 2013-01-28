@@ -10,13 +10,18 @@ import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 
+import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
 import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
+import com.vbitz.MinecraftScript.scripting.IFunction;
+import com.vbitz.MinecraftScript.scripting.ScriptRunnerPlayer;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.*;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.item.EntityFireworkRocket;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.*;
@@ -264,6 +269,22 @@ public class MinecraftScriptWorldAPI {
 		_world.spawnEntityInWorld(ent);
 	}
 	
+	public void spawnTnt(Vector3f pos, int fuse, int size) throws ScriptErrorException {
+		final int expSize = size;
+		EntityTNTPrimed tnt = new EntityTNTPrimed(_world) {
+			@Override
+			public void onUpdate() {
+				super.onUpdate();
+				if (isDead) {
+					this.worldObj.createExplosion((Entity) null, posX, posY, posZ, expSize, true);
+				}
+			}
+		};
+		tnt.fuse = fuse;
+		tnt.setPosition(pos.getX(), pos.getY(), pos.getZ());
+		_world.spawnEntityInWorld(tnt);
+	}
+	
 	public boolean grow(Vector3f pos) {
 		ItemStack t = new ItemStack(Item.dyePowder, 1);
 		t.setItemDamage(15);
@@ -470,8 +491,8 @@ public class MinecraftScriptWorldAPI {
 		_world.spawnEntityInWorld(fireWork);
 	}
 	
-	public void firecode(Vector3f pos, int flightTime, Function func) {
-		final Function explodeFunc = func;
+	public void firecode(Vector3f pos, int flightTime, Object func) {
+		final IFunction explodeFunc = JSScriptingManager.getInstance().getFunction(func);
 		final EntityPlayer owner = _player;
 		ItemStack stk = new ItemStack(Item.field_92052_bU);
 		NBTTagCompound baseComp = new NBTTagCompound();
@@ -484,23 +505,12 @@ public class MinecraftScriptWorldAPI {
 				super.onUpdate();
 				if (this.isDead) {
 					if (explodeFunc != null && !worldObj.isRemote) {
-						ScriptingManager.enterContext();
 						try {
-							if (owner instanceof EntityPlayer) {
-								ScriptingManager.runFunction(explodeFunc,
-										new MinecraftScriptWorldAPI(owner.worldObj, (EntityPlayer) owner),
-										new Vector3f(this.posX, this.posY, this.posZ));
-							}
-						} catch (EcmaError e) {
-							if (owner instanceof EntityPlayer) {
-								((EntityPlayer) owner).sendChatToPlayer("Error: " + e.getMessage());
-							}
-						} catch (EvaluatorException e) {
-							if (owner instanceof EntityPlayer) {
-								((EntityPlayer) owner).sendChatToPlayer("Error: " + e.getMessage());
-							}
+							JSScriptingManager.getInstance().runFunction(new ScriptRunnerPlayer(owner), explodeFunc, 
+									new Vector3f(this.posX, this.posY, this.posZ));
+						} catch (InternalScriptingException e) {
+							owner.sendChatToPlayer("Error in firecode: " + e.getMessage());
 						}
-						ScriptingManager.exitContext();
 					}
 				}
 			}

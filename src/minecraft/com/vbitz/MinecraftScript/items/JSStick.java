@@ -3,7 +3,9 @@ package com.vbitz.MinecraftScript.items;
 import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.EvaluatorException;
 
-import com.vbitz.MinecraftScript.ScriptingManager;
+import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
+import com.vbitz.MinecraftScript.scripting.ScriptRunnerPlayer;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -28,16 +30,10 @@ public class JSStick extends Item {
 		if (!par2World.isRemote){
 			if (par1ItemStack.getTagCompound().hasKey("code")) {
 				try {
-					ScriptingManager.runString(par1ItemStack.getTagCompound().getString("code"), par3EntityPlayer);
-				} catch (EcmaError e) {
-					par3EntityPlayer.sendChatToPlayer("Error: " + e.toString());
-					ScriptingManager.exitContext();
-				} catch (EvaluatorException e) {
-					par3EntityPlayer.sendChatToPlayer("Error: " + e.toString());
-					ScriptingManager.exitContext();
-				} catch (Error e) {
-					par3EntityPlayer.sendChatToPlayer("Error: " + e.getMessage());
-					ScriptingManager.exitContext();
+					JSScriptingManager.getInstance().runString(par1ItemStack.getTagCompound().getString("code"),
+							new ScriptRunnerPlayer(par3EntityPlayer));
+				} catch (InternalScriptingException e) {
+					par3EntityPlayer.sendChatToPlayer("Error: " + par3EntityPlayer);
 				}
 			}
 		}

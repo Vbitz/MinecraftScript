@@ -18,7 +18,7 @@ public class MinecraftScriptContextFactory extends ContextFactory {
     {
     	WatchedContext cx = new WatchedContext();
         // Make Rhino runtime to call observeInstructionCount
-        // each 10000 bytecode instructions
+        // each 2000 bytecode instructions
         cx.setInstructionObserverThreshold(2000);
         return cx;
     }

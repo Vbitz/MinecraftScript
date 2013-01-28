@@ -13,14 +13,19 @@ import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.Function;
 
 import com.vbitz.MinecraftScript.MinecraftScriptWorldAPI;
-import com.vbitz.MinecraftScript.ScriptingManager;
+import com.vbitz.MinecraftScript.Vector3f;
+import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
+import com.vbitz.MinecraftScript.scripting.IFunction;
+import com.vbitz.MinecraftScript.scripting.ScriptRunner;
+import com.vbitz.MinecraftScript.scripting.ScriptRunnerPlayer;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 
 public class ScriptedBlock extends Block {
 	
-	public Function rightClickFunction = null;
-	public Function updateFunction = null;
+	public IFunction rightClickFunction = null;
+	public IFunction updateFunction = null;
 	
-	public EntityPlayer lastUpdater = null;
+	public ScriptRunner lastUpdater = null;
 	
 	public HashMap<Integer, Integer> blockTextures = new HashMap<Integer, Integer>();
 	
@@ -45,17 +50,11 @@ public class ScriptedBlock extends Block {
 			int worldZ, EntityPlayer par5EntityPlayer, int par6, float par7,
 			float par8, float par9) {
 		if (rightClickFunction != null) {
-			ScriptingManager.enterContext();
 			try {
-				ScriptingManager.runFunction(rightClickFunction, new MinecraftScriptWorldAPI(par1World, par5EntityPlayer), worldX, worldY, worldZ);
-			} catch (EcmaError e) {
-				par5EntityPlayer.sendChatToPlayer("Error: " + e.getMessage());
-			} catch (EvaluatorException e) {
-				par5EntityPlayer.sendChatToPlayer("Error: " + e.getMessage());
-			} catch (Error e) {
-				par5EntityPlayer.sendChatToPlayer("Error: " + e.getMessage());
+				JSScriptingManager.getInstance().runFunction(new ScriptRunnerPlayer(par5EntityPlayer), rightClickFunction, new Vector3f(worldX, worldY, worldZ));
+			} catch (InternalScriptingException e) {
+				lastUpdater.sendChat("Error: " + e.getMessage());
 			}
-			ScriptingManager.exitContext();
 		}
 		return true;
 	}
@@ -64,17 +63,11 @@ public class ScriptedBlock extends Block {
 	public void onNeighborBlockChange(World par1World, int worldX, int worldY,
 			int worldZ, int neiBlock) {
 		if (updateFunction != null) {
-			ScriptingManager.enterContext();
 			try {
-				ScriptingManager.runFunction(updateFunction, new MinecraftScriptWorldAPI(par1World, lastUpdater), worldX, worldY, worldZ);
-			} catch (EcmaError e) {
-				lastUpdater.sendChatToPlayer("Error: " + e.getMessage());
-			} catch (EvaluatorException e) {
-				lastUpdater.sendChatToPlayer("Error: " + e.getMessage());
-			} catch (Error e) {
-				lastUpdater.sendChatToPlayer("Error: " + e.getMessage());
+				JSScriptingManager.getInstance().runFunction(lastUpdater, updateFunction, new Vector3f(worldX, worldY, worldZ));
+			} catch (InternalScriptingException e) {
+				lastUpdater.sendChat("Error: " + e.getMessage());
 			}
-			ScriptingManager.exitContext();
 		}
 		super.onNeighborBlockChange(par1World, worldX, worldY, worldZ, neiBlock);
 	}

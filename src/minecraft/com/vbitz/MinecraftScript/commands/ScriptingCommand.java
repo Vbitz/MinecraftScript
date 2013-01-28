@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.EvaluatorException;
 
-import com.vbitz.MinecraftScript.ScriptingManager;
-
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;

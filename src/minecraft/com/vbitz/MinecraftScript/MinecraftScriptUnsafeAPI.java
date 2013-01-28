@@ -9,6 +9,8 @@ import javax.management.relation.Relation;
 import org.mozilla.javascript.NativeJavaPackage;
 
 import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
+import com.vbitz.MinecraftScript.scripting.ScriptRunner;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
@@ -44,7 +46,7 @@ public class MinecraftScriptUnsafeAPI {
 		}
 	}
 	
-	private static void printMethods(EntityPlayer ply, Class<?> cls, String search, boolean recurse) {
+	private static void printMethods(ScriptRunner ply, Class<?> cls, String search, boolean recurse) {
 		for (Method method : cls.getDeclaredMethods()) {
 			if (method.getName().contains(search)) {
 				String args = "";
@@ -53,7 +55,7 @@ public class MinecraftScriptUnsafeAPI {
 				}
 				// welcome to the future, this is a quantum access nuke
 				method.setAccessible(true);
-				ply.sendChatToPlayer("  " + cls.getSimpleName() + " : " + method.getReturnType().getSimpleName() + " " + method.getName() + "( " + args + " );");
+				ply.sendChat("  " + cls.getSimpleName() + " : " + method.getReturnType().getSimpleName() + " " + method.getName() + "( " + args + " );");
 			}
 		}
 		if (cls.getSuperclass() != null || !recurse) {
@@ -61,12 +63,12 @@ public class MinecraftScriptUnsafeAPI {
 		}
 	}
 	
-	private static void printFields(EntityPlayer ply, Class<?> cls, String search, boolean recurse) {
+	private static void printFields(ScriptRunner ply, Class<?> cls, String search, boolean recurse) {
 		for (Field method : cls.getDeclaredFields()) {
 			if (method.getName().contains(search)) {
 				String args = "";
 				method.setAccessible(true);
-				ply.sendChatToPlayer("  " + cls.getSimpleName() + " : " + method.getType().getSimpleName() + " " + method.getName() + ";");
+				ply.sendChat("  " + cls.getSimpleName() + " : " + method.getType().getSimpleName() + " " + method.getName() + ";");
 			}
 		}
 		if (cls.getSuperclass() != null || !recurse) {
@@ -96,27 +98,27 @@ public class MinecraftScriptUnsafeAPI {
 	}
 	
 	public static void dir(Object obj, String search, boolean onlySelf) {
-		EntityPlayer ply = ScriptingManager.getScriptRunner();
+		ScriptRunner ply = JSScriptingManager.getInstance().getScriptRunner();
 		Class realClass = null;
 		if (obj instanceof Class) {
-			ply.sendChatToPlayer("Class Name: " + ((Class) obj).getName());
+			ply.sendChat("Class Name: " + ((Class) obj).getName());
 			realClass = (Class) obj;
 		} else {
-			ply.sendChatToPlayer("Class Name: " + obj.getClass().getName());
+			ply.sendChat("Class Name: " + obj.getClass().getName());
 			realClass = obj.getClass();
 		}
-		ply.sendChatToPlayer("Fields: ");
+		ply.sendChat("Fields: ");
 		printFields(ply, realClass, search, onlySelf);
-		ply.sendChatToPlayer("Methods: ");
+		ply.sendChat("Methods: ");
 		printMethods(ply, realClass, search, onlySelf);
 	}
 	
 	public static void fmlMods() {
-		EntityPlayer ply = ScriptingManager.getScriptRunner();
-		ply.sendChatToPlayer("Mods: ");
+		ScriptRunner ply = JSScriptingManager.getInstance().getScriptRunner();
+		ply.sendChat("Mods: ");
 		for (ModContainer mod : Loader.instance().getActiveModList()) {
 			if (mod.getMod() != null) {
-				ply.sendChatToPlayer("  " + mod.getModId() + " : " + mod.getMod().getClass().getName());
+				ply.sendChat("  " + mod.getModId() + " : " + mod.getMod().getClass().getName());
 			}
 		}
 	}
@@ -174,11 +176,11 @@ public class MinecraftScriptUnsafeAPI {
 	}
 	
 	public static Object getTileEntity(Vector3f pos) {
-		return ScriptingManager.getScriptRunner().worldObj.getBlockTileEntity((int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
+		return JSScriptingManager.getInstance().getScriptRunner().getWorld().getBlockTileEntity((int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
 	}
 	
 	public static Object getBlock(Vector3f pos) {
-		return Block.blocksList[ScriptingManager.getScriptRunner().worldObj.getBlockId((int) pos.getX(), (int) pos.getY(), (int) pos.getZ())];
+		return Block.blocksList[JSScriptingManager.getInstance().getScriptRunner().getWorld().getBlockId((int) pos.getX(), (int) pos.getY(), (int) pos.getZ())];
 	}
 	
 	public static ItemStack getItemStack(EntityPlayer ply, int pos) {
@@ -186,11 +188,11 @@ public class MinecraftScriptUnsafeAPI {
 	}
 	
 	public static EntityPlayer getMe() {
-		return ScriptingManager.getScriptRunner();
+		return JSScriptingManager.getInstance().getScriptRunner().getPlayer();
 	}
 	
 	public static World getWorld() {
-		return ScriptingManager.getScriptRunner().worldObj;
+		return JSScriptingManager.getInstance().getScriptRunner().getWorld();
 	}
 	
 	public static ItemStack getItem(int id, int metadata, int count) {

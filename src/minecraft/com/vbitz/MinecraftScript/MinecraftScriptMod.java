@@ -1,15 +1,10 @@
 package com.vbitz.MinecraftScript;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.logging.Logger;
 
-import org.mozilla.javascript.*;
+import net.minecraft.command.CommandHandler;
+import net.minecraftforge.common.Configuration;
 
 import com.vbitz.MinecraftScript.blocks.ScriptedBlock;
 import com.vbitz.MinecraftScript.commands.APIKeyCommand;
@@ -19,29 +14,34 @@ import com.vbitz.MinecraftScript.extend.BlockFunctions;
 import com.vbitz.MinecraftScript.extend.IInternalExtendApi;
 import com.vbitz.MinecraftScript.items.JSStick;
 import com.vbitz.MinecraftScript.items.ScriptedItem;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 import com.vbitz.MinecraftScript.web.MinecraftScriptHTTPServer;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.command.CommandHandler;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Property;
-import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.ForgeSubscribe;
 import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.common.Mod.*;
+import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.Mod.PostInit;
+import cpw.mods.fml.common.Mod.PreInit;
+import cpw.mods.fml.common.Mod.ServerStarted;
+import cpw.mods.fml.common.Mod.ServerStarting;
+import cpw.mods.fml.common.Mod.ServerStopping;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.Mod.*;
-import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.registry.*;
+import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid="MinecraftScript", name="MinecraftScript", version="0.0.0")
-@NetworkMod(clientSideRequired=false, serverSideRequired=true) // may change in the future
+@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.0.0") // mental note, update this loads
+@NetworkMod(clientSideRequired=false, serverSideRequired=true)
 public class MinecraftScriptMod {
 	@Instance("MinecraftScriptMod")
 	public static MinecraftScriptMod instance;
@@ -52,6 +52,7 @@ public class MinecraftScriptMod {
 	private static MinecraftScriptMod _singilton = null;
 	
 	private static File scriptsDirectory = null;
+	private static File publicHtmlDirectory = null;
 	
 	private static Logger mcLogger = Logger.getLogger("MinecraftScriptMod");
 	
@@ -70,6 +71,7 @@ public class MinecraftScriptMod {
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e) {
 		scriptsDirectory = new File(e.getModConfigurationDirectory(), "scripts");
+		publicHtmlDirectory = new File(e.getModConfigurationDirectory(), "public_html");
 		if (!scriptsDirectory.exists()) {
 			if (!scriptsDirectory.mkdir()) {
 				Logger.getLogger("MinecraftScriptMod").severe("Can't create scripts directory");
@@ -94,9 +96,13 @@ public class MinecraftScriptMod {
 		
 		createScriptedObjects();
 		
-		ScriptingManager.loadScriptEngine();
+		JSScriptingManager.getInstance().onServerLoad();
 		
-		JSStick.getSingilton(); // just to get it to register
+		if (clientSideEnabled) {
+			JSStick.getSingilton(); // just to get it to register
+		}
+		
+		new MinecraftScriptHTTPServer(publicHtmlDirectory);
 		
 		TickRegistry.registerTickHandler(MinecraftScriptedTickManager.getInstance(), Side.SERVER);
 		TickRegistry.registerTickHandler(MinecraftScriptHTTPServer.getInstance(), Side.SERVER);
@@ -146,18 +152,20 @@ public class MinecraftScriptMod {
 		commandManager.registerCommand(new JSScriptingCommand());
 		commandManager.registerCommand(new MinecraftScriptHelpCommand());
 		
-		ScriptingManager.loadAllScripts(scriptsDirectory);
+		JSScriptingManager.getInstance().loadAllScripts(scriptsDirectory);
+		
+		MinecraftScriptHTTPServer.getInstance().start();
+		
+		webServerStarted = true;
 	}
 	
 	@ServerStarted
 	public void serverStarted(FMLServerStartedEvent e) {
-		MinecraftScriptHTTPServer.start();
-		webServerStarted = true;
 	}
 	
 	@ServerStopping
 	public void serverStopping(FMLServerStoppingEvent e) {
-		MinecraftScriptHTTPServer.stop();
+		MinecraftScriptHTTPServer.getInstance().stop();
 		webServerStarted = false;
 	}
 	

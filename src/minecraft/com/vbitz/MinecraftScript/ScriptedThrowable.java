@@ -10,9 +10,14 @@ import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.Function;
 
+import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
+import com.vbitz.MinecraftScript.scripting.IFunction;
+import com.vbitz.MinecraftScript.scripting.ScriptRunnerPlayer;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
+
 public class ScriptedThrowable extends EntityThrowable {
 
-	private Function onInpactFunction = null;
+	private IFunction onInpactFunction = null;
 	private EntityLiving owner = null;
 	
 	public ScriptedThrowable(World par1World) {
@@ -28,7 +33,7 @@ public class ScriptedThrowable extends EntityThrowable {
 		super(par1World, x, y, z);
 	}
 	
-	public ScriptedThrowable(World par1World, EntityLiving par2EntityLiving, Function func) {
+	public ScriptedThrowable(World par1World, EntityLiving par2EntityLiving, IFunction func) {
 		super(par1World, par2EntityLiving);
 		onInpactFunction = func;
 		owner = par2EntityLiving;
@@ -37,24 +42,13 @@ public class ScriptedThrowable extends EntityThrowable {
 	@Override
 	protected void onImpact(MovingObjectPosition var1) {
 		if (onInpactFunction != null && !worldObj.isRemote) {
-			ScriptingManager.enterContext();
 			try {
+				JSScriptingManager.getInstance().runFunction(new ScriptRunnerPlayer(owner), onInpactFunction, new Vector3f(var1.blockX, var1.blockY, var1.blockZ));
+			} catch (InternalScriptingException e) {
 				if (owner instanceof EntityPlayer) {
-					ScriptingManager.runFunction(onInpactFunction,
-							new MinecraftScriptWorldAPI(owner.worldObj, (EntityPlayer) owner),
-							new MinecraftScriptPlayerAPI((EntityPlayer) owner),
-							new Vector3f(var1.blockX, var1.blockY, var1.blockZ));
-				}
-			} catch (EcmaError e) {
-				if (owner instanceof EntityPlayer) {
-					((EntityPlayer) owner).sendChatToPlayer("Error: " + e.getMessage());
-				}
-			} catch (EvaluatorException e) {
-				if (owner instanceof EntityPlayer) {
-					((EntityPlayer) owner).sendChatToPlayer("Error: " + e.getMessage());
+					((EntityPlayer) owner).sendChatToPlayer(e.getMessage());
 				}
 			}
-			ScriptingManager.exitContext();
 		}
 	}
 

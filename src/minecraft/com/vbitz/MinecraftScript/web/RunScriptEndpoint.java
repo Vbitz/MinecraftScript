@@ -12,7 +12,10 @@ import org.mozilla.javascript.EvaluatorException;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.vbitz.MinecraftScript.ScriptingManager;
+import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
+import com.vbitz.MinecraftScript.scripting.ScriptRunnerPlayer;
+import com.vbitz.MinecraftScript.scripting.ScriptingManager;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 
 public class RunScriptEndpoint implements HttpHandler {
 
@@ -48,17 +51,10 @@ public class RunScriptEndpoint implements HttpHandler {
 					String outData = "";
 					EntityPlayer ply = MinecraftScriptAPIKey.getPlayer(requestKey);
 					try {
-						outData = ScriptingManager.getTidyOutput(
-								ScriptingManager.runString(requestBody, ply));
-					} catch (EcmaError e) {
-						outData = "Error: " + e.getMessage();
-						ScriptingManager.exitContext();
-					} catch (EvaluatorException e) {
-						outData = "Error: " + e.getMessage();
-						ScriptingManager.exitContext();
-					} catch (Error e) {
-						outData = "Error: " + e.getMessage();
-						ScriptingManager.exitContext();
+						outData = JSScriptingManager.getInstance().getTidyOutput(
+								JSScriptingManager.getInstance().runString(requestBody, new ScriptRunnerPlayer(ply)));
+					} catch (InternalScriptingException e) {
+						outData = e.getMessage();
 					}
 					try {
 						finalEX.sendResponseHeaders(200, outData.length());

@@ -8,9 +8,10 @@ import java.util.logging.Logger;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import org.mozilla.javascript.EcmaError;
-import org.mozilla.javascript.EvaluatorException;
-import org.mozilla.javascript.Function;
+import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
+import com.vbitz.MinecraftScript.scripting.IFunction;
+import com.vbitz.MinecraftScript.scripting.ScriptRunner;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -21,10 +22,10 @@ public class MinecraftScriptedTickManager implements ITickHandler {
 	
 	private class TickFunction {
 		public String ID;
-		public Function Func;
-		public EntityPlayer Ply;
+		public IFunction Func;
+		public ScriptRunner Ply;
 		
-		public TickFunction(String id, EntityPlayer entityPlayer, Function func) {
+		public TickFunction(String id, ScriptRunner entityPlayer, IFunction func) {
 			ID = id;
 			Func = func;
 			Ply = entityPlayer;
@@ -54,17 +55,11 @@ public class MinecraftScriptedTickManager implements ITickHandler {
 			}
 		}
 		for (TickFunction tickFunction : func) {
-			ScriptingManager.enterContext();
-			ScriptingManager.setScriptRunner(tickFunction.Ply);
 			try {
-				ScriptingManager.runFunction(tickFunction.Func);
-			} catch (EcmaError e) {
-				_log.severe("Error: " + e.getMessage());
-			} catch (EvaluatorException e) {
-				_log.severe("Error: " + e.getMessage());
+				JSScriptingManager.getInstance().runFunction(tickFunction.Ply, tickFunction.Func);
+			} catch (InternalScriptingException e) {
+				tickFunction.Ply.sendChat("Error: " + e.getMessage());
 			}
-			ScriptingManager.setScriptRunner(null);
-			ScriptingManager.exitContext();
 		}
 	}
 
@@ -76,7 +71,7 @@ public class MinecraftScriptedTickManager implements ITickHandler {
 	@Override
 	public String getLabel() { return null; }
 
-	public boolean registerOnTick(String id, EntityPlayer entityPlayer, Function func) {
+	public boolean registerOnTick(String id, ScriptRunner entityPlayer, IFunction func) {
 		_functions.add(new TickFunction(id, entityPlayer, func));
 		return _functions.size() <= _tickRate;
 	}

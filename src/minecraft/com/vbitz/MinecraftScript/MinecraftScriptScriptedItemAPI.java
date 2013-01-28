@@ -6,6 +6,7 @@ import org.mozilla.javascript.Function;
 
 import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
 import com.vbitz.MinecraftScript.items.ScriptedItem;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 
 public class MinecraftScriptScriptedItemAPI {
 	
@@ -16,10 +17,10 @@ public class MinecraftScriptScriptedItemAPI {
 	}
 	
 	public void give(int count) throws ScriptErrorException {
-		if (ScriptingManager.getScriptRunner() == null) {
+		if (JSScriptingManager.getInstance().getScriptRunner() == null) {
 			throw new ScriptErrorException("A player must run this function");
 		}
-		ScriptingManager.getScriptRunner().inventory.addItemStackToInventory(new ItemStack(itemId, count));
+		JSScriptingManager.getInstance().getScriptRunner().getPlayer().inventory.addItemStackToInventory(new ItemStack(itemId, count));
 	}
 	
 	public void give(MinecraftScriptPlayerAPI ply, int count) {
@@ -30,8 +31,8 @@ public class MinecraftScriptScriptedItemAPI {
 		itemId.setFull3D();
 	}
 	
-	public void onRightClick(Function func) {
-		itemId.rightClickFunction = func;
+	public void onRightClick(Object func) {
+		itemId.rightClickFunction = JSScriptingManager.getInstance().getFunction(func);
 	}
 	
 	public void rightClickConsumes(boolean set) {

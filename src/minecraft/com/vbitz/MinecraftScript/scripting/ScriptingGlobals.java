@@ -1,15 +1,32 @@
-package com.vbitz.MinecraftScript;
+package com.vbitz.MinecraftScript.scripting;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 
+import org.mozilla.javascript.EcmaError;
+import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeArray;
 
+import com.vbitz.MinecraftScript.MCSCollection;
+import com.vbitz.MinecraftScript.MinecraftItemStore;
+import com.vbitz.MinecraftScript.MinecraftScriptCommandManager;
+import com.vbitz.MinecraftScript.MinecraftScriptMod;
+import com.vbitz.MinecraftScript.MinecraftScriptPlayerAPI;
+import com.vbitz.MinecraftScript.MinecraftScriptScriptedBlockAPI;
+import com.vbitz.MinecraftScript.MinecraftScriptScriptedItemAPI;
+import com.vbitz.MinecraftScript.MinecraftScriptWorldAPI;
+import com.vbitz.MinecraftScript.MinecraftScriptWorldGen;
+import com.vbitz.MinecraftScript.MinecraftScriptedTickManager;
+import com.vbitz.MinecraftScript.Vector3f;
+import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
 import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
+import com.vbitz.MinecraftScript.scripting.javascript.JSFunction;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 import com.vbitz.MinecraftScript.web.MinecraftScriptHTTPServer;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -30,15 +47,11 @@ public class ScriptingGlobals {
 	}
 	
 	public static MinecraftScriptPlayerAPI getScriptRunnerJS() {
-		return new MinecraftScriptPlayerAPI(ScriptingManager.getScriptRunner());
+		return JSScriptingManager.getInstance().getScriptRunner().getPlayerAPI();
 	}
 	
 	public static MinecraftScriptWorldAPI getWorldJS() {
-		if (ScriptingManager.getScriptRunner() == null) {
-			return null;
-		} else {
-			return new MinecraftScriptWorldAPI(ScriptingManager.getScriptRunner().worldObj, ScriptingManager.getScriptRunner());
-		}
+		return JSScriptingManager.getInstance().getScriptRunner().getWorldAPI();
 	}
 	
 	public static MinecraftScriptScriptedBlockAPI getBlockJS(int i) throws ScriptErrorException {
@@ -64,14 +77,14 @@ public class ScriptingGlobals {
 	}
 	
 	public static void logJS(Object obj) {
-		MinecraftScriptMod.getLogger().info(ScriptingManager.getTidyOutput(obj));
+		MinecraftScriptMod.getLogger().info(JSScriptingManager.getInstance().getTidyOutput(obj));
 	}
 	
 	public static void sendChatJS(String chat) {
-		if (ScriptingManager.getScriptRunner() == null) {
+		if (JSScriptingManager.getInstance().getScriptRunner() == null) {
 			MinecraftScriptMod.getLogger().info("chat(\"" + chat + "\")");
 		} else {
-			ScriptingManager.getScriptRunner().sendChatToPlayer(chat);
+			JSScriptingManager.getInstance().getScriptRunner().sendChat(chat);
 		}
 	}
 	
@@ -89,8 +102,8 @@ public class ScriptingGlobals {
 		}
 	}
 	
-	public static void registerCommandJS(String name, Function command) {
-		MinecraftScriptCommandManager.addCommand(name, command);
+	public static void registerCommandJS(String name, Object command) {
+		MinecraftScriptCommandManager.addCommand(name, JSScriptingManager.getInstance().getFunction(command));
 	}
 	
 	public static void setDifficultyJS(String diff) throws ScriptErrorException {
@@ -106,22 +119,23 @@ public class ScriptingGlobals {
 	}
 	
 	public static void runExtJS(String name, NativeArray args) throws ScriptErrorException {
-		if (ScriptingManager.hasExt(name)) {
-			ScriptingManager.extCall(name, args.toArray());
+		if (JSScriptingManager.getInstance().hasExt(name)) {
+			JSScriptingManager.getInstance().extCall(name, args.toArray());
 		} else {
 			throw new ScriptErrorException("Extention does not exist");
 		}
 	}
 	
 	public static boolean hasExtJS(String name) {
-		return ScriptingManager.hasExt(name);
+		return JSScriptingManager.getInstance().hasExt(name);
 	}
 	
-	public static boolean registerTickJS(String id, Function func) {
-		if (ScriptingManager.getScriptRunner() == null) {
+	public static boolean registerTickJS(String id, Object obj) {
+		if (JSScriptingManager.getInstance().getScriptRunner() == null) {
 			return false;
 		} else {
-			return MinecraftScriptedTickManager.getInstance().registerOnTick(id, ScriptingManager.getScriptRunner(), func);
+			return MinecraftScriptedTickManager.getInstance().registerOnTick(id, JSScriptingManager.getInstance().getScriptRunner(),
+					JSScriptingManager.getInstance().getFunction(obj));
 		}
 	}
 	
@@ -137,11 +151,25 @@ public class ScriptingGlobals {
 		}
 	}
 	
-	public static void genFuncJS(Function func) {
-		MinecraftScriptWorldGen.setFunc(func, ScriptingManager.getScriptRunner());
+	public static void genFuncJS(Object obj) {
+		MinecraftScriptWorldGen.setFunc(JSScriptingManager.getInstance().getFunction(obj), JSScriptingManager.getInstance().getScriptRunner());
 	}
 	
 	public static void reloadScopeJS() {
-		ScriptingManager.reloadScope();
+		JSScriptingManager.getInstance().reload();
+	}
+	
+	public static void requireJS(String path) throws ScriptErrorException {
+		// will at some point in the near future act more like node.js require, right now it just loads the file
+		// into the current context
+		try {
+			JSScriptingManager.getInstance().runFile(path, JSScriptingManager.getInstance().getScriptRunner());
+		} catch (InternalScriptingException e) {
+			throw new ScriptErrorException(e.getMessage());
+		} // all other errors are passed up to the calling source
+	}
+	
+	public static String getSrcJS(Object func) {
+		return JSScriptingManager.getInstance().getFunctionSrc(JSScriptingManager.getInstance().getFunction(func));
 	}
 }

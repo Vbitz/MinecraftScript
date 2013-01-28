@@ -1,7 +1,10 @@
 package com.vbitz.MinecraftScript.web;
 
+import java.io.Console;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -33,22 +36,33 @@ public class MinecraftScriptHTTPServer implements ITickHandler {
 	
 	private static MinecraftScriptHTTPServer _instance;
 	
-	private static RunScriptEndpoint _runScript = null;
+	private RunScriptEndpoint _runScript = null;
 	
-	private static HttpServer _server;
+	private HttpServer _server;
 	
-	private static boolean _firstStart = true;
+	public final File ServeDirectory;
 	
-	private static int _portNum = 12543;
+	private boolean _firstStart = true;
 	
-	private static ArrayDeque<Runnable> _toInvoke = new ArrayDeque<Runnable>();
-	private static final int _tickRate = 5;
+	private int _portNum = 12543;
 	
-	static {
-		_instance = new MinecraftScriptHTTPServer();
+	private ArrayDeque<Runnable> _toInvoke = new ArrayDeque<Runnable>();
+	private final int _tickRate = 5;
+	
+	public MinecraftScriptHTTPServer(File directory) {
+		_instance = this;
+		
+		ServeDirectory = directory;
+		
+		extractFilesFromZip();
 	}
 	
-	public static void start() {
+	private void extractFilesFromZip() {
+		URL modPath = this.getClass().getResource("/com/vbitz/MinecraftScript/htmlsrc/mcsweb.html");
+		System.out.println(modPath.toString());
+	}
+
+	public void start() {
 		try {
 			_server = HttpServer.create(new InetSocketAddress(_portNum), 0);
 		} catch (IOException e) {
@@ -69,14 +83,14 @@ public class MinecraftScriptHTTPServer implements ITickHandler {
 		_firstStart = false;
 	}
 	
-	public static void stop() {
+	public void stop() {
 		if (_server != null) {
 			_server.stop(0);
 			_runScript = null;
 		}
 	}
 
-	public static int getPort() {
+	public int getPort() {
 		return _portNum;
 	}
 

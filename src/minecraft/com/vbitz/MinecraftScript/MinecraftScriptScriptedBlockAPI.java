@@ -9,6 +9,7 @@ import org.mozilla.javascript.Function;
 
 import com.vbitz.MinecraftScript.blocks.ScriptedBlock;
 import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 
 public class MinecraftScriptScriptedBlockAPI {
 
@@ -70,21 +71,21 @@ public class MinecraftScriptScriptedBlockAPI {
 		return false;
 	}
 	
-	public void onRightClick(Function func) {
-		blockID.lastUpdater = ScriptingManager.getScriptRunner();
-		blockID.rightClickFunction = func;
+	public void onRightClick(Object func) {
+		blockID.lastUpdater = JSScriptingManager.getInstance().getScriptRunner();
+		blockID.rightClickFunction = JSScriptingManager.getInstance().getFunction(func);
 	}
 	
-	public void onBlockUpdate(Function func) {
-		blockID.lastUpdater = ScriptingManager.getScriptRunner();
-		blockID.updateFunction = func;
+	public void onBlockUpdate(Object func) {
+		blockID.lastUpdater = JSScriptingManager.getInstance().getScriptRunner();
+		blockID.updateFunction = JSScriptingManager.getInstance().getFunction(func);
 	}
 	
 	public void give(int count) throws ScriptErrorException {
-		if (ScriptingManager.getScriptRunner() == null) {
+		if (JSScriptingManager.getInstance().getScriptRunner() == null) {
 			throw new ScriptErrorException("A player must run this function");
 		}
-		ScriptingManager.getScriptRunner().inventory.addItemStackToInventory(new ItemStack(blockID, count));
+		JSScriptingManager.getInstance().getScriptRunner().getPlayer().inventory.addItemStackToInventory(new ItemStack(blockID, count));
 	}
 	
 	public void give(MinecraftScriptPlayerAPI ply, int count) {

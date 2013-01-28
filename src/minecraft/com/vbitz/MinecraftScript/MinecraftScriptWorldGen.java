@@ -12,14 +12,20 @@ import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.Function;
 
+import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
+import com.vbitz.MinecraftScript.scripting.IFunction;
+import com.vbitz.MinecraftScript.scripting.ScriptRunner;
+import com.vbitz.MinecraftScript.scripting.ScriptRunnerWorldGen;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
+
 import cpw.mods.fml.common.IWorldGenerator;
 
 public class MinecraftScriptWorldGen implements IWorldGenerator {
 
-	private static Function _func = null;
-	private static EntityPlayer _lastPlayer = null;
+	private static IFunction _func = null;
+	private static ScriptRunner _lastPlayer = null;
 	
-	public static void setFunc(Function func, EntityPlayer ply) {
+	public static void setFunc(IFunction func, ScriptRunner ply) {
 		_func = func;
 		_lastPlayer = ply;
 	}
@@ -30,17 +36,12 @@ public class MinecraftScriptWorldGen implements IWorldGenerator {
 		if (_func == null) {
 			return;
 		}
-		ScriptingManager.enterContext();
-		ScriptingManager.setScriptRunner(_lastPlayer);
+		
 		try {
-			ScriptingManager.runFunction(_func, new Vector3f(chunkX * 16, 0, chunkZ * 16), new MinecraftScriptWorldAPI(world, _lastPlayer));
-		} catch (EcmaError e) {
-			_lastPlayer.sendChatToPlayer("Error: " + e.getMessage());
-		} catch (EvaluatorException e) {
-			_lastPlayer.sendChatToPlayer("Error: " + e.getMessage());
+			JSScriptingManager.getInstance().runFunction(new ScriptRunnerWorldGen(world, _lastPlayer.getPlayer()), _func, new Vector3f(chunkX * 16, 0, chunkZ * 16));
+		} catch (InternalScriptingException e) {
+			_lastPlayer.sendChat("Error in WorldGen: " + e.getMessage());
 		}
-		ScriptingManager.setScriptRunner(null);
-		ScriptingManager.exitContext();
 	}
 
 }
