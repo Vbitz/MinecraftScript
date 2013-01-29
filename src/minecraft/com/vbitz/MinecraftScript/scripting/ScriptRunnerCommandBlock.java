@@ -1,14 +1,22 @@
 package com.vbitz.MinecraftScript.scripting;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.world.World;
 
 public class ScriptRunnerCommandBlock extends ScriptRunner {
 
-	@Override
-	public void sendChat(String msg) {
-		
+	private World worldObj;
+	
+	public ScriptRunnerCommandBlock(ICommandSender sender) {
+		if (sender instanceof TileEntityCommandBlock) {
+			worldObj = ((TileEntityCommandBlock) sender).getWorldObj();
+		}
 	}
+	
+	@Override
+	public void sendChat(String msg) { }
 
 	@Override
 	public boolean isOP() {
@@ -22,7 +30,7 @@ public class ScriptRunnerCommandBlock extends ScriptRunner {
 
 	@Override
 	public World getWorld() {
-		return null;
+		return worldObj;
 	}
 
 }

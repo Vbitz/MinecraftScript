@@ -4,10 +4,10 @@ import java.util.HashMap;
 
 import org.mozilla.javascript.Function;
 
-import com.vbitz.MinecraftScript.commands.JSScriptingCommand;
 import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
 import com.vbitz.MinecraftScript.scripting.IFunction;
 import com.vbitz.MinecraftScript.scripting.ScriptRunner;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingCommand;
 import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 
 public class MinecraftScriptCommandManager {

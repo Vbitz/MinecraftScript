@@ -8,12 +8,14 @@ import net.minecraftforge.common.Configuration;
 
 import com.vbitz.MinecraftScript.blocks.ScriptedBlock;
 import com.vbitz.MinecraftScript.commands.APIKeyCommand;
-import com.vbitz.MinecraftScript.commands.JSScriptingCommand;
+import com.vbitz.MinecraftScript.commands.KeyValueStoreCommand;
 import com.vbitz.MinecraftScript.commands.MinecraftScriptHelpCommand;
+import com.vbitz.MinecraftScript.docs.KeyValueStore;
 import com.vbitz.MinecraftScript.extend.BlockFunctions;
 import com.vbitz.MinecraftScript.extend.IInternalExtendApi;
 import com.vbitz.MinecraftScript.items.JSStick;
 import com.vbitz.MinecraftScript.items.ScriptedItem;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingCommand;
 import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 import com.vbitz.MinecraftScript.web.MinecraftScriptHTTPServer;
 
@@ -40,7 +42,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.1.0") // mental note, update this loads
+@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.2.0") // mental note, update this loads
 @NetworkMod(clientSideRequired=false, serverSideRequired=true)
 public class MinecraftScriptMod {
 	@Instance("MinecraftScriptMod")
@@ -64,6 +66,14 @@ public class MinecraftScriptMod {
 	private static boolean clientSideEnabled = true;
 	private static boolean unsafeModeEnabled = false;
 	
+	private int scriptedBlockIdStart = 1224;
+	private int scriptedBlockCount = 16;
+	
+	private int scriptedItemIdStart = 7312;
+	private int scriptedItemIdCount = 16;
+	
+	private int jsStickId = 7311;
+	
 	private static IInternalExtendApi[] _internalApis = new IInternalExtendApi[] {
 		new BlockFunctions()
 	};
@@ -72,10 +82,15 @@ public class MinecraftScriptMod {
 	public void preInit(FMLPreInitializationEvent e) {
 		scriptsDirectory = new File(e.getModConfigurationDirectory(), "scripts");
 		publicHtmlDirectory = new File(e.getModConfigurationDirectory(), "public_html");
+		KeyValueStore.load(new File(e.getModConfigurationDirectory(), "mcsKeyValueStore.dat"));
+		
 		if (!scriptsDirectory.exists()) {
 			if (!scriptsDirectory.mkdir()) {
 				Logger.getLogger("MinecraftScriptMod").severe("Can't create scripts directory");
 			}
+		}
+		if (!publicHtmlDirectory.exists()) {
+			publicHtmlDirectory.mkdir();
 		}
 		
 		Configuration config = new Configuration(e.getSuggestedConfigurationFile());
@@ -84,6 +99,14 @@ public class MinecraftScriptMod {
 		
 		clientSideEnabled = config.get(Configuration.CATEGORY_GENERAL, "clientSideEnabled", true).getBoolean(true);
 		unsafeModeEnabled = config.get(Configuration.CATEGORY_GENERAL, "unsafeEnabled", false).getBoolean(false);
+		
+		scriptedBlockIdStart = config.get(Configuration.CATEGORY_BLOCK, "scriptedBlockIdStart", 1224).getInt(1224);
+		scriptedBlockCount = config.get(Configuration.CATEGORY_BLOCK, "scriptedBlockCount", 16).getInt(16);
+		
+		scriptedItemIdStart = config.get(Configuration.CATEGORY_ITEM, "scriptedItemIdStart", 7312).getInt(7312);
+		scriptedItemIdCount = config.get(Configuration.CATEGORY_ITEM, "scriptedItemIdCount", 16).getInt(16);
+		
+		jsStickId = config.get(Configuration.CATEGORY_ITEM, "jsStickId", 7311).getInt(7311);
 		
 		config.save();
 	}
@@ -99,7 +122,10 @@ public class MinecraftScriptMod {
 		JSScriptingManager.getInstance().onServerLoad();
 		
 		if (clientSideEnabled) {
-			JSStick.getSingilton(); // just to get it to register
+			JSStick.instance = new JSStick(jsStickId);
+			
+			EntityRegistry.registerModEntity(ScriptedThrowable.class, "scriptedThrowable",
+					1234, this, 50, 1, true); // need to change the id maybe
 		}
 		
 		new MinecraftScriptHTTPServer(publicHtmlDirectory);
@@ -107,25 +133,23 @@ public class MinecraftScriptMod {
 		TickRegistry.registerTickHandler(MinecraftScriptedTickManager.getInstance(), Side.SERVER);
 		TickRegistry.registerTickHandler(MinecraftScriptHTTPServer.getInstance(), Side.SERVER);
 		
-		EntityRegistry.registerModEntity(ScriptedThrowable.class, "scriptedThrowable",
-				1234, this, 50, 1, true); // need to change the id maybe
-		
 		GameRegistry.registerWorldGenerator(new MinecraftScriptWorldGen());
 	}
 	
 	private void createScriptedObjects() {
 		if (!getClientSideEnabled()) {
+			this.mcLogger.fine("Client Side Disabled");
 			return;
 		}
-		blocks = new ScriptedBlock[128]; // this will get bigger in the future
+		blocks = new ScriptedBlock[scriptedBlockCount]; // this will get bigger in the future
 		for (int i = 0; i < blocks.length; i++) {
-			blocks[i] = new ScriptedBlock(512 + i);
+			blocks[i] = new ScriptedBlock(scriptedBlockIdStart + i);
 			GameRegistry.registerBlock(blocks[i],"Scripted Block " + i);
 			LanguageRegistry.addName(blocks[i], "Scripted Block " + i);
 		}
-		items = new ScriptedItem[128]; // this will get bigger in the future
+		items = new ScriptedItem[scriptedItemIdCount]; // this will get bigger in the future
 		for (int i = 0; i < items.length; i++) {
-			items[i] = new ScriptedItem(8192 + i); // allow people to configure this value
+			items[i] = new ScriptedItem(scriptedItemIdStart + i); // allow people to configure this value
 			LanguageRegistry.addName(items[i], "Scripted Item " + i);
 		}
 	}
@@ -151,6 +175,7 @@ public class MinecraftScriptMod {
 		commandManager.registerCommand(new APIKeyCommand());
 		commandManager.registerCommand(new JSScriptingCommand());
 		commandManager.registerCommand(new MinecraftScriptHelpCommand());
+		commandManager.registerCommand(new KeyValueStoreCommand());
 		
 		JSScriptingManager.getInstance().loadAllScripts(scriptsDirectory);
 		

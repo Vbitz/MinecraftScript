@@ -14,11 +14,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 
 public class JSStick extends Item {
-	private static JSStick _singilton = null;
+	public static JSStick instance = null;
 	
-	public static final int itemID = 512;
-	
-	public JSStick() {
+	public JSStick(int itemID) {
 		super(itemID);
 		setIconCoord(5, 3);
 		setFull3D();
@@ -41,9 +39,6 @@ public class JSStick extends Item {
 	}
 	
 	public static JSStick getSingilton() {
-		if (_singilton == null) {
-			_singilton = new JSStick();
-		}
-		return _singilton;
+		return instance;
 	}
 }

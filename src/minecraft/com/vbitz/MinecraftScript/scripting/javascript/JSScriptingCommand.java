@@ -1,4 +1,4 @@
-package com.vbitz.MinecraftScript.commands;
+package com.vbitz.MinecraftScript.scripting.javascript;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,10 +8,11 @@ import org.mozilla.javascript.EvaluatorException;
 
 import com.vbitz.MinecraftScript.MinecraftScriptCommandManager;
 import com.vbitz.MinecraftScript.MinecraftScriptMod;
+import com.vbitz.MinecraftScript.commands.ScriptingCommand;
 import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
 import com.vbitz.MinecraftScript.items.JSStick;
+import com.vbitz.MinecraftScript.scripting.ScriptRunner;
 import com.vbitz.MinecraftScript.scripting.ScriptRunnerPlayer;
-import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -33,39 +34,39 @@ public class JSScriptingCommand extends ScriptingCommand {
 	}
 	
 	@Override
-	public void runString(ICommandSender cmdSender, String code) {
+	public void runString(ScriptRunner cmdSender, String code) {
 			String out = "";
 			try {
 				out = JSScriptingManager.getInstance().getTidyOutput(
-						JSScriptingManager.getInstance().runString(code, new ScriptRunnerPlayer(func_82359_c(cmdSender, cmdSender.getCommandSenderName()))));
+						JSScriptingManager.getInstance().runString(code, cmdSender));
 			} catch (InternalScriptingException e) {
-				cmdSender.sendChatToPlayer("Error: " + e.getMessage());
+				cmdSender.sendChat("Error: " + e.getMessage());
 			}
 			if (!out.equals("")) {
-				cmdSender.sendChatToPlayer(out);
+				cmdSender.sendChat(out);
 			}
 	}
 
 	@Override
-	public void runFile(ICommandSender cmdSender, String filename) {
+	public void runFile(ScriptRunner cmdSender, String filename) {
 		try {
-			JSScriptingManager.getInstance().runFile(filename, new ScriptRunnerPlayer(func_82359_c(cmdSender, cmdSender.getCommandSenderName())));
+			JSScriptingManager.getInstance().runFile(filename, cmdSender);
 		} catch (InternalScriptingException e) {
-			cmdSender.sendChatToPlayer("Error: "+ e.getMessage());
+			cmdSender.sendChat("Error: "+ e.getMessage());
 		}
 	}
 	
-	private String getBookUsage(ICommandSender cmdSender) {
+	private String getBookUsage(ScriptRunner cmdSender) {
 		return "/" + this.getName() + " dobook - with a signed book in your hand";
 	}
 
 	@Override
-	public void runBook(ICommandSender cmdSender) {
-		if (cmdSender.getCommandSenderName() == "Rcon") {
+	public void runBook(ScriptRunner cmdSender) {
+		if (cmdSender.getPlayer() == null) {
 			throw new WrongUsageException(getBookUsage(cmdSender));
 		}
 		
-		EntityPlayerMP var3 = func_82359_c(cmdSender, cmdSender.getCommandSenderName());
+		EntityPlayer var3 = (EntityPlayer) cmdSender.getPlayer();
 		if (var3.getCurrentEquippedItem() == null) {
 			throw new WrongUsageException(getBookUsage(cmdSender));
 		}
@@ -92,47 +93,45 @@ public class JSScriptingCommand extends ScriptingCommand {
                 script += var4.data + "\n";
             }
         }
-		
-        ScriptRunnerPlayer ply = new ScriptRunnerPlayer(MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(cmdSender.getCommandSenderName()));
         
         try {
-			JSScriptingManager.getInstance().runString(script, ply);
+			JSScriptingManager.getInstance().runString(script, cmdSender);
 		} catch (InternalScriptingException e) {
-			cmdSender.sendChatToPlayer("Error: " + e.getMessage());
+			cmdSender.sendChat("Error: " + e.getMessage());
 		}
 	}
 
 	@Override
-	public void createStick(ICommandSender cmdSender, String code) {
+	public void createStick(ScriptRunner cmdSender, String code) {
 		if (!MinecraftScriptMod.getInstance().getClientSideEnabled()) {
-			cmdSender.sendChatToPlayer("Error: You need to enable MinecraftScript client functions for this command to work");
+			cmdSender.sendChat("Error: You need to enable MinecraftScript client functions for this command to work");
 			return;
 		}
 		
-		EntityPlayer ply = getCommandSenderAsPlayer(cmdSender);
-		if (ply.getCurrentEquippedItem() != null && ply.getCurrentEquippedItem().itemID == JSStick.itemID) {
-			ItemStack stk = ply.getCurrentEquippedItem();
-			stk.getTagCompound().setString("code", code);
-		} else {
-			ItemStack stk = new ItemStack(JSStick.getSingilton());
-			NBTTagCompound comp = new NBTTagCompound();
-			comp.setString("code", code);
-			stk.setTagCompound(comp);
-			ply.inventory.addItemStackToInventory(stk);
+		EntityPlayer ply = cmdSender.getPlayer();
+		if (ply == null) {
+			cmdSender.sendChat("You need to be a player to use this command");
+			// it would be useful for a command block to be able to use this
+			return;
 		}
+		ItemStack stk = new ItemStack(JSStick.getSingilton());
+		NBTTagCompound comp = new NBTTagCompound();
+		comp.setString("code", code);
+		stk.setTagCompound(comp);
+		ply.inventory.addItemStackToInventory(stk);
 	}
 	
 	@Override
-	public void runCommand(ICommandSender cmdSender, String commandName,
+	public void runCommand(ScriptRunner cmdSender, String commandName,
 			String[] args) {
 		if (MinecraftScriptCommandManager.containsCommand(commandName)) {
 			try {
-				MinecraftScriptCommandManager.runCommand(commandName, args, new ScriptRunnerPlayer(getCommandSenderAsPlayer(cmdSender)));
+				MinecraftScriptCommandManager.runCommand(commandName, args, cmdSender);
 			} catch (InternalScriptingException e) {
-				cmdSender.sendChatToPlayer(e.getMessage());
+				cmdSender.sendChat(e.getMessage());
 			}
 		} else {
-			cmdSender.sendChatToPlayer("Error: Command not found, add with registerCommand(name, function)");
+			cmdSender.sendChat("Error: Command not found, add with registerCommand(name, function)");
 		}
 	}
 

@@ -5,10 +5,16 @@ import java.util.ArrayList;
 import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.EvaluatorException;
 
+import com.vbitz.MinecraftScript.scripting.ScriptRunner;
+import com.vbitz.MinecraftScript.scripting.ScriptRunnerCommandBlock;
+import com.vbitz.MinecraftScript.scripting.ScriptRunnerPlayer;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntityCommandBlock;
 
 public abstract class ScriptingCommand extends CommandBase {
 	
@@ -35,11 +41,11 @@ public abstract class ScriptingCommand extends CommandBase {
 	protected ArrayList<String> commandNames = new ArrayList<String>();
 	
 	public abstract String getName();
-	public abstract void runString(ICommandSender cmdSender, String code);
-	public abstract void runFile(ICommandSender cmdSender, String code);
-	public abstract void runBook(ICommandSender cmdSender);
-	public abstract void runCommand(ICommandSender cmdSender, String commandName, String[] args);
-	public abstract void createStick(ICommandSender cmdSender, String code);
+	public abstract void runString(ScriptRunner cmdSender, String code);
+	public abstract void runFile(ScriptRunner cmdSender, String code);
+	public abstract void runBook(ScriptRunner cmdSender);
+	public abstract void runCommand(ScriptRunner cmdSender, String commandName, String[] args);
+	public abstract void createStick(ScriptRunner cmdSender, String code);
 
 	@Override
 	public String getCommandName() {
@@ -62,20 +68,27 @@ public abstract class ScriptingCommand extends CommandBase {
 			throw new WrongUsageException(this.getCommandUsage(cmdSender));
 		}
 		
+		ScriptRunner runner = null;
+		if (cmdSender instanceof EntityPlayer) {
+			runner = new ScriptRunnerPlayer((EntityPlayer) cmdSender);
+		} else if (cmdSender instanceof TileEntityCommandBlock) {
+			runner = new ScriptRunnerCommandBlock(cmdSender);
+		}
+		
 		if (args[0].equals("dofile")) {
 			if (args.length > 1) {
-				runFile(cmdSender, args[1]);
+				runFile(runner, args[1]);
 			} else {
 				throw new WrongUsageException("/" + this.getCommandName() + " dofile filename");
 			}
 		} else if (args[0].equals("dobook")) {
-			runBook(cmdSender);
+			runBook(runner);
 		} else if (args[0].equals("stick")) {
-			createStick(cmdSender, concat(args, 1, " "));
+			createStick(runner, concat(args, 1, " "));
 		} else if (commandNames.contains(args[0])) {
-			runCommand(cmdSender, args[0], slice(args, 1, args.length));
+			runCommand(runner, args[0], slice(args, 1, args.length));
 		} else {
-			runString(cmdSender, concat(args, 0, " "));
+			runString(runner, concat(args, 0, " "));
 		}
 	}
 	
