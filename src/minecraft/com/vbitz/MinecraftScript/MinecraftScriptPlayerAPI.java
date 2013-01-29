@@ -55,8 +55,12 @@ public class MinecraftScriptPlayerAPI {
 		return _player.getHealth();
 	}
 	
-	public void heal(int amount) {
+	public void addHealth(int amount) {
 		_player.heal(amount);
+	}
+	
+	public void kill() {
+		_player.heal(-100);
 	}
 	
 	public int getHunger() {
@@ -157,15 +161,15 @@ public class MinecraftScriptPlayerAPI {
 		_player.sendGameTypeToPlayer(EnumGameType.getByID(gamemode));
 	}
 	
-	public void command(String command) {
+	public void runCommand(String command) {
 		MinecraftServer.getServer().getCommandManager().executeCommand(_player, command);
 	}
 	
-	public void exp(int amo) {
+	public void addExp(int amo) {
 		_player.addExperience(amo);
 	}
 	
-	public void expLevel(int amo) {
+	public void addExpLevels(int amo) {
 		_player.addExperienceLevel(amo);
 	}
 	

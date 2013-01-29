@@ -20,13 +20,21 @@ Version 1.2.0
 - Refactored ScriptingCommand to use ScriptRunner
 - Added Config Options for Blocks and Items
 - Added key value store as /kvs get/set
+- Reenable SCP to vbitz.com/minecraftscript
+
+Version 1.2.1
+- Added world().getTime
+- Moved Block IDs to conflict less with FTB
+- Refactored world
+- Removed Override to world().explode
+- Refactored player
 
 Future - Roughly in order of when I will work on them
 =====================================================
 - Have Script Editor auto extract assets
 - Look into Jenkins reading from MinecraftScriptMod to get version detail
-- Reenable SCP to vbitz.com/minecraftscript
 - Write Permissions System
+- Hook in most forge events
 - Improve require to make it node.js compatable
 - Improve In-Game Help
 - Hook In-Game Help into the Key-Value Store (turning it into a bit of a wiki)

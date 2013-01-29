@@ -42,7 +42,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.2.0") // mental note, update this loads
+@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.2.1") // mental note, update this loads
 @NetworkMod(clientSideRequired=false, serverSideRequired=true)
 public class MinecraftScriptMod {
 	@Instance("MinecraftScriptMod")
@@ -66,7 +66,7 @@ public class MinecraftScriptMod {
 	private static boolean clientSideEnabled = true;
 	private static boolean unsafeModeEnabled = false;
 	
-	private int scriptedBlockIdStart = 1224;
+	private int scriptedBlockIdStart = 1400;
 	private int scriptedBlockCount = 16;
 	
 	private int scriptedItemIdStart = 7312;
@@ -100,7 +100,7 @@ public class MinecraftScriptMod {
 		clientSideEnabled = config.get(Configuration.CATEGORY_GENERAL, "clientSideEnabled", true).getBoolean(true);
 		unsafeModeEnabled = config.get(Configuration.CATEGORY_GENERAL, "unsafeEnabled", false).getBoolean(false);
 		
-		scriptedBlockIdStart = config.get(Configuration.CATEGORY_BLOCK, "scriptedBlockIdStart", 1224).getInt(1224);
+		scriptedBlockIdStart = config.get(Configuration.CATEGORY_BLOCK, "scriptedBlockIdStart", 1400).getInt(1400);
 		scriptedBlockCount = config.get(Configuration.CATEGORY_BLOCK, "scriptedBlockCount", 16).getInt(16);
 		
 		scriptedItemIdStart = config.get(Configuration.CATEGORY_ITEM, "scriptedItemIdStart", 7312).getInt(7312);

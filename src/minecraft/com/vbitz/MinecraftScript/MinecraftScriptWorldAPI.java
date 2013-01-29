@@ -57,11 +57,7 @@ public class MinecraftScriptWorldAPI {
 	}
 	
 	public void explode(int amo, Vector3f loc) throws ScriptErrorException {
-		explode(amo, loc, false);
-	}
-	
-	public void explode(int amo, Vector3f loc, boolean bypass) throws ScriptErrorException {
-		if (!bypass && amo > 200) {
+		if (amo > 200) {
 			throw new ScriptErrorException("Bad Idea");
 		}
 		if (!this._world.isRemote) {
@@ -163,14 +159,16 @@ public class MinecraftScriptWorldAPI {
 		return true;
 	}
 	
-	public void time(long value) {
-        for (int i = 0; i < MinecraftServer.getServer().worldServers.length; ++i) {
-            MinecraftServer.getServer().worldServers[i].setWorldTime(value);
-        }
+	public void setTime(long value) {
+		_world.setWorldTime(value);
+	}
+	
+	public long getTime() {
+		return _world.getWorldTime();
 	}
     
-	public void time(){
-		time(0);
+	public void setTime(){
+		setTime(0);
 	}
 
 	public void setBiome(int biome, Vector3f loc) { // not quite working yet, the client needs to reload to see the change
@@ -220,12 +218,16 @@ public class MinecraftScriptWorldAPI {
 		downfall(rain, _world.rand.nextInt(20000) + 1000);
 	}
 	
-	public boolean growTree(Vector3f pos) {
+	public boolean spawnTree(Vector3f pos) {
 		WorldGenTrees t = new WorldGenTrees(true);
 		return t.generate(_world, _world.rand, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
 	}
 	
-	public boolean growBigTree(Vector3f pos, double heightLimit, double scaleWidth, double leafDensity) throws ScriptErrorException {
+	public boolean spawnBigTree(Vector3f pos) throws ScriptErrorException {
+		return spawnBigTree(pos, 2, 2, 2);
+	}
+	
+	public boolean spawnBigTree(Vector3f pos, double heightLimit, double scaleWidth, double leafDensity) throws ScriptErrorException {
 		if (heightLimit < 4 && scaleWidth < 3 && leafDensity < 3) {
 			WorldGenBigTree t = new WorldGenBigTree(true);
 			t.setScale(heightLimit, scaleWidth, leafDensity);
@@ -390,7 +392,7 @@ public class MinecraftScriptWorldAPI {
 		}
 	}
 	
-	public void genCaves(Vector3f pos, int chunkWidth, boolean addRavines, boolean newGen) {
+	public void spawnCaves(Vector3f pos, int chunkWidth, boolean addRavines, boolean newGen) {
 		final Random rand_new = new Random(_world.rand.nextLong());
 		MapGenCaves caves = new MapGenCaves();
 		MapGenRavine ravines = new MapGenRavine();
@@ -448,7 +450,7 @@ public class MinecraftScriptWorldAPI {
 		}
 	}
 	
-	public void genVeins(Vector3f pos, int blockId, int amount) {
+	public void spawnVein(Vector3f pos, int blockId, int amount) {
 		WorldGenMinable m = new WorldGenMinable(blockId, amount);
 		m.generate(_world, _world.rand, (int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
 	}
@@ -469,7 +471,7 @@ public class MinecraftScriptWorldAPI {
 	}
 	
 	// happy new years
-	public void firework(Vector3f pos, int color, int type, int flightTime, int explodeCount) {
+	public void spawnFirework(Vector3f pos, int color, int type, int flightTime, int explodeCount) {
 		Random rand = new Random(_world.rand.nextLong());
 		ItemStack stk = new ItemStack(Item.field_92052_bU); // mcp really needs to update this
 		NBTTagCompound baseComp = new NBTTagCompound();
@@ -491,7 +493,7 @@ public class MinecraftScriptWorldAPI {
 		_world.spawnEntityInWorld(fireWork);
 	}
 	
-	public void firecode(Vector3f pos, int flightTime, Object func) {
+	public void spawnFirecode(Vector3f pos, int flightTime, Object func) {
 		final IFunction explodeFunc = JSScriptingManager.getInstance().getFunction(func);
 		final EntityPlayer owner = _player;
 		ItemStack stk = new ItemStack(Item.field_92052_bU);
