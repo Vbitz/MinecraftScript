@@ -29,6 +29,13 @@ Version 1.2.1
 - Removed Override to world().explode
 - Refactored player
 
+Version 1.3.0
+- Fixed item and block
+- Colated Help Docs
+- Moved all minecraftScript files to a seprate directory
+- Added setScriptRunner to ScriptingManager
+- Added logFile(content) which outputs string to a file in config/minecraftScript/logs
+
 Future - Roughly in order of when I will work on them
 =====================================================
 - Have Script Editor auto extract assets

@@ -1,6 +1,9 @@
 package com.vbitz.MinecraftScript;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Logger;
 
 import net.minecraft.command.CommandHandler;
@@ -10,6 +13,7 @@ import com.vbitz.MinecraftScript.blocks.ScriptedBlock;
 import com.vbitz.MinecraftScript.commands.APIKeyCommand;
 import com.vbitz.MinecraftScript.commands.KeyValueStoreCommand;
 import com.vbitz.MinecraftScript.commands.MinecraftScriptHelpCommand;
+import com.vbitz.MinecraftScript.docs.HelpRegistry;
 import com.vbitz.MinecraftScript.docs.KeyValueStore;
 import com.vbitz.MinecraftScript.extend.BlockFunctions;
 import com.vbitz.MinecraftScript.extend.IInternalExtendApi;
@@ -55,6 +59,9 @@ public class MinecraftScriptMod {
 	
 	private static File scriptsDirectory = null;
 	private static File publicHtmlDirectory = null;
+	public static File loggingDirectory = null;
+	
+	private static final DateFormat logDateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
 	
 	private static Logger mcLogger = Logger.getLogger("MinecraftScriptMod");
 	
@@ -80,17 +87,24 @@ public class MinecraftScriptMod {
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e) {
-		scriptsDirectory = new File(e.getModConfigurationDirectory(), "scripts");
-		publicHtmlDirectory = new File(e.getModConfigurationDirectory(), "public_html");
-		KeyValueStore.load(new File(e.getModConfigurationDirectory(), "mcsKeyValueStore.dat"));
+		File baseDirectory = new File(e.getModConfigurationDirectory(), "minecraftScript");
+		scriptsDirectory = new File(baseDirectory, "scripts");
+		publicHtmlDirectory = new File(baseDirectory, "public_html");
+		loggingDirectory = new File(baseDirectory, "logs");
+		KeyValueStore.load(new File(baseDirectory, "mcsKeyValueStore.dat"));
+		
+		if (!baseDirectory.exists()) {
+			baseDirectory.mkdir();
+		}
 		
 		if (!scriptsDirectory.exists()) {
-			if (!scriptsDirectory.mkdir()) {
-				Logger.getLogger("MinecraftScriptMod").severe("Can't create scripts directory");
-			}
+			scriptsDirectory.mkdir();
 		}
 		if (!publicHtmlDirectory.exists()) {
 			publicHtmlDirectory.mkdir();
+		}
+		if (!loggingDirectory.exists()) {
+			loggingDirectory.mkdir();
 		}
 		
 		Configuration config = new Configuration(e.getSuggestedConfigurationFile());
@@ -120,6 +134,8 @@ public class MinecraftScriptMod {
 		createScriptedObjects();
 		
 		JSScriptingManager.getInstance().onServerLoad();
+		
+		HelpRegistry.load();
 		
 		if (clientSideEnabled) {
 			JSStick.instance = new JSStick(jsStickId);
@@ -211,5 +227,10 @@ public class MinecraftScriptMod {
 	
 	public static Logger getLogger() {
 		return mcLogger;
+	}
+
+	public static File getLogFileWriter() {
+		String filename = "logFile_" + logDateFormat.format(new Date()) + ".log";
+		return new File(loggingDirectory, filename);
 	}
 }

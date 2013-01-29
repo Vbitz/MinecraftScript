@@ -6,7 +6,7 @@ import org.mozilla.javascript.ClassShutter;
 
 public class MinecraftScriptClassShutter implements ClassShutter {
 
-	private static ArrayList<String> _allowedClasses = new ArrayList<String>();
+	public static ArrayList<String> _allowedClasses = new ArrayList<String>(); // public because docs
 	
 	static {
 		_allowedClasses.add("com.vbitz.MinecraftScript.MinecraftScriptAPI");

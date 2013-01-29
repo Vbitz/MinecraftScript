@@ -1,5 +1,8 @@
 package com.vbitz.MinecraftScript.scripting;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -23,6 +26,7 @@ import com.vbitz.MinecraftScript.MinecraftScriptWorldAPI;
 import com.vbitz.MinecraftScript.MinecraftScriptWorldGen;
 import com.vbitz.MinecraftScript.MinecraftScriptedTickManager;
 import com.vbitz.MinecraftScript.Vector3f;
+import com.vbitz.MinecraftScript.docs.HelpRegistry;
 import com.vbitz.MinecraftScript.docs.JSDoc;
 import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
 import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
@@ -43,48 +47,58 @@ public class ScriptingGlobals {
 		Difficultys.put("hard", 3);
 	}
 	
-	@JSDoc(jsName = "vector or v", doc = "Returns a new Vector with (x, y, z)")
+	@JSDoc(jsName = "vector or v(double x, y, z)", doc = "Returns a new Vector with (x, y, z)")
 	public static Vector3f newVectorJS(double x, double y, double z) {
 		return new Vector3f(x, y, z);
 	}
 	
-	@JSDoc(jsName = "me", doc = "Returns the current player")
+	@JSDoc(jsName = "me()", doc = "Returns the current player")
 	public static MinecraftScriptPlayerAPI getScriptRunnerJS() {
 		return JSScriptingManager.getInstance().getScriptRunner().getPlayerAPI();
 	}
 	
-	@JSDoc(jsName = "world", doc = "Returns the current world")
+	@JSDoc(jsName = "world()", doc = "Returns the current world")
 	public static MinecraftScriptWorldAPI getWorldJS() {
 		return JSScriptingManager.getInstance().getScriptRunner().getWorldAPI();
 	}
 	
-	@JSDoc(jsName = "block", doc = "Returns a Scripted Block with ID")
+	@JSDoc(jsName = "block(int id)", doc = "Returns a Scripted Block with ID")
 	public static MinecraftScriptScriptedBlockAPI getBlockJS(int i) throws ScriptErrorException {
 		if (!MinecraftScriptMod.getInstance().getClientSideEnabled()) {
 			throw new ScriptErrorException("Client side needs to be enabled for ScriptedBlocks to work");
 		}
-		if (i > 128) {
-			return null;
-		} else {
-			return new MinecraftScriptScriptedBlockAPI(i);
-		}
+		return new MinecraftScriptScriptedBlockAPI(i);
 	}
 	
-	@JSDoc(jsName = "item", doc = "Returns a Scripted Item with ID")
+	@JSDoc(jsName = "item(int id)", doc = "Returns a Scripted Item with ID")
 	public static MinecraftScriptScriptedItemAPI getItemJS(int i) throws ScriptErrorException {
 		if (!MinecraftScriptMod.getInstance().getClientSideEnabled()) {
 			throw new ScriptErrorException("Client side needs to be enabled for ScriptedItems to work");
 		}
-		if (i > 128) {
-			return null;
-		} else {
-			return new MinecraftScriptScriptedItemAPI(i);
-		}
+		return new MinecraftScriptScriptedItemAPI(i);
 	}
 	
 	@JSDoc(jsName = "log", doc = "Prints obj to Console")
 	public static void logJS(Object obj) {
 		MinecraftScriptMod.getLogger().info(JSScriptingManager.getInstance().getTidyOutput(obj));
+	}
+	
+	@JSDoc(jsName = "logFile(string data)", doc = "Dumps str to a file, size limited to 8MB")
+	public static String logFileJS(String str) throws ScriptErrorException {
+		if (str.length() > 8 * 1024 * 1024) {
+			throw new ScriptErrorException("File Size limited to 8MB");
+		}
+		File file = MinecraftScriptMod.getLogFileWriter();
+		BufferedWriter writer;
+		try {
+			writer = new BufferedWriter(new FileWriter(file));
+			writer.write(str);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return file.getName();
 	}
 	
 	@JSDoc(jsName = "chat", doc = "Sends chat to the current player as a chat message")
@@ -193,5 +207,10 @@ public class ScriptingGlobals {
 	@JSDoc(jsName = "src", doc = "Decompiles func")
 	public static String getSrcJS(Object func) {
 		return JSScriptingManager.getInstance().getFunctionSrc(JSScriptingManager.getInstance().getFunction(func));
+	}
+	
+	@JSDoc(jsName = "help", doc = "What your using right now")
+	public static String helpJS(String jsSearch) {
+		return HelpRegistry.getHelp(jsSearch);
 	}
 }

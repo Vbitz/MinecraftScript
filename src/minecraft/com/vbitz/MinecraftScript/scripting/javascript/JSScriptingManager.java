@@ -184,6 +184,11 @@ public class JSScriptingManager extends ScriptingManager {
 	public ScriptRunner getScriptRunner() {
 		return _runner;
 	}
+	
+	@Override
+	public void setScriptRunner(ScriptRunner runner) {
+		_runner = runner;
+	}
 
 	@Override
 	public IFunction getFunction(Object obj) {

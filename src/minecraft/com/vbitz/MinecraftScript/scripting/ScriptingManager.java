@@ -34,6 +34,7 @@ public abstract class ScriptingManager {
 	
 	public abstract String getTidyOutput(Object obj);
 	
+	public abstract void setScriptRunner(ScriptRunner runner);
 	public abstract ScriptRunner getScriptRunner();
 	
 	public abstract IFunction getFunction(Object obj);
@@ -52,6 +53,7 @@ public abstract class ScriptingManager {
 			addSGlobal("block", "getBlockJS", int.class);
 			addSGlobal("item", "getItemJS", int.class);
 			addSGlobal("log", "logJS", Object.class);
+			addSGlobal("logFile", "logFileJS", String.class);
 			addSGlobal("chat", "sendChatJS", String.class);
 			addSGlobal("itemId", "getItemIdJS", String.class);
 			addSGlobal("player", "playerJS", String.class);
@@ -67,6 +69,7 @@ public abstract class ScriptingManager {
 			addSGlobal("reload", "reloadScopeJS");
 			addSGlobal("require", "requireJS", String.class);
 			addSGlobal("src", "getSrcJS", Object.class);
+			addSGlobal("help", "helpJS", String.class);
 			if (MinecraftScriptMod.getUnsafeEnabled()) {
 				if (firstLoad) {
 					MinecraftScriptMod.getLogger().warning("UNSAFE MODE ENABLED");

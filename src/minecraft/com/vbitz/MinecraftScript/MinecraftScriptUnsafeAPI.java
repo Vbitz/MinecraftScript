@@ -3,6 +3,7 @@ package com.vbitz.MinecraftScript;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 import javax.management.relation.Relation;
 
@@ -25,6 +26,17 @@ import net.minecraft.world.World;
  * Tread with caution, this is a massively powerful API
  */
 public class MinecraftScriptUnsafeAPI {
+	private static String concat(String[] arr, int start, String concatStr) {
+		String ret = "";
+		for (int i = start; i < arr.length; i++) {
+			if (i != arr.length - 1) {
+				ret += arr[i] + concatStr;
+			}
+		}
+		ret += arr[arr.length - 1];
+		return ret;
+	}
+	
 	private static Object getRealObject(Object obj, Class<?> target) {
 		if (obj instanceof Number) {
 			if (obj.getClass().getName().equals(target.getName())) {
@@ -111,6 +123,30 @@ public class MinecraftScriptUnsafeAPI {
 		printFields(ply, realClass, search, onlySelf);
 		ply.sendChat("Methods: ");
 		printMethods(ply, realClass, search, onlySelf);
+	}
+	
+	public static String dirStr(Object obj) {
+		final ArrayList<String> str = new ArrayList<String>();
+		ScriptRunner runner = JSScriptingManager.getInstance().getScriptRunner();
+		ScriptRunner logRunner = new ScriptRunner() {
+			@Override
+			public void sendChat(String msg) {
+				str.add(msg);
+			}
+			
+			@Override
+			public boolean isOP() { return false; }
+			
+			@Override
+			public World getWorld() { return null; }
+			
+			@Override
+			public EntityPlayer getPlayer() { return null;}
+		};
+		JSScriptingManager.getInstance().setScriptRunner(logRunner);
+		dir(obj, "", false);
+		JSScriptingManager.getInstance().setScriptRunner(runner);
+		return concat(str.toArray(new String[]{}), 0, "\n");
 	}
 	
 	public static void fmlMods() {
