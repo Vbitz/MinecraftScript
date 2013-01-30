@@ -47,7 +47,7 @@ public class ScriptingGlobals {
 		Difficultys.put("hard", 3);
 	}
 	
-	@JSDoc(jsName = "vector or v(double x, y, z)", doc = "Returns a new Vector with (x, y, z)")
+	@JSDoc(jsName = "v(double x,y,z)", doc = "Returns a new Vector with (x, y, z)")
 	public static Vector3f newVectorJS(double x, double y, double z) {
 		return new Vector3f(x, y, z);
 	}
@@ -78,7 +78,7 @@ public class ScriptingGlobals {
 		return new MinecraftScriptScriptedItemAPI(i);
 	}
 	
-	@JSDoc(jsName = "log", doc = "Prints obj to Console")
+	@JSDoc(jsName = "log(object obj)", doc = "Prints obj to Console")
 	public static void logJS(Object obj) {
 		MinecraftScriptMod.getLogger().info(JSScriptingManager.getInstance().getTidyOutput(obj));
 	}
@@ -95,13 +95,17 @@ public class ScriptingGlobals {
 			writer.write(str);
 			writer.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return "Error";
 		}
 		return file.getName();
 	}
 	
-	@JSDoc(jsName = "chat", doc = "Sends chat to the current player as a chat message")
+	@JSDoc(jsName = "logAll()", doc = "Dumps the rest of the chat in this script to a logfile")
+	public static void logAllJS() {
+		JSScriptingManager.getInstance().setScriptRunner(new ScriptRunnerLogger(JSScriptingManager.getInstance().getScriptRunner()));
+	}
+	
+	@JSDoc(jsName = "chat(string chat)", doc = "Sends chat to the current player as a chat message")
 	public static void sendChatJS(String chat) {
 		if (JSScriptingManager.getInstance().getScriptRunner() == null) {
 			MinecraftScriptMod.getLogger().info("chat(\"" + chat + "\")");
@@ -110,12 +114,12 @@ public class ScriptingGlobals {
 		}
 	}
 	
-	@JSDoc(jsName = "itemId", doc = "Returns the ID of the item")
+	@JSDoc(jsName = "itemId(string name)", doc = "Returns the ID of the item")
 	public static int getItemIdJS(String name) {
 		return MinecraftItemStore.getBlockByName(name);
 	}
 	
-	@JSDoc(jsName = "player", doc = "Returns a PlayerAPI for nickname")
+	@JSDoc(jsName = "player(string name)", doc = "Returns a PlayerAPI for nickname")
 	public static MinecraftScriptPlayerAPI playerJS(String nick) {
         EntityPlayerMP ply = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(nick);
         
@@ -126,12 +130,12 @@ public class ScriptingGlobals {
 		}
 	}
 	
-	@JSDoc(jsName = "registerCommand", doc = "Running /c name args will run cmd with args")
+	@JSDoc(jsName = "registerCommand(string name,function command)", doc = "Running /c name args will run cmd with args")
 	public static void registerCommandJS(String name, Object command) {
 		MinecraftScriptCommandManager.addCommand(name, JSScriptingManager.getInstance().getFunction(command));
 	}
 	
-	@JSDoc(jsName = "difficulty", doc = "Sets the Difficulty to difficulty, difficulty can be peaceful, easy, normal or hard")
+	@JSDoc(jsName = "difficulty(string diff)", doc = "Sets the Difficulty to difficulty, difficulty can be peaceful, easy, normal or hard")
 	public static void setDifficultyJS(String diff) throws ScriptErrorException {
 		if (Difficultys.containsKey(diff)) {
 			MinecraftServer.getServer().setDifficultyForAllWorlds(Difficultys.get(diff));
@@ -140,12 +144,12 @@ public class ScriptingGlobals {
 		}
 	}
 	
-	@JSDoc(jsName = "addSmeltingRecipe", doc = "Adds a Smelting Recipe")
+	@JSDoc(jsName = "addSmeltingRecipe(int input,int output,int xp)", doc = "Adds a Smelting Recipe")
 	public static void addSmeltingRecipeJS(int input, int output, int xp) {
 		GameRegistry.addSmelting(input, new ItemStack(output, 1, 0), xp);
 	}
 	
-	@JSDoc(jsName = "runExt", doc = "Runs a extention with args")
+	@JSDoc(jsName = "runExt(string name,array args)", doc = "Runs a extention with args")
 	public static void runExtJS(String name, NativeArray args) throws ScriptErrorException {
 		if (JSScriptingManager.getInstance().hasExt(name)) {
 			JSScriptingManager.getInstance().extCall(name, args.toArray());
@@ -154,12 +158,12 @@ public class ScriptingGlobals {
 		}
 	}
 	
-	@JSDoc(jsName = "hasExt", doc = "Returns if a extention is avalible")
+	@JSDoc(jsName = "hasExt(string name)", doc = "Returns if a extention is avalible")
 	public static boolean hasExtJS(String name) {
 		return JSScriptingManager.getInstance().hasExt(name);
 	}
 	
-	@JSDoc(jsName = "registerTick" , doc = "Runs a function on the next server tick")
+	@JSDoc(jsName = "registerTick(string id,function func)" , doc = "Runs a function on the next server tick")
 	public static boolean registerTickJS(String id, Object obj) {
 		if (JSScriptingManager.getInstance().getScriptRunner() == null) {
 			return false;
@@ -169,12 +173,12 @@ public class ScriptingGlobals {
 		}
 	}
 	
-	@JSDoc(jsName = "deregisterTick", doc = "Stops id from running on the next server tick")
+	@JSDoc(jsName = "deregisterTick(string id)", doc = "Stops id from running on the next server tick")
 	public static void deregisterTickJS(String id) {
 		MinecraftScriptedTickManager.getInstance().deregisterTick(id);
 	}
 	
-	@JSDoc(jsName = "col", doc = "Creates a new collection from a vector")
+	@JSDoc(jsName = "col(vector3f vec)", doc = "Creates a new collection from a vector")
 	public static MCSCollection collectionJS(Object vec) throws ScriptErrorException {
 		if (vec instanceof Vector3f) {
 			return new MCSCollection((Vector3f) vec);
@@ -183,17 +187,17 @@ public class ScriptingGlobals {
 		}
 	}
 	
-	@JSDoc(jsName = "genFunc", doc = "This function will run each world tick")
+	@JSDoc(jsName = "genFunc(function func)", doc = "This function will run each world tick")
 	public static void genFuncJS(Object obj) {
 		MinecraftScriptWorldGen.setFunc(JSScriptingManager.getInstance().getFunction(obj), JSScriptingManager.getInstance().getScriptRunner());
 	}
 	
-	@JSDoc(jsName = "reload", doc = "Reloads the scripting scope")
+	@JSDoc(jsName = "reload()", doc = "Reloads the scripting scope")
 	public static void reloadScopeJS() {
 		JSScriptingManager.getInstance().reload();
 	}
 	
-	@JSDoc(jsName = "require", doc = "Loads script path")
+	@JSDoc(jsName = "require(string path)", doc = "Loads script path")
 	public static void requireJS(String path) throws ScriptErrorException {
 		// will at some point in the near future act more like node.js require, right now it just loads the file
 		// into the current context
@@ -204,13 +208,13 @@ public class ScriptingGlobals {
 		} // all other errors are passed up to the calling source
 	}
 	
-	@JSDoc(jsName = "src", doc = "Decompiles func")
+	@JSDoc(jsName = "src(function func)", doc = "Decompiles func")
 	public static String getSrcJS(Object func) {
 		return JSScriptingManager.getInstance().getFunctionSrc(JSScriptingManager.getInstance().getFunction(func));
 	}
 	
-	@JSDoc(jsName = "help", doc = "What your using right now")
-	public static String helpJS(String jsSearch) {
-		return HelpRegistry.getHelp(jsSearch);
+	@JSDoc(jsName = "help(string term)", doc = "What your using right now")
+	public static String helpJS(String term) {
+		return HelpRegistry.getHelp(term);
 	}
 }

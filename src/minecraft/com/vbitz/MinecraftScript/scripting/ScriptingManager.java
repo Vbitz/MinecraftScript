@@ -48,12 +48,12 @@ public abstract class ScriptingManager {
 		try {
 			addSGlobal("me", "getScriptRunnerJS");
 			addSGlobal("world", "getWorldJS");
-			addSGlobal("vector", "newVectorJS", double.class, double.class, double.class);
-			addSGlobal("v", "newVectorJS", double.class, double.class, double.class); // it's a nice shorthand
+			addSGlobal("v", "newVectorJS", double.class, double.class, double.class);
 			addSGlobal("block", "getBlockJS", int.class);
 			addSGlobal("item", "getItemJS", int.class);
 			addSGlobal("log", "logJS", Object.class);
 			addSGlobal("logFile", "logFileJS", String.class);
+			addSGlobal("logAll", "logAllJS");
 			addSGlobal("chat", "sendChatJS", String.class);
 			addSGlobal("itemId", "getItemIdJS", String.class);
 			addSGlobal("player", "playerJS", String.class);

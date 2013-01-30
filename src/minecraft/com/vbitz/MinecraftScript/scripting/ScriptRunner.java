@@ -12,6 +12,10 @@ public abstract class ScriptRunner {
 	public abstract EntityPlayer getPlayer();
 	public abstract World getWorld();
 	
+	public void finalise() {
+		
+	}
+	
 	public MinecraftScriptPlayerAPI getPlayerAPI() {
 		return new MinecraftScriptPlayerAPI(getPlayer());
 	}

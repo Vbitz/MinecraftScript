@@ -51,7 +51,11 @@ public class KeyValueStore {
 	}
 	
 	public static String getItem(String string) {
-		return _items.get(string);
+		if (!_items.containsKey(string)) {
+			return HelpRegistry.getHelp(string);
+		} else {
+			return _items.get(string);
+		}
 	}
 	
 	public static void setItem(String key, String value) {
@@ -61,6 +65,9 @@ public class KeyValueStore {
 	
 	public static List getAll() {
 		ArrayList<String> ret = new ArrayList<String>();
+		for (String string : HelpRegistry.helpStuff.keySet()) {
+			ret.add(string);
+		}
 		for (String string : _items.keySet()) {
 			ret.add(string);
 		}

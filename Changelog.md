@@ -36,6 +36,13 @@ Version 1.3.0
 - Added setScriptRunner to ScriptingManager
 - Added logFile(content) which outputs string to a file in config/minecraftScript/logs
 
+Version 1.4.0
+- Hook In-Game Help into the Key-Value Store (turning it into a bit of a wiki)
+- Improved tab completion on /wiki
+- Fixed JSScriptingManager not setting runners correctly in all cases
+- Added logAll() which dumps the rest of the chat in the current command or script to a file
+- Added Hook System
+
 Future - Roughly in order of when I will work on them
 =====================================================
 - Have Script Editor auto extract assets
@@ -44,7 +51,6 @@ Future - Roughly in order of when I will work on them
 - Hook in most forge events
 - Improve require to make it node.js compatable
 - Improve In-Game Help
-- Hook In-Game Help into the Key-Value Store (turning it into a bit of a wiki)
 - Add Script Nodes
 - Add Survival Mode Scripting with Script Nodes
 - Add Container API

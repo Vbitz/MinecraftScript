@@ -124,7 +124,10 @@ public class JSScriptingManager extends ScriptingManager {
 
 	@Override
 	public Object runFunction(ScriptRunner runner, IFunction func, Object... args) throws InternalScriptingException {
-		return func.call(mcJavascriptContext, mcJavascriptScope, mcJavascriptScope, args);
+		setScriptRunner(runner);
+		Object ret = func.call(mcJavascriptContext, mcJavascriptScope, mcJavascriptScope, args);
+		setScriptRunner(null);
+		return ret;
 	}
 
 	@Override
@@ -132,9 +135,9 @@ public class JSScriptingManager extends ScriptingManager {
 		Object ret = null;
 		try {
 			enterContext();
-			_runner = runner;
+			setScriptRunner(runner);
 			ret = mcJavascriptContext.compileString(str, "command", 0, null).exec(mcJavascriptContext, mcJavascriptScope);
-			_runner = null;
+			setScriptRunner(null);
 		} catch (EcmaError e) {
 			throw new InternalScriptingException(e.getMessage());
 		} catch (EvaluatorException e) {
@@ -160,9 +163,17 @@ public class JSScriptingManager extends ScriptingManager {
 			throw new InternalScriptingException("Could not find file");
 		}
 		try {
+			setScriptRunner(runner);
 			mcJavascriptContext.evaluateReader(mcJavascriptScope, fr, fullPath.getName(), 0, null);
+			setScriptRunner(null);
 		} catch (IOException e) {
 			throw new InternalScriptingException("Error Running file");
+		} catch (EcmaError e) {
+			throw new InternalScriptingException(e.getMessage());
+		} catch (EvaluatorException e) {
+			throw new InternalScriptingException(e.getMessage());
+		} catch (Error e) {
+			throw new InternalScriptingException(e.getMessage());
 		}
 		if (!inContext()) {
 			exitContext();
@@ -187,6 +198,9 @@ public class JSScriptingManager extends ScriptingManager {
 	
 	@Override
 	public void setScriptRunner(ScriptRunner runner) {
+		if (_runner != null) {
+			_runner.finalise();
+		}
 		_runner = runner;
 	}
 

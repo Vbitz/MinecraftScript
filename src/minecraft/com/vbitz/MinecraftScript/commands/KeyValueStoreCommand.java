@@ -24,19 +24,27 @@ public class KeyValueStoreCommand extends CommandBase {
 	
 	@Override
 	public String getCommandName() {
-		return "kvs";
+		return "wiki";
 	}
 	
 	@Override
 	public String getCommandUsage(ICommandSender par1iCommandSender) {
-		return "/kvs set/get itemName itemValue";
+		return "/wiki set/get itemName itemValue";
 	}
 	
 	@Override
 	public List addTabCompletionOptions(ICommandSender par1iCommandSender,
 			String[] par2ArrayOfStr) {
+		System.out.println(par2ArrayOfStr.length);
 		if (par2ArrayOfStr.length == 2 && par2ArrayOfStr[0].equals("get")) {
-			return KeyValueStore.getAll();
+			List<String> str = KeyValueStore.getAll();
+			ArrayList<String> ret = new ArrayList<String>();
+			for (String string : str) {
+				if (doesStringStartWith(par2ArrayOfStr[1], string)) {
+					ret.add(string);
+				}
+			}
+			return ret;
 		} else {
 			return new ArrayList<String>();
 		}

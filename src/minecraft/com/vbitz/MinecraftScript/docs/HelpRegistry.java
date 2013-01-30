@@ -8,7 +8,7 @@ import com.vbitz.MinecraftScript.MinecraftScriptClassShutter;
 import com.vbitz.MinecraftScript.scripting.ScriptingGlobals;
 
 public class HelpRegistry {
-	private static HashMap<String, String> helpStuff = new HashMap<String, String>();
+	public static HashMap<String, String> helpStuff = new HashMap<String, String>();
 
 	public static void load(String pkgName) {
 		try {
@@ -16,7 +16,7 @@ public class HelpRegistry {
 			for (Method method : cls.getDeclaredMethods()) {
 				JSDoc doc = (JSDoc) method.getAnnotation(JSDoc.class);
 				if (doc != null) {
-					helpStuff.put(doc.jsName(), doc.doc());
+					helpStuff.put(doc.jsName().replace(" ", ":"), doc.doc());
 				}
 			}
 		} catch (ClassNotFoundException e) { } // who cares, it's a non fatal condition
@@ -30,13 +30,11 @@ public class HelpRegistry {
 		}
 	}
 	
-	public static String getHelp(String jsSearch) {
-		String ret = "";
-		for (String key : helpStuff.keySet()) {
-			if (key.contains(jsSearch)) {
-				ret += key + " : " + helpStuff.get(key) + "\n";
-			}
+	public static String getHelp(String jsName) {
+		if (helpStuff.containsKey(jsName)) {
+			return helpStuff.get(jsName);
+		} else {
+			return null;
 		}
-		return ret;
 	}
 }
