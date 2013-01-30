@@ -70,6 +70,7 @@ public abstract class ScriptingManager {
 			addSGlobal("require", "requireJS", String.class);
 			addSGlobal("src", "getSrcJS", Object.class);
 			addSGlobal("help", "helpJS", String.class);
+			addSGlobal("on", "onEventJS", String.class, Object.class);
 			if (MinecraftScriptMod.getUnsafeEnabled()) {
 				if (firstLoad) {
 					MinecraftScriptMod.getLogger().warning("UNSAFE MODE ENABLED");

@@ -43,12 +43,19 @@ Version 1.4.0
 - Added logAll() which dumps the rest of the chat in the current command or script to a file
 - Added Hook System
 
+Version 1.5.0
+- Hooked into some MinecraftForge Event to Test
+- Added on(string hookName, function hookFunc)
+- Fixed JSFunction
+- Fix Resource loading with script editor
+- RunScriptEndpoint now uses ScriptRunnerWeb
+
 Future - Roughly in order of when I will work on them
 =====================================================
-- Have Script Editor auto extract assets
 - Look into Jenkins reading from MinecraftScriptMod to get version detail
 - Write Permissions System
 - Hook in most forge events
+- Write NBT Block Duplicate Function
 - Improve require to make it node.js compatable
 - Improve In-Game Help
 - Add Script Nodes

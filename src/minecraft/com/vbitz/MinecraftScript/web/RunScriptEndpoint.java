@@ -14,6 +14,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
 import com.vbitz.MinecraftScript.scripting.ScriptRunnerPlayer;
+import com.vbitz.MinecraftScript.scripting.ScriptRunnerWeb;
 import com.vbitz.MinecraftScript.scripting.ScriptingManager;
 import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 
@@ -49,10 +50,9 @@ public class RunScriptEndpoint implements HttpHandler {
 			public void run() {
 				if (MinecraftScriptAPIKey.validateKey(requestKey)) {
 					String outData = "";
-					EntityPlayer ply = MinecraftScriptAPIKey.getPlayer(requestKey);
 					try {
 						outData = JSScriptingManager.getInstance().getTidyOutput(
-								JSScriptingManager.getInstance().runString(requestBody, new ScriptRunnerPlayer(ply)));
+								JSScriptingManager.getInstance().runString(requestBody, new ScriptRunnerWeb(requestKey)));
 					} catch (InternalScriptingException e) {
 						outData = e.getMessage();
 					}

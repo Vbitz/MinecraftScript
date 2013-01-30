@@ -15,8 +15,6 @@ public class StaticFileEndpoint implements HttpHandler {
 
 	private static HashMap<String, String> _resTypes = new HashMap<String, String>();
 	
-	private static final int readSize = 2 * 1024 * 1024;
-	
 	static {
 		_resTypes.put("html", "text/html");
 		_resTypes.put("js", "text/js");
@@ -48,14 +46,9 @@ public class StaticFileEndpoint implements HttpHandler {
 			ex.sendResponseHeaders(200, 0);
 			OutputStream resStr = ex.getResponseBody();
 			int writenCount = 0;
-			while (str.available() > 0) {
-				int arrLength = readSize;
-				if (str.available() < readSize) {
-					arrLength = str.available();
-				}
-				byte[] buf = new byte[arrLength];
-				writenCount += str.read(buf);
-				resStr.write(buf);
+			int r;
+			while ((r = str.read()) != -1) {
+				resStr.write(r);
 			}
 			resStr.close(); // this sometimes fails
 			str.close();

@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import net.minecraft.command.CommandHandler;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.MinecraftForge;
 
 import com.vbitz.MinecraftScript.blocks.ScriptedBlock;
 import com.vbitz.MinecraftScript.commands.APIKeyCommand;
@@ -46,7 +47,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.4.0") // mental note, update this loads
+@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.5.0") // mental note, update this loads
 @NetworkMod(clientSideRequired=false, serverSideRequired=true)
 public class MinecraftScriptMod {
 	@Instance("MinecraftScriptMod")
@@ -150,6 +151,8 @@ public class MinecraftScriptMod {
 		TickRegistry.registerTickHandler(MinecraftScriptHTTPServer.getInstance(), Side.SERVER);
 		
 		GameRegistry.registerWorldGenerator(new MinecraftScriptWorldGen());
+		
+		MinecraftForge.EVENT_BUS.register(new MinecraftScriptHookManager());
 	}
 	
 	private void createScriptedObjects() {

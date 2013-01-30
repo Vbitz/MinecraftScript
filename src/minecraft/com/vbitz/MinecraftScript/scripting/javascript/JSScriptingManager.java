@@ -124,9 +124,25 @@ public class JSScriptingManager extends ScriptingManager {
 
 	@Override
 	public Object runFunction(ScriptRunner runner, IFunction func, Object... args) throws InternalScriptingException {
-		setScriptRunner(runner);
-		Object ret = func.call(mcJavascriptContext, mcJavascriptScope, mcJavascriptScope, args);
-		setScriptRunner(null);
+		Object ret = null;
+		try {
+			enterContext();
+			setScriptRunner(runner);
+			if (func instanceof JSFunction) {
+				((JSFunction) func).getFunction().call(mcJavascriptContext, mcJavascriptScope, mcJavascriptScope, args);
+			} else {
+				throw new InternalScriptingException("Invalid Function");
+			}
+			setScriptRunner(null);
+		} catch (EcmaError e) {
+			throw new InternalScriptingException(e.getMessage());
+		} catch (EvaluatorException e) {
+			throw new InternalScriptingException(e.getMessage());
+		} catch (Error e) {
+			throw new InternalScriptingException(e.getMessage());
+		} finally {
+			exitContext();
+		}
 		return ret;
 	}
 

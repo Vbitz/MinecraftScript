@@ -18,6 +18,7 @@ import org.mozilla.javascript.NativeArray;
 import com.vbitz.MinecraftScript.MCSCollection;
 import com.vbitz.MinecraftScript.MinecraftItemStore;
 import com.vbitz.MinecraftScript.MinecraftScriptCommandManager;
+import com.vbitz.MinecraftScript.MinecraftScriptHookManager;
 import com.vbitz.MinecraftScript.MinecraftScriptMod;
 import com.vbitz.MinecraftScript.MinecraftScriptPlayerAPI;
 import com.vbitz.MinecraftScript.MinecraftScriptScriptedBlockAPI;
@@ -216,5 +217,10 @@ public class ScriptingGlobals {
 	@JSDoc(jsName = "help(string term)", doc = "What your using right now")
 	public static String helpJS(String term) {
 		return HelpRegistry.getHelp(term);
+	}
+	
+	@JSDoc(jsName = "on(string eventName,function func)", doc = "On eventName being called func will be called")
+	public static void onEventJS(String eventName, Object func) {
+		MinecraftScriptHookManager.addHook(eventName, JSScriptingManager.getInstance().getFunction(func));
 	}
 }
