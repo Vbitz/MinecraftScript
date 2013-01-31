@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
@@ -76,5 +77,14 @@ public class MinecraftScriptHookManager {
 		}
 		callHook(new ScriptRunnerEvent(e.entityLiving.worldObj), "livingHurt", e.ammount, 
 				new Vector3f(e.entityLiving.posX, e.entityLiving.posY, e.entityLiving.posZ));
+	}
+	
+	@ForgeSubscribe
+	public void chatMessage(ServerChatEvent e) {
+		if (e.player.worldObj.isRemote) {
+			return;
+		}
+		Thread.currentThread().getId(); // just a little hack
+		callHook(new ScriptRunnerEvent(e.player.worldObj), "chatMessage", new MinecraftScriptPlayerAPI(e.player), e.message);
 	}
 }

@@ -52,7 +52,7 @@ Version 1.5.0
 
 Future - Roughly in order of when I will work on them
 =====================================================
-- Look into Jenkins reading from MinecraftScriptMod to get version detail
+- API Keys should be loaded from a file
 - Write Permissions System
 - Hook in most forge events
 - Write NBT Block Duplicate Function
@@ -60,6 +60,8 @@ Future - Roughly in order of when I will work on them
 - Improve In-Game Help
 - Add Script Nodes
 - Add Survival Mode Scripting with Script Nodes
+- Add Beacon Function to Script Node
+- Add Force Load Chunks with (callback - not needed?)
 - Add Container API
 - Add Crafting Function
 - Add Redstone API
