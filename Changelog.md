@@ -50,6 +50,13 @@ Version 1.5.0
 - Fix Resource loading with script editor
 - RunScriptEndpoint now uses ScriptRunnerWeb
 
+Version 1.5.1
+- Added chatMessage hook, it even gives you a player object
+
+Version 1.5.2
+- Added player.world()
+- Changed world().downfall() to use a get and set, you can now just use world().rain as a boolean
+
 Future - Roughly in order of when I will work on them
 =====================================================
 - API Keys should be loaded from a file
@@ -58,7 +65,7 @@ Future - Roughly in order of when I will work on them
 - Write NBT Block Duplicate Function
 - Improve require to make it node.js compatable
 - Improve In-Game Help
-- Add Script Nodes
+- Add Script Nodes - The block will be cheapish (maybe some gold nuggets surounding a diamond on some wood but the script running tool might require a nether star or something else really expensive)
 - Add Survival Mode Scripting with Script Nodes
 - Add Beacon Function to Script Node
 - Add Force Load Chunks with (callback - not needed?)

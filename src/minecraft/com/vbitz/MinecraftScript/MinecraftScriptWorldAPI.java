@@ -56,6 +56,11 @@ public class MinecraftScriptWorldAPI {
 		this._player = ply;
 	}
 	
+	public MinecraftScriptWorldAPI(EntityPlayer ply) {
+		this._player = ply;
+		this._world = ply.worldObj;
+	}
+
 	public void explode(int amo, Vector3f loc) throws ScriptErrorException {
 		if (amo > 200) {
 			throw new ScriptErrorException("Bad Idea");
@@ -166,10 +171,6 @@ public class MinecraftScriptWorldAPI {
 	public long getTime() {
 		return _world.getWorldTime();
 	}
-    
-	public void setTime(){
-		setTime(0);
-	}
 
 	public void setBiome(int biome, Vector3f loc) { // not quite working yet, the client needs to reload to see the change
 		byte[] bytes = new byte[16 * 16];
@@ -202,20 +203,17 @@ public class MinecraftScriptWorldAPI {
 		}
 	}
 	
-	public void downfall(boolean rain, int time){
-		if(rain)
-		{
-			_world.getWorldInfo().setRaining(true);
-		}
-		else
-		{
-			_world.getWorldInfo().setRaining(false);
-			_world.getWorldInfo().setRainTime(time);
-		}
+	public boolean getRain() {
+		return _world.getWorldInfo().isRaining();
 	}
 	
-	public void downfall(boolean rain) {
-		downfall(rain, _world.rand.nextInt(20000) + 1000);
+	public void setRain(boolean rain) {
+		if (rain) {
+			_world.getWorldInfo().setRaining(true);
+		} else {
+			_world.getWorldInfo().setRaining(false);
+			_world.getWorldInfo().setRainTime(_world.rand.nextInt(20000) + 1000);
+		}
 	}
 	
 	public boolean spawnTree(Vector3f pos) {

@@ -176,4 +176,8 @@ public class MinecraftScriptPlayerAPI {
 	public String getName() {
 		return _player.getEntityName();
 	}
+	
+	public MinecraftScriptWorldAPI world() {
+		return new MinecraftScriptWorldAPI(_player);
+	}
 }
