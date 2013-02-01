@@ -57,6 +57,10 @@ Version 1.5.2
 - Added player.world()
 - Changed world().downfall() to use a get and set, you can now just use world().rain as a boolean
 
+Version 1.6.0
+- Updated for Minecraft 1.4.7 - Just some MCP name updates
+- Removed HTML Serve Directory
+
 Future - Roughly in order of when I will work on them
 =====================================================
 - API Keys should be loaded from a file

@@ -158,7 +158,7 @@ public class MinecraftScriptPlayerAPI {
 	}
 	
 	public void gamemode(int gamemode) {
-		_player.sendGameTypeToPlayer(EnumGameType.getByID(gamemode));
+		_player.setGameType(EnumGameType.getByID(gamemode));
 	}
 	
 	public void runCommand(String command) {

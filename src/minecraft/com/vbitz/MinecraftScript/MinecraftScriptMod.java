@@ -48,7 +48,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.5.2") // mental note, update this loads
+@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.6.0") // mental note, update this loads
 @NetworkMod(clientSideRequired=false, serverSideRequired=true)
 public class MinecraftScriptMod {
 	@Instance("MinecraftScriptMod")
@@ -60,7 +60,6 @@ public class MinecraftScriptMod {
 	private static MinecraftScriptMod _singilton = null;
 	
 	private static File scriptsDirectory = null;
-	private static File publicHtmlDirectory = null;
 	public static File loggingDirectory = null;
 	
 	private static final DateFormat logDateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
@@ -91,19 +90,14 @@ public class MinecraftScriptMod {
 	public void preInit(FMLPreInitializationEvent e) {
 		File baseDirectory = new File(e.getModConfigurationDirectory(), "minecraftScript");
 		scriptsDirectory = new File(baseDirectory, "scripts");
-		publicHtmlDirectory = new File(baseDirectory, "public_html");
 		loggingDirectory = new File(baseDirectory, "logs");
 		KeyValueStore.load(new File(baseDirectory, "mcsKeyValueStore.dat"));
 		
 		if (!baseDirectory.exists()) {
 			baseDirectory.mkdir();
 		}
-		
 		if (!scriptsDirectory.exists()) {
 			scriptsDirectory.mkdir();
-		}
-		if (!publicHtmlDirectory.exists()) {
-			publicHtmlDirectory.mkdir();
 		}
 		if (!loggingDirectory.exists()) {
 			loggingDirectory.mkdir();
@@ -146,7 +140,7 @@ public class MinecraftScriptMod {
 					1234, this, 50, 1, true); // need to change the id maybe
 		}
 		
-		new MinecraftScriptHTTPServer(publicHtmlDirectory);
+		new MinecraftScriptHTTPServer();
 		
 		TickRegistry.registerTickHandler(MinecraftScriptedTickManager.getInstance(), Side.SERVER);
 		TickRegistry.registerTickHandler(MinecraftScriptHTTPServer.getInstance(), Side.SERVER);

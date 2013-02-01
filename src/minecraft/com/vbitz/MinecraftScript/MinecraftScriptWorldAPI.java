@@ -471,7 +471,7 @@ public class MinecraftScriptWorldAPI {
 	// happy new years
 	public void spawnFirework(Vector3f pos, int color, int type, int flightTime, int explodeCount) {
 		Random rand = new Random(_world.rand.nextLong());
-		ItemStack stk = new ItemStack(Item.field_92052_bU); // mcp really needs to update this
+		ItemStack stk = new ItemStack(Item.firework);
 		NBTTagCompound baseComp = new NBTTagCompound();
 		baseComp.setCompoundTag("Fireworks", new NBTTagCompound("Fireworks"));
 		baseComp.getCompoundTag("Fireworks").setByte("Flight", (byte) flightTime);
@@ -494,7 +494,7 @@ public class MinecraftScriptWorldAPI {
 	public void spawnFirecode(Vector3f pos, int flightTime, Object func) {
 		final IFunction explodeFunc = JSScriptingManager.getInstance().getFunction(func);
 		final EntityPlayer owner = _player;
-		ItemStack stk = new ItemStack(Item.field_92052_bU);
+		ItemStack stk = new ItemStack(Item.firework);
 		NBTTagCompound baseComp = new NBTTagCompound();
 		baseComp.setCompoundTag("Fireworks", new NBTTagCompound("Fireworks"));
 		baseComp.getCompoundTag("Fireworks").setByte("Flight", (byte) flightTime);

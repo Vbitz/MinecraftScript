@@ -40,8 +40,6 @@ public class MinecraftScriptHTTPServer implements ITickHandler {
 	
 	private HttpServer _server;
 	
-	public final File ServeDirectory;
-	
 	private boolean _firstStart = true;
 	
 	private int _portNum = 12543;
@@ -49,17 +47,8 @@ public class MinecraftScriptHTTPServer implements ITickHandler {
 	private ArrayDeque<Runnable> _toInvoke = new ArrayDeque<Runnable>();
 	private final int _tickRate = 5;
 	
-	public MinecraftScriptHTTPServer(File directory) {
+	public MinecraftScriptHTTPServer() {
 		_instance = this;
-		
-		ServeDirectory = directory;
-		
-		extractFilesFromZip();
-	}
-	
-	private void extractFilesFromZip() {
-		URL modPath = this.getClass().getResource("/com/vbitz/MinecraftScript/htmlsrc/mcsweb.html");
-		System.out.println(modPath.toString());
 	}
 
 	public void start() {
