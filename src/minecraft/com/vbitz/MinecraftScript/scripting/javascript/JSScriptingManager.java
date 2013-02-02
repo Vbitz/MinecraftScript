@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+import net.minecraftforge.common.DimensionManager;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.EcmaError;
@@ -86,13 +88,13 @@ public class JSScriptingManager extends ScriptingManager {
 	}
 
 	@Override
-	public void loadAllScripts(File scriptsDir) {
-		_scriptsDirectory = scriptsDir;
+	public void loadAllScripts(File scriptsDir, boolean aux) {
+		if (!aux) {
+			_scriptsDirectory = scriptsDir;
+		}
 		
 		enterContext();
 		
-		mcJavascriptScope.put("isPreload", mcJavascriptScope, true);
-		Logger.getLogger("MinecraftScriptMod").info("Loading Startup Scripts");
 		for (File f : scriptsDir.listFiles()) {
 			try {
 				if (!f.getName().startsWith("init_")) { // this should make including libarys easier and should pave the way for
@@ -110,7 +112,6 @@ public class JSScriptingManager extends ScriptingManager {
 				MinecraftScriptMod.getLogger().severe("Error Loading " + f.getName());
 			}
 		}
-		mcJavascriptScope.put("isPreload", mcJavascriptScope, false);
 		
 		exitContext();
 	}
@@ -119,7 +120,9 @@ public class JSScriptingManager extends ScriptingManager {
 	public void reload() {
 		MinecraftScriptMod.getLogger().fine("Reloading Scripting Scope");
 		loadScope(false);
-		loadAllScripts(_scriptsDirectory);
+		loadAllScripts(_scriptsDirectory, false);
+		loadAllScripts(new File(
+				DimensionManager.getCurrentSaveRootDirectory(), "scripts"), true);
 	}
 
 	@Override

@@ -64,6 +64,12 @@ Version 1.6.0
 Version 1.6.1 (Stream 1)
 - API Keys should be loaded from a file
 
+Version 1.6.2 (Stream 2)
+- Added world().tickRate
+
+Version 1.6.3 (Stream 2)
+- Add Scripts for just one world
+
 Future - Roughly in order of when I will work on them
 =====================================================
 - Fix Server Crash
@@ -79,7 +85,6 @@ Future - Roughly in order of when I will work on them
 - Add Container API
 - Add Crafting Function
 - Add Redstone API
-- Add Scripts for just one world
 - Hide Blocks and Items from NEI
 - Document rest of enchants
 - Add rest of creative tabs

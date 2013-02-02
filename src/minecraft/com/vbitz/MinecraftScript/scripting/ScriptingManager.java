@@ -21,7 +21,7 @@ public abstract class ScriptingManager {
 	public abstract void onServerUnload();
 	
 	public abstract void initScope();
-	public abstract void loadAllScripts(File scriptsDir);
+	public abstract void loadAllScripts(File scriptsDir, boolean aux);
 	
 	public abstract void reload();
 	

@@ -9,7 +9,9 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 import net.minecraft.command.CommandHandler;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.vbitz.MinecraftScript.blocks.ScriptedBlock;
@@ -51,7 +53,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.6.2") // mental note, update this loads
+@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.6.3") // mental note, update this loads
 @NetworkMod(clientSideRequired=false, serverSideRequired=true)
 public class MinecraftScriptMod {
 	@Instance("MinecraftScriptMod")
@@ -208,9 +210,12 @@ public class MinecraftScriptMod {
 		commandManager.registerCommand(new MinecraftScriptHelpCommand());
 		commandManager.registerCommand(new KeyValueStoreCommand());
 		
-		JSScriptingManager.getInstance().loadAllScripts(scriptsDirectory);
+		JSScriptingManager.getInstance().loadAllScripts(scriptsDirectory, false);
 		
 		MinecraftScriptHTTPServer.getInstance().start();
+		
+		JSScriptingManager.getInstance().loadAllScripts(new File(
+				DimensionManager.getCurrentSaveRootDirectory(), "scripts"), true);
 		
 		webServerStarted = true;
 	}
