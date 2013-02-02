@@ -61,9 +61,12 @@ Version 1.6.0
 - Updated for Minecraft 1.4.7 - Just some MCP name updates
 - Removed HTML Serve Directory
 
+Version 1.6.1 (Stream 1)
+- API Keys should be loaded from a file
+
 Future - Roughly in order of when I will work on them
 =====================================================
-- API Keys should be loaded from a file
+- Fix Server Crash
 - Write Permissions System
 - Hook in most forge events
 - Write NBT Block Duplicate Function

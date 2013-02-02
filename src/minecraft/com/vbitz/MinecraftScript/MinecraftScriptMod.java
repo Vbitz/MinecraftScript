@@ -1,6 +1,8 @@
 package com.vbitz.MinecraftScript;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,6 +24,7 @@ import com.vbitz.MinecraftScript.items.JSStick;
 import com.vbitz.MinecraftScript.items.ScriptedItem;
 import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingCommand;
 import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
+import com.vbitz.MinecraftScript.web.MinecraftScriptAPIKey;
 import com.vbitz.MinecraftScript.web.MinecraftScriptHTTPServer;
 
 import cpw.mods.fml.common.FMLLog;
@@ -48,7 +51,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.6.0") // mental note, update this loads
+@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.6.1") // mental note, update this loads
 @NetworkMod(clientSideRequired=false, serverSideRequired=true)
 public class MinecraftScriptMod {
 	@Instance("MinecraftScriptMod")
@@ -61,6 +64,7 @@ public class MinecraftScriptMod {
 	
 	private static File scriptsDirectory = null;
 	public static File loggingDirectory = null;
+	private static File apiKeyFilename = null;
 	
 	private static final DateFormat logDateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
 	
@@ -89,6 +93,7 @@ public class MinecraftScriptMod {
 	@PreInit
 	public void preInit(FMLPreInitializationEvent e) {
 		File baseDirectory = new File(e.getModConfigurationDirectory(), "minecraftScript");
+		apiKeyFilename = new File(baseDirectory, "apiKeys.cfg");
 		scriptsDirectory = new File(baseDirectory, "scripts");
 		loggingDirectory = new File(baseDirectory, "logs");
 		KeyValueStore.load(new File(baseDirectory, "mcsKeyValueStore.dat"));
@@ -101,6 +106,16 @@ public class MinecraftScriptMod {
 		}
 		if (!loggingDirectory.exists()) {
 			loggingDirectory.mkdir();
+		}
+		
+		if (!new File(baseDirectory, "apiKeys.cfg").exists()) {
+			try {
+				FileWriter w = new FileWriter(apiKeyFilename);
+				w.write("MinecraftScript APIKey File");
+				w.close();
+			} catch (IOException e1) {
+				this.getLogger().warning("Failed to create APIKey Config File");
+			}
 		}
 		
 		Configuration config = new Configuration(e.getSuggestedConfigurationFile());
@@ -148,6 +163,8 @@ public class MinecraftScriptMod {
 		GameRegistry.registerWorldGenerator(new MinecraftScriptWorldGen());
 		
 		MinecraftForge.EVENT_BUS.register(new MinecraftScriptHookManager());
+		
+		MinecraftScriptAPIKey.loadAll(apiKeyFilename);
 	}
 	
 	private void createScriptedObjects() {
