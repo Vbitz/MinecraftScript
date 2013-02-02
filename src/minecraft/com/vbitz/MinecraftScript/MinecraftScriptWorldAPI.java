@@ -517,5 +517,14 @@ public class MinecraftScriptWorldAPI {
 		};
 		_world.spawnEntityInWorld(fireWork);
 	}
+	
+	public double getTickRate() {
+		long[] items = MinecraftServer.getServer().worldTickTimes.get(0);
+		double totalTicks = 0;
+		for (int i = items.length - 20; i < items.length; i++) {
+			totalTicks += items[i];
+		}
+		return (totalTicks / items.length) / 1000000D;
+	}
 
 }
