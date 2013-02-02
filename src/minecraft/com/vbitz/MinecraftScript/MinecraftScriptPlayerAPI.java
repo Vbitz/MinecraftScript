@@ -1,11 +1,17 @@
 package com.vbitz.MinecraftScript;
 
 import java.io.ObjectInputStream.GetField;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 
+import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
 import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
+import com.vbitz.MinecraftScript.scripting.IFunction;
+import com.vbitz.MinecraftScript.scripting.ScriptRunnerPlayer;
+import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
@@ -179,5 +185,38 @@ public class MinecraftScriptPlayerAPI {
 	
 	public MinecraftScriptWorldAPI world() {
 		return new MinecraftScriptWorldAPI(_player);
+	}
+	
+	public void shootArrow(float damage, Object func) {
+		final IFunction explodeFunc = JSScriptingManager.getInstance().getFunction(func);
+		final EntityPlayer owner = _player;
+		EntityArrow arrow = new EntityArrow(_player.worldObj, _player, 1.0f) {
+			@Override
+			public void onUpdate() {
+				super.onUpdate();
+				try {
+					Field inGround = this.getClass().getSuperclass().getDeclaredField("inGround");
+					inGround.setAccessible(true);
+					boolean inGroundValue = inGround.getBoolean(this);
+					if (inGroundValue && !worldObj.isRemote) {
+						try {
+							JSScriptingManager.getInstance().runFunction(new ScriptRunnerPlayer(owner), explodeFunc, 
+									new Vector3f(this.posX, this.posY, this.posZ));
+						} catch (InternalScriptingException e) {
+							owner.sendChatToPlayer("Error in firecode: " + e.getMessage());
+						}
+						this.setDead();
+					}
+				} catch (Throwable t) { t.printStackTrace(); }
+			}
+		};
+		try {
+			Field damageObj = arrow.getClass().getSuperclass().getDeclaredField("damage");
+			damageObj.setAccessible(true);
+			damageObj.set(arrow, damage);
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		_player.worldObj.spawnEntityInWorld(arrow);
 	}
 }

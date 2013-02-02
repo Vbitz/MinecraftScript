@@ -9,6 +9,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 
 import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
 import com.vbitz.MinecraftScript.scripting.IFunction;
@@ -86,5 +87,13 @@ public class MinecraftScriptHookManager {
 		}
 		Thread.currentThread().getId(); // just a little hack
 		callHook(new ScriptRunnerEvent(e.player.worldObj), "chatMessage", new MinecraftScriptPlayerAPI(e.player), e.message);
+	}
+	
+	@ForgeSubscribe
+	public void arrowLoose(ArrowLooseEvent e) {
+		if (e.entityPlayer.worldObj.isRemote) {
+			return;
+		}
+		callHook(new ScriptRunnerEvent(e.entityPlayer.worldObj), "arrowLoose", new MinecraftScriptPlayerAPI(e.entityPlayer), e.charge);
 	}
 }

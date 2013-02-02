@@ -1,5 +1,6 @@
 package com.vbitz.MinecraftScript;
 
+import java.lang.reflect.Field;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
