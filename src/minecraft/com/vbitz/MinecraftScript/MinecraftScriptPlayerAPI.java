@@ -61,12 +61,12 @@ public class MinecraftScriptPlayerAPI {
 		return _player.getHealth();
 	}
 	
-	public void addHealth(int amount) {
-		_player.heal(amount);
+	public void setHealth(int health) {
+		_player.setEntityHealth(health);
 	}
 	
 	public void kill() {
-		_player.heal(-100);
+		_player.setEntityHealth(0);
 	}
 	
 	public int getHunger() {
@@ -81,8 +81,12 @@ public class MinecraftScriptPlayerAPI {
 		_player.inventory.addItemStackToInventory(new ItemStack(Item.itemsList[id], count, 0));
 	}
 	
-	public Vector3f pos() {
+	public Vector3f getPos() {
 		return new Vector3f(_player.posX, _player.posY, _player.posZ);
+	}
+	
+	public void setPos(Vector3f v) {
+		_player.setPositionAndUpdate((double)v.getX(), (double)v.getY(), (double)v.getZ());
 	}
 	
 	public void tp(Vector3f v) {
@@ -107,12 +111,16 @@ public class MinecraftScriptPlayerAPI {
 		_player.sendPlayerAbilities();
 	}
 	
-	public void setOnFire(boolean onFire) {
+	public void setFire(boolean onFire) {
 		if (onFire) {
 			_player.setFire(999999 / 20);
 		} else {
 			_player.extinguish();
 		}
+	}
+	
+	public boolean getFire() {
+		return _player.isBurning();
 	}
 	
 	public Vector3f getLook() {	// This code is based off the code from Item.class
@@ -183,11 +191,18 @@ public class MinecraftScriptPlayerAPI {
 		return _player.getEntityName();
 	}
 	
-	public MinecraftScriptWorldAPI world() {
+	public MinecraftScriptWorldAPI getWorld() {
 		return new MinecraftScriptWorldAPI(_player);
 	}
 	
-	public void shootArrow(float damage, Object func) {
+	public void shootArrow(float damage, int knockback) {
+		EntityArrow arrow = new EntityArrow(_player.worldObj, _player, 1.0f);
+		arrow.setDamage(damage);
+		arrow.setKnockbackStrength(knockback);
+		_player.worldObj.spawnEntityInWorld(arrow);
+	}
+	
+	public void shootArrow(float damage, int knockback, Object func) {
 		final IFunction explodeFunc = JSScriptingManager.getInstance().getFunction(func);
 		final EntityPlayer owner = _player;
 		EntityArrow arrow = new EntityArrow(_player.worldObj, _player, 1.0f) {
@@ -210,13 +225,8 @@ public class MinecraftScriptPlayerAPI {
 				} catch (Throwable t) { t.printStackTrace(); }
 			}
 		};
-		try {
-			Field damageObj = arrow.getClass().getSuperclass().getDeclaredField("damage");
-			damageObj.setAccessible(true);
-			damageObj.set(arrow, damage);
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
+		arrow.setDamage(damage);
+		arrow.setKnockbackStrength(knockback);
 		_player.worldObj.spawnEntityInWorld(arrow);
 	}
 }

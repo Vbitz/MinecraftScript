@@ -20,6 +20,7 @@ import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 import net.minecraft.block.Block;
 import net.minecraft.entity.*;
 import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.item.EntityFallingSand;
 import net.minecraft.entity.item.EntityFireworkRocket;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityTNTPrimed;
@@ -82,6 +83,16 @@ public class MinecraftScriptWorldAPI {
 				new ItemStack(_world.getBlockId((int) loc.getX(), (int) loc.getY(), (int) loc.getZ()),
 						1, _world.getBlockMetadata((int) loc.getX(), (int) loc.getY(), (int) loc.getZ())));
 			_world.spawnEntityInWorld(t);
+			setBlock(0, loc);
+		}
+	}
+	
+	public void dropBlockEnt(Vector3f loc) {
+		if (_world.getBlockId((int) loc.getX(), (int) loc.getY(), (int) loc.getZ()) != 0) {
+			EntityFallingSand s = new EntityFallingSand(_world, loc.getX(), loc.getY(), loc.getZ(),
+					_world.getBlockId((int) loc.getX(), (int) loc.getY(), (int) loc.getZ()),
+					_world.getBlockMetadata((int) loc.getX(), (int) loc.getY(), (int) loc.getZ()));
+			_world.spawnEntityInWorld(s);
 			setBlock(0, loc);
 		}
 	}

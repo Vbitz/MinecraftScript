@@ -70,6 +70,14 @@ Version 1.6.2 (Stream 2)
 Version 1.6.3 (Stream 2)
 - Add Scripts for just one world
 
+Version 1.6.4 (Stream 2)
+- Added arrowLoose Event
+- Added player().shootArrow function
+
+Version 1.7.0
+- Added Documents.md
+- Quite a few method name changes
+
 Future - Roughly in order of when I will work on them
 =====================================================
 - Fix Server Crash
@@ -77,7 +85,7 @@ Future - Roughly in order of when I will work on them
 - Hook in most forge events
 - Write NBT Block Duplicate Function
 - Improve require to make it node.js compatable
-- Improve In-Game Help
+- Push Documents.md into JSDoc
 - Add Script Nodes - The block will be cheapish (maybe some gold nuggets surounding a diamond on some wood but the script running tool might require a nether star or something else really expensive)
 - Add Survival Mode Scripting with Script Nodes
 - Add Beacon Function to Script Node
