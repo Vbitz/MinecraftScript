@@ -174,6 +174,10 @@ void									killDrops(Vector3f pos)
 
 void									killDrops(Vector3f pos, boolean killExp)
 
+void									killAll()
+
+void									killAll(Vector3f pos)
+
 boolean									getRain()
 
 void 									setRain(boolean rain)

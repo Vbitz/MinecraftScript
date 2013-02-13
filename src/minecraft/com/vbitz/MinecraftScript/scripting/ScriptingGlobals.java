@@ -23,9 +23,9 @@ import com.vbitz.MinecraftScript.MinecraftScriptMod;
 import com.vbitz.MinecraftScript.MinecraftScriptPlayerAPI;
 import com.vbitz.MinecraftScript.MinecraftScriptScriptedBlockAPI;
 import com.vbitz.MinecraftScript.MinecraftScriptScriptedItemAPI;
+import com.vbitz.MinecraftScript.MinecraftScriptTickManager;
 import com.vbitz.MinecraftScript.MinecraftScriptWorldAPI;
 import com.vbitz.MinecraftScript.MinecraftScriptWorldGen;
-import com.vbitz.MinecraftScript.MinecraftScriptedTickManager;
 import com.vbitz.MinecraftScript.Vector3f;
 import com.vbitz.MinecraftScript.docs.HelpRegistry;
 import com.vbitz.MinecraftScript.docs.JSDoc;
@@ -169,14 +169,14 @@ public class ScriptingGlobals {
 		if (JSScriptingManager.getInstance().getScriptRunner() == null) {
 			return false;
 		} else {
-			return MinecraftScriptedTickManager.getInstance().registerOnTick(id, JSScriptingManager.getInstance().getScriptRunner(),
+			return MinecraftScriptTickManager.getInstance().registerOnTick(id, JSScriptingManager.getInstance().getScriptRunner(),
 					JSScriptingManager.getInstance().getFunction(obj));
 		}
 	}
 	
 	@JSDoc(jsName = "deregisterTick(string id)", doc = "Stops id from running on the next server tick")
 	public static void deregisterTickJS(String id) {
-		MinecraftScriptedTickManager.getInstance().deregisterTick(id);
+		MinecraftScriptTickManager.getInstance().deregisterTick(id);
 	}
 	
 	@JSDoc(jsName = "col(vector3f vec)", doc = "Creates a new collection from a vector")

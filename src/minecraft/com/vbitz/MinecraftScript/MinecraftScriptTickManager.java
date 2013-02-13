@@ -3,10 +3,9 @@ package com.vbitz.MinecraftScript;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.Queue;
 import java.util.logging.Logger;
 
-import net.minecraft.entity.player.EntityPlayer;
+import javax.script.Invocable;
 
 import com.vbitz.MinecraftScript.exceptions.InternalScriptingException;
 import com.vbitz.MinecraftScript.scripting.IFunction;
@@ -16,9 +15,10 @@ import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
-public class MinecraftScriptedTickManager implements ITickHandler {
+public class MinecraftScriptTickManager implements ITickHandler {
 
-	private static int _tickRate = 1;
+	private static int _scriptedTickRate = 1;
+	private static int _httpTickRate = 1;
 	
 	private class TickFunction {
 		public String ID;
@@ -32,26 +32,28 @@ public class MinecraftScriptedTickManager implements ITickHandler {
 		}
 	}
 	
-	private static MinecraftScriptedTickManager _instance;
+	private static MinecraftScriptTickManager _instance;
 	
-	private ArrayDeque<TickFunction> _functions = new ArrayDeque<TickFunction>();
+	private ArrayDeque<TickFunction> _scriptedToInvoke = new ArrayDeque<TickFunction>();
 	
-	private Logger _log = Logger.getLogger("MinecraftScriptedTickManager");
+	private ArrayDeque<Runnable> _httpToInvoke = new ArrayDeque<Runnable>();
+	
+	private Logger _log = Logger.getLogger("MinecraftScriptTickManager");
 	
 	static {
-		_instance = new MinecraftScriptedTickManager();
+		_instance = new MinecraftScriptTickManager();
 	}
 	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) { }
 
 	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-		ArrayList<MinecraftScriptedTickManager.TickFunction> func =
-				new ArrayList<MinecraftScriptedTickManager.TickFunction>();
-		for (int i = 0; i < _tickRate; i++) {
-			if (_functions.size() > 0) {
-				func.add(_functions.pop());
+	public synchronized void tickEnd(EnumSet<TickType> type, Object... tickData) {
+		ArrayList<MinecraftScriptTickManager.TickFunction> func =
+				new ArrayList<MinecraftScriptTickManager.TickFunction>();
+		for (int i = 0; i < _scriptedTickRate; i++) {
+			if (_scriptedToInvoke.size() > 0) {
+				func.add(_scriptedToInvoke.pop());
 			}
 		}
 		for (TickFunction tickFunction : func) {
@@ -59,6 +61,16 @@ public class MinecraftScriptedTickManager implements ITickHandler {
 				JSScriptingManager.getInstance().runFunction(tickFunction.Ply, tickFunction.Func);
 			} catch (InternalScriptingException e) {
 				tickFunction.Ply.sendChat("Error: " + e.getMessage());
+			}
+		}
+		
+		for (int i = 0; i < _httpTickRate; i++) {
+			if (_httpToInvoke.size() < 1) {
+				break;
+			}
+			Runnable r = _httpToInvoke.pop();
+			if (r != null) {
+				r.run();
 			}
 		}
 	}
@@ -72,20 +84,23 @@ public class MinecraftScriptedTickManager implements ITickHandler {
 	public String getLabel() { return null; }
 
 	public boolean registerOnTick(String id, ScriptRunner entityPlayer, IFunction func) {
-		_functions.add(new TickFunction(id, entityPlayer, func));
-		return _functions.size() <= _tickRate;
+		_scriptedToInvoke.add(new TickFunction(id, entityPlayer, func));
+		return _scriptedToInvoke.size() <= _scriptedTickRate;
+	}
+	
+	public synchronized void addHTTPRunnable(Runnable r) {
+		_httpToInvoke.push(r);
 	}
 	
 	public void deregisterTick(String id) {
-		for (TickFunction func : _functions) {
+		for (TickFunction func : _scriptedToInvoke) {
 			if (func.ID.equals(id)) {
-				_functions.remove(func);
+				_scriptedToInvoke.remove(func);
 			}
 		}
 	}
 	
-	public static MinecraftScriptedTickManager getInstance() {
+	public static MinecraftScriptTickManager getInstance() {
 		return _instance;
 	}
-
 }

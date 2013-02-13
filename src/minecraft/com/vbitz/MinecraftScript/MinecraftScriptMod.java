@@ -53,7 +53,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.7.0") // mental note, update this loads
+@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.8.0") // mental note, update this loads
 @NetworkMod(clientSideRequired=false, serverSideRequired=true)
 public class MinecraftScriptMod {
 	@Instance("MinecraftScriptMod")
@@ -87,6 +87,8 @@ public class MinecraftScriptMod {
 	private int scriptedItemIdCount = 16;
 	
 	private int jsStickId = 7311;
+	
+	private static int webServerPort = 12543;
 	
 	private static IInternalExtendApi[] _internalApis = new IInternalExtendApi[] {
 		new BlockFunctions()
@@ -135,6 +137,8 @@ public class MinecraftScriptMod {
 		
 		jsStickId = config.get(Configuration.CATEGORY_ITEM, "jsStickId", 7311).getInt(7311);
 		
+		webServerPort = config.get("network", "webServerPort", 12543).getInt(12543);
+		
 		config.save();
 	}
 	
@@ -143,6 +147,8 @@ public class MinecraftScriptMod {
 		proxy.registerRenderers();
 		
 		this.mcLogger.setParent(FMLLog.getLogger());
+		
+		this.mcLogger.info("MinecraftScript Version " + "1.8.0" + " Loading");
 		
 		createScriptedObjects();
 		
@@ -159,8 +165,7 @@ public class MinecraftScriptMod {
 		
 		new MinecraftScriptHTTPServer();
 		
-		TickRegistry.registerTickHandler(MinecraftScriptedTickManager.getInstance(), Side.SERVER);
-		TickRegistry.registerTickHandler(MinecraftScriptHTTPServer.getInstance(), Side.SERVER);
+		TickRegistry.registerTickHandler(MinecraftScriptTickManager.getInstance(), Side.SERVER);
 		
 		GameRegistry.registerWorldGenerator(new MinecraftScriptWorldGen());
 		
@@ -236,6 +241,10 @@ public class MinecraftScriptMod {
 	
 	public static boolean getUnsafeEnabled() {
 		return unsafeModeEnabled;
+	}
+	
+	public static int getWebServerPort() {
+		return webServerPort;
 	}
 
 	public static MinecraftScriptMod getInstance() {

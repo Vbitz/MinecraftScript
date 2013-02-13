@@ -78,8 +78,17 @@ Version 1.7.0
 - Added Documents.md
 - Quite a few method name changes
 
+Version 1.8.0
+- Unified Tick Handlers
+- Added killAll() which kills tnt and arrows and dropped items, basicly goodbye massive lag
+
 Future - Roughly in order of when I will work on them
 =====================================================
+- Add Block API in world working on a collection of blocks
+- Expand ScriptedItem and ScriptedBlock
+- Add Python/node.js based Javascript REPL
+- Minecraft PI Edition API Support
+- Add Ore Dict Intergration
 - Fix Server Crash
 - Write Permissions System
 - Hook in most forge events

@@ -16,12 +16,11 @@ import org.mozilla.javascript.Function;
 
 import com.sun.net.httpserver.*;
 import com.vbitz.MinecraftScript.MinecraftScriptMod;
-import com.vbitz.MinecraftScript.MinecraftScriptedTickManager;
-
+import com.vbitz.MinecraftScript.MinecraftScriptTickManager;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
-public class MinecraftScriptHTTPServer implements ITickHandler {
+public class MinecraftScriptHTTPServer {
 	
 	public static Map<String, String> getQueryMap(String query) {  
 	    String[] params = query.split("&");  
@@ -43,9 +42,6 @@ public class MinecraftScriptHTTPServer implements ITickHandler {
 	private boolean _firstStart = true;
 	
 	private int _portNum = 12543;
-	
-	private ArrayDeque<Runnable> _toInvoke = new ArrayDeque<Runnable>();
-	private final int _tickRate = 5;
 	
 	public MinecraftScriptHTTPServer() {
 		_instance = this;
@@ -80,7 +76,7 @@ public class MinecraftScriptHTTPServer implements ITickHandler {
 	}
 
 	public int getPort() {
-		return _portNum;
+		return MinecraftScriptMod.getWebServerPort();
 	}
 
 	public synchronized static MinecraftScriptHTTPServer getInstance() {
@@ -88,34 +84,6 @@ public class MinecraftScriptHTTPServer implements ITickHandler {
 	}
 	
 	public synchronized void addRunnable(Runnable run) {
-		_toInvoke.add(run);
+		MinecraftScriptTickManager.getInstance().addHTTPRunnable(run);
 	}
-	
-	public synchronized void runOnTick() {
-		for (int i = 0; i < _tickRate; i++) {
-			if (_toInvoke.size() < 1) {
-				break;
-			}
-			Runnable r = _toInvoke.pop();
-			if (r != null) {
-				r.run();
-			}
-		}
-	}
-
-	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData) { }
-
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-		runOnTick();
-	}
-
-	@Override
-	public EnumSet<TickType> ticks() {
-		return EnumSet.of(TickType.SERVER);
-	}
-
-	@Override
-	public String getLabel() { return null; }
 }

@@ -87,6 +87,8 @@ public class MinecraftScriptWorldAPI {
 		}
 	}
 	
+	
+	// Bugged right now
 	public void dropBlockEnt(Vector3f loc) {
 		if (_world.getBlockId((int) loc.getX(), (int) loc.getY(), (int) loc.getZ()) != 0) {
 			EntityFallingSand s = new EntityFallingSand(_world, loc.getX(), loc.getY(), loc.getZ(),
@@ -212,6 +214,35 @@ public class MinecraftScriptWorldAPI {
 			}
 			if (killExp && object instanceof EntityXPOrb) {
 				_world.removeEntity(((EntityXPOrb) object));
+			}
+		}
+	}
+
+	public void killAll() {
+		killAll(JSScriptingManager.getInstance().getScriptRunner().getPlayerAPI().getPos());
+	}
+	
+	public void killAll(Vector3f pos) {
+		List ents = _world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(
+				pos.getX() - 100, pos.getY() - 100, pos.getZ() - 100, pos.getX() + 100, pos.getY() + 100, pos.getZ() + 100));
+		for (Object object : ents) {
+			if (object instanceof EntityItem) {
+				_world.removeEntity(((EntityItem) object));
+			}
+			if (object instanceof EntityXPOrb) {
+				_world.removeEntity(((EntityXPOrb) object));
+			}
+			
+			if (object instanceof EntityTNTPrimed) {
+				_world.removeEntity(((EntityTNTPrimed) object));
+			}
+			
+			if (object instanceof EntityMob) {
+				_world.removeEntity(((EntityMob) object));
+			}
+			
+			if (object instanceof EntityArrow) {
+				_world.removeEntity(((EntityArrow) object));
 			}
 		}
 	}
