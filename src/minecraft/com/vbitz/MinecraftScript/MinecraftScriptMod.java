@@ -53,7 +53,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.9.1") // mental note, update this loads
+@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.9.2") // mental note, update this loads
 @NetworkMod(clientSideRequired=false, serverSideRequired=true)
 public class MinecraftScriptMod {
 	@Instance("MinecraftScriptMod")
@@ -148,7 +148,7 @@ public class MinecraftScriptMod {
 		
 		this.mcLogger.setParent(FMLLog.getLogger());
 		
-		this.mcLogger.info("MinecraftScript Version " + "1.9.1" + " Loading");
+		this.mcLogger.info("MinecraftScript Version " + "1.9.2" + " Loading");
 		
 		createScriptedObjects();
 		
@@ -219,8 +219,10 @@ public class MinecraftScriptMod {
 		
 		MinecraftScriptHTTPServer.getInstance().start();
 		
-		JSScriptingManager.getInstance().loadAllScripts(new File(
-				DimensionManager.getCurrentSaveRootDirectory(), "scripts"), true);
+		if (DimensionManager.getCurrentSaveRootDirectory().exists()) {
+			JSScriptingManager.getInstance().loadAllScripts(new File(
+					DimensionManager.getCurrentSaveRootDirectory(), "scripts"), true);
+		}
 		
 		webServerStarted = true;
 	}

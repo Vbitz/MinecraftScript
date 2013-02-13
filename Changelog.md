@@ -85,6 +85,13 @@ Version 1.8.0
 Version 1.9.0
 - Goodbye Access Checks if unsafeMode is enabled
 
+Version 1.9.1
+- Removed some debug code
+- Fixed a major bug with loadAllScripts()
+
+Version 1.9.2
+- Derp
+
 Future - Roughly in order of when I will work on them
 =====================================================
 - Add Block API in world working on a collection of blocks

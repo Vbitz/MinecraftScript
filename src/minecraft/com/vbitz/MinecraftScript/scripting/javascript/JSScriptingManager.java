@@ -97,6 +97,10 @@ public class JSScriptingManager extends ScriptingManager {
 			return;
 		}
 		
+		if (!scriptsDir.exists()) {
+			scriptsDir.mkdirs();
+		}
+		
 		enterContext();
 		
 		for (File f : scriptsDir.listFiles()) {
