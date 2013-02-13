@@ -53,7 +53,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.8.0") // mental note, update this loads
+@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.9.0") // mental note, update this loads
 @NetworkMod(clientSideRequired=false, serverSideRequired=true)
 public class MinecraftScriptMod {
 	@Instance("MinecraftScriptMod")
@@ -148,7 +148,7 @@ public class MinecraftScriptMod {
 		
 		this.mcLogger.setParent(FMLLog.getLogger());
 		
-		this.mcLogger.info("MinecraftScript Version " + "1.8.0" + " Loading");
+		this.mcLogger.info("MinecraftScript Version " + "1.9.0" + " Loading");
 		
 		createScriptedObjects();
 		

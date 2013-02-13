@@ -8,6 +8,14 @@ import org.mozilla.javascript.Scriptable;
 public class MinecraftScriptContextFactory extends ContextFactory {
 	private static class WatchedContext extends Context {
 		public long startTime;
+		
+		@Override
+		public boolean hasFeature(int featureIndex) {
+			if (featureIndex == FEATURE_ENHANCED_JAVA_ACCESS && MinecraftScriptMod.getUnsafeEnabled()) {
+				return true;
+			}
+			return super.hasFeature(featureIndex);
+		}
 	}
 	
 	public static void setup() {
@@ -20,6 +28,7 @@ public class MinecraftScriptContextFactory extends ContextFactory {
         // Make Rhino runtime to call observeInstructionCount
         // each 2000 bytecode instructions
         cx.setInstructionObserverThreshold(2000);
+        cx.setWrapFactory(new MinecraftScriptWrapFactory());
         return cx;
     }
     

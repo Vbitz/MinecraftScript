@@ -173,6 +173,8 @@ public class MinecraftScriptUnsafeAPI {
 		return null;
 	}
 	
+	/*
+	
 	public static void call(Object obj, String methodName, Object... args) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, ScriptErrorException {
 		for (Method method : obj.getClass().getDeclaredMethods()) {
 			if (method.getName().equals(methodName)) {
@@ -210,6 +212,8 @@ public class MinecraftScriptUnsafeAPI {
 		}
 		f.set(obj, getRealObject(value, f.getType()));
 	}
+	
+	*/
 	
 	public static Object getTileEntity(Vector3f pos) {
 		return JSScriptingManager.getInstance().getScriptRunner().getWorld().getBlockTileEntity((int) pos.getX(), (int) pos.getY(), (int) pos.getZ());

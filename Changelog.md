@@ -82,6 +82,9 @@ Version 1.8.0
 - Unified Tick Handlers
 - Added killAll() which kills tnt and arrows and dropped items, basicly goodbye massive lag
 
+Version 1.9.0
+- Goodbye Access Checks if unsafeMode is enabled
+
 Future - Roughly in order of when I will work on them
 =====================================================
 - Add Block API in world working on a collection of blocks

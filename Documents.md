@@ -232,12 +232,6 @@ void									fmlMods()
 
 Object									fmlMod(String modID)
 
-void									call(Object obj, String methodName, Object... args)
-
-Object									getField(Object obj, String name)
-
-void									setField(Object obj, String name, Object value)
-
 Object 									getTileEntity(Vector3f pos)
 
 Object									getBlock(Vector3f pos)
