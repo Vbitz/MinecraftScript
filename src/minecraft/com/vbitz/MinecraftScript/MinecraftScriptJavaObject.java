@@ -49,12 +49,10 @@ public class MinecraftScriptJavaObject extends NativeJavaObject {
 		
 		if (reflectItem instanceof Method) {
 			if (!((Method) reflectItem).isAccessible()) {
-				System.out.println("private call");
 				((Method) reflectItem).setAccessible(true);
 			}
 		} else if (reflectItem instanceof Field) {
 			if (!((Field) reflectItem).isAccessible()) {
-				System.out.println("private call");
 				((Field) reflectItem).setAccessible(true);
 			}
 		}

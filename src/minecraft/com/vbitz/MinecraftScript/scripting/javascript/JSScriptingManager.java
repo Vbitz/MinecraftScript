@@ -93,6 +93,10 @@ public class JSScriptingManager extends ScriptingManager {
 			_scriptsDirectory = scriptsDir;
 		}
 		
+		if (scriptsDir == null) {
+			return;
+		}
+		
 		enterContext();
 		
 		for (File f : scriptsDir.listFiles()) {
