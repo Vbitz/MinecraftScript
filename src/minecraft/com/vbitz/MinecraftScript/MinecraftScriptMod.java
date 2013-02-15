@@ -15,6 +15,7 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.vbitz.MinecraftScript.blocks.ScriptedBlock;
+import com.vbitz.MinecraftScript.blocks.SurvivalNode;
 import com.vbitz.MinecraftScript.commands.APIKeyCommand;
 import com.vbitz.MinecraftScript.commands.KeyValueStoreCommand;
 import com.vbitz.MinecraftScript.commands.MinecraftScriptHelpCommand;
@@ -26,6 +27,7 @@ import com.vbitz.MinecraftScript.items.JSStick;
 import com.vbitz.MinecraftScript.items.ScriptedItem;
 import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingCommand;
 import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
+import com.vbitz.MinecraftScript.titleEntitys.TileEntitySurvivalNode;
 import com.vbitz.MinecraftScript.web.MinecraftScriptAPIKey;
 import com.vbitz.MinecraftScript.web.MinecraftScriptHTTPServer;
 
@@ -53,7 +55,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid="MinecraftScript", name="MinecraftScript", version="1.9.2") // mental note, update this loads
+@Mod(modid="MinecraftScript", name="MinecraftScript", version="2.0.0") // mental note, update this loads
 @NetworkMod(clientSideRequired=false, serverSideRequired=true)
 public class MinecraftScriptMod {
 	@Instance("MinecraftScriptMod")
@@ -87,6 +89,8 @@ public class MinecraftScriptMod {
 	private int scriptedItemIdCount = 16;
 	
 	private int jsStickId = 7311;
+	
+	private int survivalNodeId = 1417;
 	
 	private static int webServerPort = 12543;
 	
@@ -137,6 +141,8 @@ public class MinecraftScriptMod {
 		
 		jsStickId = config.get(Configuration.CATEGORY_ITEM, "jsStickId", 7311).getInt(7311);
 		
+		survivalNodeId = config.get(Configuration.CATEGORY_BLOCK, "survivalNodeId", 1417).getInt(1417);
+		
 		webServerPort = config.get("network", "webServerPort", 12543).getInt(12543);
 		
 		config.save();
@@ -148,7 +154,7 @@ public class MinecraftScriptMod {
 		
 		this.mcLogger.setParent(FMLLog.getLogger());
 		
-		this.mcLogger.info("MinecraftScript Version " + "1.9.2" + " Loading");
+		this.mcLogger.info("MinecraftScript Version " + "2.0.0" + " Loading");
 		
 		createScriptedObjects();
 		
@@ -161,6 +167,14 @@ public class MinecraftScriptMod {
 			
 			EntityRegistry.registerModEntity(ScriptedThrowable.class, "scriptedThrowable",
 					1234, this, 50, 1, true); // need to change the id maybe
+			
+			GameRegistry.registerTileEntity(TileEntitySurvivalNode.class,
+					"com.vbitz.MinecraftScript.survivalNodeTile");
+		
+			SurvivalNode n = new SurvivalNode(survivalNodeId);
+			GameRegistry.registerBlock(n,
+					"com.vbitz.MinecraftScript.survivalNodeBlock");
+			LanguageRegistry.addName(n, "Survival Node");
 		}
 		
 		new MinecraftScriptHTTPServer();
@@ -179,15 +193,15 @@ public class MinecraftScriptMod {
 			this.mcLogger.fine("Client Side Disabled");
 			return;
 		}
-		blocks = new ScriptedBlock[scriptedBlockCount]; // this will get bigger in the future
+		blocks = new ScriptedBlock[scriptedBlockCount];
 		for (int i = 0; i < blocks.length; i++) {
 			blocks[i] = new ScriptedBlock(scriptedBlockIdStart + i);
 			GameRegistry.registerBlock(blocks[i],"Scripted Block " + i);
 			LanguageRegistry.addName(blocks[i], "Scripted Block " + i);
 		}
-		items = new ScriptedItem[scriptedItemIdCount]; // this will get bigger in the future
+		items = new ScriptedItem[scriptedItemIdCount];
 		for (int i = 0; i < items.length; i++) {
-			items[i] = new ScriptedItem(scriptedItemIdStart + i); // allow people to configure this value
+			items[i] = new ScriptedItem(scriptedItemIdStart + i);
 			LanguageRegistry.addName(items[i], "Scripted Item " + i);
 		}
 	}
@@ -263,5 +277,9 @@ public class MinecraftScriptMod {
 	public static File getLogFileWriter() {
 		String filename = "logFile_" + logDateFormat.format(new Date()) + ".log";
 		return new File(loggingDirectory, filename);
+	}
+
+	public int getSurvivalNodeId() {
+		return survivalNodeId;
 	}
 }

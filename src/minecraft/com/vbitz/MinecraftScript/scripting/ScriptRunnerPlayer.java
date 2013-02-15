@@ -2,6 +2,7 @@ package com.vbitz.MinecraftScript.scripting;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 
 public class ScriptRunnerPlayer extends ScriptRunner {
@@ -21,7 +22,17 @@ public class ScriptRunnerPlayer extends ScriptRunner {
 
 	@Override
 	public boolean isOP() {
-		return false;
+		if (_ply instanceof EntityPlayer) {
+			if (MinecraftServer.getServer().isSinglePlayer()) {
+				return true;
+			} else {
+				return MinecraftServer.getServer()
+						.getConfigurationManager().getOps().contains(((EntityPlayer) _ply)
+								.username.toLowerCase());
+			}
+		} else {
+			return true;
+		}
 	}
 
 	@Override

@@ -53,6 +53,14 @@ public class Vector3f {
 		}
 	}
 	
+	public float distince(Vector3f vec) {
+		return distince(vec._X, vec._Y, vec._Z);
+	}
+	
+	public float distince(float x, float y, float z) {
+		return (float) Math.sqrt(Math.pow(x - _X, 2) + Math.pow(y - _Y, 2) + Math.pow(z - _Z, 2));
+	}
+	
 	@Override
 	public String toString() {
 		return "Vector3f X: " + _X + " Y: " + _Y + " Z: " + _Z;

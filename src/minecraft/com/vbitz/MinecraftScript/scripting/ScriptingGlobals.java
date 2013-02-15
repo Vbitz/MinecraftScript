@@ -20,6 +20,7 @@ import com.vbitz.MinecraftScript.MinecraftItemStore;
 import com.vbitz.MinecraftScript.MinecraftScriptCommandManager;
 import com.vbitz.MinecraftScript.MinecraftScriptHookManager;
 import com.vbitz.MinecraftScript.MinecraftScriptMod;
+import com.vbitz.MinecraftScript.MinecraftScriptNodeAPI;
 import com.vbitz.MinecraftScript.MinecraftScriptPlayerAPI;
 import com.vbitz.MinecraftScript.MinecraftScriptScriptedBlockAPI;
 import com.vbitz.MinecraftScript.MinecraftScriptScriptedItemAPI;
@@ -61,6 +62,11 @@ public class ScriptingGlobals {
 	@JSDoc(jsName = "world()", doc = "Returns the current world")
 	public static MinecraftScriptWorldAPI getWorldJS() {
 		return JSScriptingManager.getInstance().getScriptRunner().getWorldAPI();
+	}
+	
+	@JSDoc(jsName = "node()", doc = "Returns the closest Survival Node")
+	public static MinecraftScriptNodeAPI getNodeJS() {
+		return new MinecraftScriptNodeAPI();
 	}
 	
 	@JSDoc(jsName = "block(int id)", doc = "Returns a Scripted Block with ID")

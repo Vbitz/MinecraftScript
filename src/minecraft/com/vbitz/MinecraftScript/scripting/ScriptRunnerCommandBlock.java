@@ -1,5 +1,7 @@
 package com.vbitz.MinecraftScript.scripting;
 
+import com.vbitz.MinecraftScript.Vector3f;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
@@ -9,9 +11,13 @@ public class ScriptRunnerCommandBlock extends ScriptRunner {
 
 	private World worldObj;
 	
+	private Vector3f pos;
+	
 	public ScriptRunnerCommandBlock(ICommandSender sender) {
 		if (sender instanceof TileEntityCommandBlock) {
-			worldObj = ((TileEntityCommandBlock) sender).getWorldObj();
+			TileEntityCommandBlock c = ((TileEntityCommandBlock) sender);
+			worldObj = c.getWorldObj();
+			pos = new Vector3f(c.xCoord, c.yCoord, c.zCoord);
 		}
 	}
 	
@@ -31,6 +37,11 @@ public class ScriptRunnerCommandBlock extends ScriptRunner {
 	@Override
 	public World getWorld() {
 		return worldObj;
+	}
+	
+	@Override
+	public Vector3f getPos() {
+		return pos;
 	}
 
 }

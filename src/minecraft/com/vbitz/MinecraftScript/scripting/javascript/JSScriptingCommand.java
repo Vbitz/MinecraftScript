@@ -143,5 +143,10 @@ public class JSScriptingCommand extends ScriptingCommand {
 	public static void registerCommand(String name) {
 		instance.commandNames.add(name);
 	}
+
+	@Override
+	public boolean canRunCommand(ScriptRunner r) {
+		return r.isOP();
+	}
 	
 }

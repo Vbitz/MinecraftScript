@@ -40,6 +40,7 @@ public abstract class ScriptingCommand extends CommandBase {
 	
 	protected ArrayList<String> commandNames = new ArrayList<String>();
 	
+	public abstract boolean canRunCommand(ScriptRunner s);
 	public abstract String getName();
 	public abstract void runString(ScriptRunner cmdSender, String code);
 	public abstract void runFile(ScriptRunner cmdSender, String code);
@@ -51,11 +52,6 @@ public abstract class ScriptingCommand extends CommandBase {
 	public String getCommandName() {
 		return getName();
 	}
-	
-	@Override
-    public int getRequiredPermissionLevel() {
-        return 2;
-    }
 
 	@Override
 	public String getCommandUsage(ICommandSender var1) {
@@ -73,6 +69,10 @@ public abstract class ScriptingCommand extends CommandBase {
 			runner = new ScriptRunnerPlayer((EntityPlayer) cmdSender);
 		} else if (cmdSender instanceof TileEntityCommandBlock) {
 			runner = new ScriptRunnerCommandBlock(cmdSender);
+		}
+		
+		if (!canRunCommand(runner)) {
+			return;
 		}
 		
 		if (args[0].equals("dofile")) {

@@ -92,14 +92,20 @@ Version 1.9.1
 Version 1.9.2
 - Derp
 
+Version 2.0.0
+- Yay Version 2
+- Added SurvivalNode, this is the very start of coding for survival mode MinecarftScript
+- Added a improvement to ScriptedItem
+- You can now name nodes
+
 Future - Roughly in order of when I will work on them
 =====================================================
+- Stop the API's from leaking World and player Objects
 - Add Block API in world working on a collection of blocks
 - Expand ScriptedItem and ScriptedBlock
 - Add Python/node.js based Javascript REPL
 - Minecraft PI Edition API Support
 - Add Ore Dict Intergration
-- Fix Server Crash
 - Write Permissions System
 - Hook in most forge events
 - Write NBT Block Duplicate Function

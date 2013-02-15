@@ -17,7 +17,7 @@ public class MinecraftScriptScriptedItemAPI {
 	}
 	
 	public void give(int count) throws ScriptErrorException {
-		if (JSScriptingManager.getInstance().getScriptRunner() == null) {
+		if (JSScriptingManager.getInstance().getScriptRunner().getPlayer() == null) {
 			throw new ScriptErrorException("A player must run this function");
 		}
 		JSScriptingManager.getInstance().getScriptRunner().getPlayer().inventory.addItemStackToInventory(new ItemStack(itemId, count));
