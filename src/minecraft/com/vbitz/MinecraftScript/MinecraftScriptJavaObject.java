@@ -6,6 +6,8 @@ import java.lang.reflect.Method;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.Scriptable;
 
+import com.vbitz.MinecraftScript.survival.MinecraftScriptSurvivalManager;
+
 public class MinecraftScriptJavaObject extends NativeJavaObject {
 
 	private static Object recuriveGetItem(Class<?> cls, String name) {
@@ -37,14 +39,23 @@ public class MinecraftScriptJavaObject extends NativeJavaObject {
 			return NOT_FOUND;
 		}
 		
-		if (!MinecraftScriptMod.getUnsafeEnabled()) {
-			return super.get(name, thisObject);
-		}
+		Class<?> objClass = unwrap().getClass();
+		Object reflectItem = recuriveGetItem(objClass, name);
 		
-		Object reflectItem = recuriveGetItem(unwrap().getClass(), name);
+		if (reflectItem == null) {
+			reflectItem = getRealObject(objClass, name);
+		}
 		
 		if (reflectItem == null) {
 			return NOT_FOUND;
+		}
+		
+		if (!MinecraftScriptSurvivalManager.canCall(reflectItem)) {
+			return false;
+		}
+		
+		if (!MinecraftScriptMod.getUnsafeEnabled()) {
+			return super.get(name, thisObject);
 		}
 		
 		if (reflectItem instanceof Method) {
@@ -58,6 +69,24 @@ public class MinecraftScriptJavaObject extends NativeJavaObject {
 		}
 		
 		return super.get(name, thisObject);
+	}
+
+	private Object getRealObject(Class<?> objClass, String name) {
+		if (name.startsWith("get") || name.startsWith("set")) {
+			return null; // already tried
+		}
+		name = new String(new char[] {name.charAt(0)}, 0, 1).toUpperCase() + name.substring(1);
+		Object ret = recuriveGetItem(objClass, "get" + name);
+		if (ret != null) {
+			System.out.println("Resolved " + name + " to get" + name);
+			return ret;
+		}
+		ret = recuriveGetItem(objClass, "set" + name);
+		if (ret != null) {
+			System.out.println("Resolved " + name + " to set" + name);
+			return ret;
+		}
+		return null; // I've tried my best
 	}
 
 }

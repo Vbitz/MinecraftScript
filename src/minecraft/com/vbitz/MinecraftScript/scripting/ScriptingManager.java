@@ -49,6 +49,7 @@ public abstract class ScriptingManager {
 			addSGlobal("me", "getScriptRunnerJS");
 			addSGlobal("world", "getWorldJS");
 			addSGlobal("node", "getNodeJS");
+			addSGlobal("nodeByName", "nodeByNameJS", String.class);
 			addSGlobal("v", "newVectorJS", double.class, double.class, double.class);
 			addSGlobal("block", "getBlockJS", int.class);
 			addSGlobal("item", "getItemJS", int.class);

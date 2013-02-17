@@ -49,6 +49,11 @@ public abstract class ScriptingCommand extends CommandBase {
 	public abstract void createStick(ScriptRunner cmdSender, String code);
 
 	@Override
+	public boolean canCommandSenderUseCommand(ICommandSender par1iCommandSender) {
+		return true;
+	}
+	
+	@Override
 	public String getCommandName() {
 		return getName();
 	}
@@ -72,6 +77,7 @@ public abstract class ScriptingCommand extends CommandBase {
 		}
 		
 		if (!canRunCommand(runner)) {
+			cmdSender.sendChatToPlayer("Can't run this command");
 			return;
 		}
 		

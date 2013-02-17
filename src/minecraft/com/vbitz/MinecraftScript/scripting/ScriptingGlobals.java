@@ -55,12 +55,16 @@ public class ScriptingGlobals {
 	}
 	
 	@JSDoc(jsName = "me()", doc = "Returns the current player")
-	public static MinecraftScriptPlayerAPI getScriptRunnerJS() {
+	public static Object getScriptRunnerJS() { // cute thing with javascript no need
+			// to return the right type
 		return JSScriptingManager.getInstance().getScriptRunner().getPlayerAPI();
 	}
 	
 	@JSDoc(jsName = "world()", doc = "Returns the current world")
 	public static MinecraftScriptWorldAPI getWorldJS() {
+		if (!JSScriptingManager.canCall(-1)) {
+			throw new Error("The world object is unavalible in Survival Mode");
+		}
 		return JSScriptingManager.getInstance().getScriptRunner().getWorldAPI();
 	}
 	
@@ -69,10 +73,18 @@ public class ScriptingGlobals {
 		return new MinecraftScriptNodeAPI();
 	}
 	
+	@JSDoc(jsName = "nodeByName(String name)", doc = "Returns the Survial Node by Name")
+	public static MinecraftScriptNodeAPI nodeByNameJS(String name) throws ScriptErrorException {
+		return new MinecraftScriptNodeAPI(name);
+	}
+	
 	@JSDoc(jsName = "block(int id)", doc = "Returns a Scripted Block with ID")
 	public static MinecraftScriptScriptedBlockAPI getBlockJS(int i) throws ScriptErrorException {
 		if (!MinecraftScriptMod.getInstance().getClientSideEnabled()) {
 			throw new ScriptErrorException("Client side needs to be enabled for ScriptedBlocks to work");
+		}
+		if (!JSScriptingManager.canCall(-1)) {
+			throw new Error("This method can't be called in Survival Mode");
 		}
 		return new MinecraftScriptScriptedBlockAPI(i);
 	}
@@ -81,6 +93,9 @@ public class ScriptingGlobals {
 	public static MinecraftScriptScriptedItemAPI getItemJS(int i) throws ScriptErrorException {
 		if (!MinecraftScriptMod.getInstance().getClientSideEnabled()) {
 			throw new ScriptErrorException("Client side needs to be enabled for ScriptedItems to work");
+		}
+		if (!JSScriptingManager.canCall(-1)) {
+			throw new Error("This method can't be called in Survival Mode");
 		}
 		return new MinecraftScriptScriptedItemAPI(i);
 	}
@@ -129,6 +144,10 @@ public class ScriptingGlobals {
 	@JSDoc(jsName = "player(string name)", doc = "Returns a PlayerAPI for nickname")
 	public static MinecraftScriptPlayerAPI playerJS(String nick) {
         EntityPlayerMP ply = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(nick);
+		
+        if (!JSScriptingManager.canCall(-1)) {
+			throw new Error("This method can't be called in Survival Mode");
+		}
         
         if (ply == null) {
 			return null;
@@ -139,11 +158,17 @@ public class ScriptingGlobals {
 	
 	@JSDoc(jsName = "registerCommand(string name,function command)", doc = "Running /c name args will run cmd with args")
 	public static void registerCommandJS(String name, Object command) {
+		if (!JSScriptingManager.canCall(-1)) {
+			throw new Error("This method can't be called in Survival Mode");
+		}
 		MinecraftScriptCommandManager.addCommand(name, JSScriptingManager.getInstance().getFunction(command));
 	}
 	
 	@JSDoc(jsName = "difficulty(string diff)", doc = "Sets the Difficulty to difficulty, difficulty can be peaceful, easy, normal or hard")
 	public static void setDifficultyJS(String diff) throws ScriptErrorException {
+		if (!JSScriptingManager.canCall(-1)) {
+			throw new Error("This method can't be called in Survival Mode");
+		}
 		if (Difficultys.containsKey(diff)) {
 			MinecraftServer.getServer().setDifficultyForAllWorlds(Difficultys.get(diff));
 		} else {
@@ -153,6 +178,9 @@ public class ScriptingGlobals {
 	
 	@JSDoc(jsName = "addSmeltingRecipe(int input,int output,int xp)", doc = "Adds a Smelting Recipe")
 	public static void addSmeltingRecipeJS(int input, int output, int xp) {
+		if (!JSScriptingManager.canCall(-1)) {
+			throw new Error("This method can't be called in Survival Mode");
+		}
 		GameRegistry.addSmelting(input, new ItemStack(output, 1, 0), xp);
 	}
 	
@@ -172,7 +200,10 @@ public class ScriptingGlobals {
 	
 	@JSDoc(jsName = "registerTick(string id,function func)" , doc = "Runs a function on the next server tick")
 	public static boolean registerTickJS(String id, Object obj) {
-		if (JSScriptingManager.getInstance().getScriptRunner() == null) {
+		if (!JSScriptingManager.canCall(3000)) {
+			throw new Error("Not enough energy in Survial Node to call");
+		}
+		if (!JSScriptingManager.getInstance().getScriptRunner().isOP()) {
 			return false;
 		} else {
 			return MinecraftScriptTickManager.getInstance().registerOnTick(id, JSScriptingManager.getInstance().getScriptRunner(),
@@ -196,11 +227,17 @@ public class ScriptingGlobals {
 	
 	@JSDoc(jsName = "genFunc(function func)", doc = "This function will run each world tick")
 	public static void genFuncJS(Object obj) {
+		if (!JSScriptingManager.canCall(-1)) {
+			throw new Error("This method can't be called in Survival Mode");
+		}
 		MinecraftScriptWorldGen.setFunc(JSScriptingManager.getInstance().getFunction(obj), JSScriptingManager.getInstance().getScriptRunner());
 	}
 	
 	@JSDoc(jsName = "reload()", doc = "Reloads the scripting scope")
 	public static void reloadScopeJS() {
+		if (!JSScriptingManager.canCall(-1)) {
+			throw new Error("This method can't be called in Survival Mode");
+		}
 		JSScriptingManager.getInstance().reload();
 	}
 	
@@ -227,6 +264,9 @@ public class ScriptingGlobals {
 	
 	@JSDoc(jsName = "on(string eventName,function func)", doc = "On eventName being called func will be called")
 	public static void onEventJS(String eventName, Object func) {
+		if (!JSScriptingManager.canCall(-1)) {
+			throw new Error("This method can't be called in Survival Mode");
+		}
 		MinecraftScriptHookManager.addHook(eventName, JSScriptingManager.getInstance().getFunction(func));
 	}
 }

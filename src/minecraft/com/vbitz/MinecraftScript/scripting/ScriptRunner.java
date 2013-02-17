@@ -1,8 +1,10 @@
 package com.vbitz.MinecraftScript.scripting;
 
 import com.vbitz.MinecraftScript.MinecraftScriptPlayerAPI;
+import com.vbitz.MinecraftScript.MinecraftScriptSurvivalPlayerAPI;
 import com.vbitz.MinecraftScript.MinecraftScriptWorldAPI;
 import com.vbitz.MinecraftScript.Vector3f;
+import com.vbitz.MinecraftScript.exceptions.ScriptErrorException;
 import com.vbitz.MinecraftScript.survival.SurvivalNodeManager;
 import com.vbitz.MinecraftScript.titleEntitys.TileEntitySurvivalNode;
 
@@ -42,8 +44,12 @@ public abstract class ScriptRunner {
 		
 	}
 	
-	public MinecraftScriptPlayerAPI getPlayerAPI() {
-		return new MinecraftScriptPlayerAPI(getPlayer());
+	public MinecraftScriptSurvivalPlayerAPI getPlayerAPI() {
+		if (isSurvival()) {
+			return new MinecraftScriptSurvivalPlayerAPI(getPlayer());
+		} else {
+			return new MinecraftScriptPlayerAPI(getPlayer());
+		}
 	}
 	
 	public MinecraftScriptWorldAPI getWorldAPI() {
@@ -55,5 +61,14 @@ public abstract class ScriptRunner {
 			return null;
 		}
 		return SurvivalNodeManager.getNearNode(getWorld(), this.getPos());
+	}
+	public TileEntitySurvivalNode getSurvivalNode(String name) throws ScriptErrorException {
+		if (getWorld() == null) {
+			return null;
+		}
+		if (name.equals("untilted")) {
+			throw new ScriptErrorException("You need to set the name of a node to search for it");
+		}
+		return SurvivalNodeManager.getNodeByName(getWorld(), name);
 	}
 }

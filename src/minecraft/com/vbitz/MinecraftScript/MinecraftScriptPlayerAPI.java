@@ -21,9 +21,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumGameType;
 
-public class MinecraftScriptPlayerAPI {
-	private EntityPlayer _player;
-	
+public class MinecraftScriptPlayerAPI extends MinecraftScriptSurvivalPlayerAPI {
+
 	private static HashMap<String, Integer> _effects = new HashMap<String, Integer>();
 	private static HashMap<String, Integer> _gamemodes = new HashMap<String, Integer>();
 	
@@ -54,23 +53,15 @@ public class MinecraftScriptPlayerAPI {
 	}
 	
 	public MinecraftScriptPlayerAPI(EntityPlayer ply) {
-		_player = ply;
+		super(ply);
 	}
 
-	public int getHealth() {
-		return _player.getHealth();
-	}
-	
 	public void setHealth(int health) {
 		_player.setEntityHealth(health);
 	}
 	
 	public void kill() {
 		_player.setEntityHealth(0);
-	}
-	
-	public int getHunger() {
-		return _player.getFoodStats().getFoodLevel();
 	}
 	
 	public void setHunger(int value) { // fix these on a server
@@ -81,9 +72,6 @@ public class MinecraftScriptPlayerAPI {
 		_player.inventory.addItemStackToInventory(new ItemStack(Item.itemsList[id], count, 0));
 	}
 	
-	public Vector3f getPos() {
-		return new Vector3f(_player.posX, _player.posY, _player.posZ);
-	}
 	
 	public void setPos(Vector3f v) {
 		_player.setPositionAndUpdate((double)v.getX(), (double)v.getY(), (double)v.getZ());
@@ -119,50 +107,11 @@ public class MinecraftScriptPlayerAPI {
 		}
 	}
 	
-	public boolean getFire() {
-		return _player.isBurning();
-	}
-	
-	public Vector3f getLook() {	// This code is based off the code from Item.class
-        double compY = _player.prevPosY + (_player.posY - _player.prevPosY) * (double)1.0F + 1.62D - (double)_player.yOffset;
-        Vec3 playerPos = _player.worldObj.getWorldVec3Pool().getVecFromPool(_player.posX, compY, _player.posZ);
-        float var1 = MathHelper.cos(-_player.rotationYaw * 0.017453292F - (float)Math.PI);
-        float var2 = MathHelper.sin(-_player.rotationYaw * 0.017453292F - (float)Math.PI);
-        float var3 = -MathHelper.cos(-_player.rotationPitch * 0.017453292F);
-        float var4 = MathHelper.sin(-_player.rotationPitch * 0.017453292F);
-        Vec3 targetPos = playerPos.addVector((double)(var2 * var3) * 500.0D, (double)var4 * 500.0D, (double)(var1 * var3) * 500.0D);
-        MovingObjectPosition objPos = _player.worldObj.rayTraceBlocks_do_do(playerPos, targetPos, false, true);
-        if (objPos != null) {
-        	return new Vector3f(objPos.blockX, objPos.blockY, objPos.blockZ);
-        } else {
-        	return new Vector3f(_player.posX, compY, _player.posZ);
-        }
-	}
-	
 	public MinecraftScriptItemStackAPI getItem() throws ScriptErrorException {
 		if (_player.inventory.getCurrentItem() == null) {
 			throw new ScriptErrorException("No Current Item");
 		}
 		return new MinecraftScriptItemStackAPI(_player.inventory.getCurrentItem());
-	}
-	
-	public float getLookDirection() {
-		if (_player.rotationPitch < 45) {
-			return 4;
-		} else if (_player.rotationPitch > 135) {
-			return 5;
-		}
-		if (_player.rotationYaw < 45) {
-			return 1;
-		} else if (_player.rotationYaw < 135) {
-			return 2;
-		} else if (_player.rotationYaw < 225) {
-			return 3;
-		} else if (_player.rotationYaw < 315) {
-			return 0;
-		} else {
-			return 1;
-		}
 	}
 	
 	public void gamemode(String gamemode) {
@@ -185,10 +134,6 @@ public class MinecraftScriptPlayerAPI {
 	
 	public void addExpLevels(int amo) {
 		_player.addExperienceLevel(amo);
-	}
-	
-	public String getName() {
-		return _player.getEntityName();
 	}
 	
 	public MinecraftScriptWorldAPI getWorld() {
@@ -229,4 +174,5 @@ public class MinecraftScriptPlayerAPI {
 		arrow.setKnockbackStrength(knockback);
 		_player.worldObj.spawnEntityInWorld(arrow);
 	}
+	
 }

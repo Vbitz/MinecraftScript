@@ -146,7 +146,7 @@ public class JSScriptingCommand extends ScriptingCommand {
 
 	@Override
 	public boolean canRunCommand(ScriptRunner r) {
-		return r.isOP();
+		return r.isOP() || r.isSurvival();
 	}
 	
 }

@@ -8,7 +8,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
 
+import net.minecraft.block.Block;
 import net.minecraft.command.CommandHandler;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.DimensionManager;
@@ -27,6 +31,8 @@ import com.vbitz.MinecraftScript.items.JSStick;
 import com.vbitz.MinecraftScript.items.ScriptedItem;
 import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingCommand;
 import com.vbitz.MinecraftScript.scripting.javascript.JSScriptingManager;
+import com.vbitz.MinecraftScript.survival.MinecraftScriptSurvivalManager;
+import com.vbitz.MinecraftScript.survival.SurvivalNodeManager;
 import com.vbitz.MinecraftScript.titleEntitys.TileEntitySurvivalNode;
 import com.vbitz.MinecraftScript.web.MinecraftScriptAPIKey;
 import com.vbitz.MinecraftScript.web.MinecraftScriptHTTPServer;
@@ -55,7 +61,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid="MinecraftScript", name="MinecraftScript", version="2.0.0") // mental note, update this loads
+@Mod(modid="MinecraftScript", name="MinecraftScript", version="2.1.0") // mental note, update this loads
 @NetworkMod(clientSideRequired=false, serverSideRequired=true)
 public class MinecraftScriptMod {
 	@Instance("MinecraftScriptMod")
@@ -154,7 +160,7 @@ public class MinecraftScriptMod {
 		
 		this.mcLogger.setParent(FMLLog.getLogger());
 		
-		this.mcLogger.info("MinecraftScript Version " + "2.0.0" + " Loading");
+		this.mcLogger.info("MinecraftScript Version " + "2.1.0" + " Loading");
 		
 		createScriptedObjects();
 		
@@ -175,6 +181,14 @@ public class MinecraftScriptMod {
 			GameRegistry.registerBlock(n,
 					"com.vbitz.MinecraftScript.survivalNodeBlock");
 			LanguageRegistry.addName(n, "Survival Node");
+			
+			GameRegistry.addShapedRecipe(new ItemStack(n), new Object[] {
+				".*.",
+				"* *",
+				".*.",
+				'*', Item.ingotIron,
+				'.', Block.stoneBrick
+			}); // pretty dam easy recipe
 		}
 		
 		new MinecraftScriptHTTPServer();

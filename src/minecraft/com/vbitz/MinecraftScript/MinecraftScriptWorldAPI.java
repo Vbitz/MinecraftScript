@@ -570,5 +570,10 @@ public class MinecraftScriptWorldAPI {
 		}
 		return (totalTicks / items.length) / 1000000D;
 	}
+	
+	public void playNoteSound(Vector3f loc, String type, int pitch) {
+		float realPitch = (float)Math.pow(2.0D, (double)(pitch - 12) / 12.0D);
+		_world.playSoundEffect(loc.getX(), loc.getY(), loc.getZ(), "note." + type, 3.0f, realPitch);
+	}
 
 }

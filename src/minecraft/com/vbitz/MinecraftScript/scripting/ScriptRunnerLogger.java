@@ -29,6 +29,11 @@ public class ScriptRunnerLogger extends ScriptRunner {
 	public boolean isOP() {
 		return previousScriptRunner.isOP();
 	}
+	
+	@Override
+	public boolean isSurvival() {
+		return previousScriptRunner.isSurvival();
+	}
 
 	@Override
 	public EntityPlayer getPlayer() {

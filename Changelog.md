@@ -97,10 +97,19 @@ Version 2.0.0
 - Added SurvivalNode, this is the very start of coding for survival mode MinecarftScript
 - Added a improvement to ScriptedItem
 - You can now name nodes
+- Vector3f now has a distince function
+
+Version 2.1.0
+- Survival mode is now live - woops
+- You can now craft Survival Nodes, it's 4 iron and 4 stonebricks in a ring, they only have a range of 64 blocks though
+- Added playNoteSound(Vector3f pos, String type, int pitch), I'm likaly going to write a midi parser in javascript that hooks into this at some point
+- Moved most PlayerAPI function into SurvivalPlayerAPI, you can't get a normal Player API in survival mode
+- Added nodeByName(String name) which allows you to search for a scriptnode by name
+- You can now teleport to a distant node
 
 Future - Roughly in order of when I will work on them
 =====================================================
-- Stop the API's from leaking World and player Objects
+- Stop the API's from leaking World and Player Objects
 - Add Block API in world working on a collection of blocks
 - Expand ScriptedItem and ScriptedBlock
 - Add Python/node.js based Javascript REPL
@@ -111,7 +120,6 @@ Future - Roughly in order of when I will work on them
 - Write NBT Block Duplicate Function
 - Improve require to make it node.js compatable
 - Push Documents.md into JSDoc
-- Add Script Nodes - The block will be cheapish (maybe some gold nuggets surounding a diamond on some wood but the script running tool might require a nether star or something else really expensive)
 - Add Survival Mode Scripting with Script Nodes
 - Add Beacon Function to Script Node
 - Add Force Load Chunks with (callback - not needed?)

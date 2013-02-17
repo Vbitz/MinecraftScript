@@ -28,6 +28,7 @@ import com.vbitz.MinecraftScript.scripting.IFunction;
 import com.vbitz.MinecraftScript.scripting.ScriptRunner;
 import com.vbitz.MinecraftScript.scripting.ScriptingGlobals;
 import com.vbitz.MinecraftScript.scripting.ScriptingManager;
+import com.vbitz.MinecraftScript.survival.MinecraftScriptSurvivalManager;
 
 public class JSScriptingManager extends ScriptingManager {
 
@@ -293,5 +294,16 @@ public class JSScriptingManager extends ScriptingManager {
 		} else {
 			return "";
 		}
+	}
+	
+	public static boolean canCall(int price) {
+		ScriptRunner r = getInstance().getScriptRunner();
+		if (!r.isSurvival()) {
+			return true;
+		}
+		if (price == -1) {
+			return false;
+		}
+		return r.getSurvivalNode().getAmount() >= price;
 	}
 }
